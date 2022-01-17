@@ -170,43 +170,79 @@ public class AutoDrive {
 
 			double outerScalar = 1 + Constants.ROBOT_WHEEL_SPACING / 2 / radius;
 			double innerScalar = 1 - Constants.ROBOT_WHEEL_SPACING / 2 / radius;
+/*
+			double outerRadius = radius * outerScalar;
+			double innerRadius = radius * innerScalar;
 
+			double outerChordLength = chordLength + Constants.ROBOT_WHEEL_SPACING;
+			double innerChordLength = chordLength - Constants.ROBOT_WHEEL_SPACING;
+
+			double outerArcLength = 2 * outerRadius * Math.asin(outerChordLength / (2 * outerRadius));
+			double arcLength = 2 * radius * Math.asin(chordLength / (2 * radius));
+			double innerArcLength = 2 * innerRadius * Math.asin(innerChordLength / (2 * innerRadius));
+*/
 			double leftSpeed = speed;
 			double rightSpeed = speed;
-			
+			/*
 			System.out.println("radius: " + radius);
 			System.out.println("arcLength: " + arcLength);
 
 			System.out.println("outerScalar: " + outerScalar);
 			System.out.println("innerScalar: " + innerScalar);
+*/
+			/*System.out.println("radius out: " + outerRadius);
+			System.out.println("radius: " + radius);
+			System.out.println("radius in: " + innerRadius);
+
+			System.out.println("arcLength out: " + outerArcLength);
+			System.out.println("arcLength: " + arcLength);
+			System.out.println("arcLength in: " + innerArcLength);
+
+			System.out.println("outer chord: " + outerChordLength);
+			System.out.println("inner chord: " + innerChordLength);
+
+			System.out.println("outerScalar: " + outerScalar);
+			System.out.println("innerScalar: " + innerScalar);*/
 
 			// decide which one based on sign of height
 			if (arcHeight > 0) {
-				System.out.println("arcHeight positive");
-				completePositions[0] += arcLength * outerScalar;
-				completePositions[1] -= arcLength * innerScalar;
+				//System.out.println("arcHeight positive");
+				completePositions[0] += Calc.inchesToDrive(arcLength * outerScalar);
+				completePositions[1] -= Calc.inchesToDrive(arcLength * innerScalar);
 
 				leftSpeed *= outerScalar;
 				rightSpeed *= innerScalar;
+/*
+				completePositions[0] += Calc.inchesToDrive(outerArcLength);
+				completePositions[1] -= Calc.inchesToDrive(innerArcLength);
 
-			} else {
+				leftSpeed *= outerArcLength / arcLength;
+				rightSpeed *= innerArcLength / arcLength;*/
 
-				completePositions[0] += arcLength * innerScalar;
-				completePositions[1] -= arcLength * outerScalar;
+			} else { 
+				
+				completePositions[0] += Calc.inchesToDrive(arcLength * innerScalar);
+				completePositions[1] -= Calc.inchesToDrive(arcLength * outerScalar);
 
 				leftSpeed *= innerScalar;
 				rightSpeed *= outerScalar;
+/*
+				completePositions[0] += Calc.inchesToDrive(outerArcLength);
+				completePositions[1] -= Calc.inchesToDrive(innerArcLength);
 
+				leftSpeed *= innerArcLength / arcLength;
+				rightSpeed *= outerArcLength / arcLength;
+*/
 			}
 
-			System.out.println("leftSpeed: " + leftSpeed);
-			System.out.println("rightSpeed: " + rightSpeed);
+			//System.out.println("leftSpeed: " + leftSpeed);
+			//System.out.println("rightSpeed: " + rightSpeed);
 
-			System.out.println("left complete position: " + completePositions[0]);
-			System.out.println("right complete position: " + completePositions[1]);
+			//System.out.println("left complete position: " + completePositions[0]);
+			//System.out.println("right complete position: " + completePositions[1]);
 
-			leftMotors.setPosition(Calc.inchesToDrive(completePositions[0]), -leftSpeed, leftSpeed);
-			rightMotors.setPosition(Calc.inchesToDrive(completePositions[1]), -rightSpeed, rightSpeed);
+			leftMotors.setPosition(completePositions[0], -leftSpeed, leftSpeed);
+			rightMotors.setPosition(completePositions[1], -rightSpeed, rightSpeed);
 
 		}
 
@@ -233,20 +269,20 @@ public class AutoDrive {
 		double leftWheelPosition = leftMotors.getPosition();
 		double rightWheelPosition = rightMotors.getPosition();
 
-		System.out.println("left: " + leftWheelPosition);
-		System.out.println("right: " + rightWheelPosition);
+		//System.out.println("left: " + Calc.driveToInches(leftWheelPosition));
+		//System.out.println("right: " + Calc.driveToInches(rightWheelPosition));
 
-		System.out.println("left speed: " + leftMotors.getSpeed());
-		System.out.println("right speed: " + rightMotors.getSpeed());
+		//System.out.println("left speed: " + leftMotors.getSpeed());
+		//System.out.println("right speed: " + rightMotors.getSpeed());
 
 		double leftError = Math.abs(completePositions[0] - leftWheelPosition);
 		double rightError = Math.abs(completePositions[1] - rightWheelPosition);
 
-		System.out.println("left error: " + leftError);
-		System.out.println("right error: " + rightError);
+		//System.out.println("left error: " + leftError);
+		//System.out.println("right error: " + rightError);
 
 		if(leftError <= acceptableError && rightError <= acceptableError) {
-			System.out.println("DONE COMMAND");
+
 			removeCommand(0);
 
 			if(queueIsEmpty()) {
