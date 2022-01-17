@@ -1,0 +1,9 @@
+[
+  {
+    "artifact": "frcJava (in project RapidReact2022)",
+    "target": "roborio",
+    "debugfile": "frcJava_roborio.debugconfig",
+    "project": "RapidReact2022",
+    "language": "java"
+  }
+]
