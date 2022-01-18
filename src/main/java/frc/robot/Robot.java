@@ -15,6 +15,8 @@ import wrappers.*;
 public class Robot extends TimedRobot {
 
 	int i = 0;
+	logMotors log;
+	PIDMotor motor;
 
 	@Override
 	public void robotInit() {}
@@ -37,14 +39,19 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {}
 	
 	@Override
-	public void teleopInit() {}
+	public void teleopInit() {
+
+		motor = new SparkMax(2, true);
+
+		log = new logMotors(motor);
+
+	}
 
 	@Override
 	public void teleopPeriodic() {
 
-		i++;
-
-		System.out.println("number" + i);
+		log.writeLogs();
+		System.out.println("Writing...");
 
 	}
 
