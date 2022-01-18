@@ -1,0 +1,11 @@
+[
+  {
+    "name": "RapidReact2022 (in project RapidReact2022)",
+    "file": "C:\\Users\\Patribots4738\\Documents\\RapidReact2022\\RapidReact2022\\build\\libs\\RapidReact2022.jar",
+    "extensions": [
+      "C:\\Users\\Patribots4738\\Documents\\RapidReact2022\\RapidReact2022\\build\\tmp\\expandedArchives\\halsim_gui-2020.1.2-windowsx86-64.zip_0ded91afab576f356c80ba4c4e7b8310\\windows\\x86-64\\shared\\halsim_gui.dll"
+    ],
+    "librarydir": "C:\\Users\\Patribots4738\\Documents\\RapidReact2022\\RapidReact2022\\build\\tmp\\jniExtractDir",
+    "mainclass": "frc.robot.Main"
+  }
+]

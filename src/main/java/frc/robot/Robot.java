@@ -14,7 +14,7 @@ import wrappers.*;
 
 public class Robot extends TimedRobot {
 
-	AutoPath autoPath;
+	int i = 0;
 
 	@Override
 	public void robotInit() {}
@@ -40,7 +40,13 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {}
 
 	@Override
-	public void teleopPeriodic() {}
+	public void teleopPeriodic() {
+
+		i++;
+
+		System.out.println("number" + i);
+
+	}
 
 	@Override
 	public void testInit() {}
