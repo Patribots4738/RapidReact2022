@@ -1,5 +1,3 @@
-package utils;
-
 import java.io.File;  // Import the File class
 import java.io.FileWriter;   // Import the FileWriter class
 import java.io.IOException;  // Import the IOException class to handle errors
@@ -12,10 +10,15 @@ public class LogWriter {
     public FileWriter filedesc;
     public String filePath = "/tmp/log.csv";
 
-    public LogWriter( String ... headers ) {
-        
-        this.headers = headers;
-
+    public LogWriter(String filePath) {
+        this.filePath = filePath;
+        init();
+    }
+    public LogWriter(){
+        init();
+    }
+    
+    private void init(){
         try{
 
             File logFile = new File(filePath);
@@ -33,8 +36,16 @@ public class LogWriter {
             logFile.createNewFile();
 
             this.filedesc = new FileWriter(filePath);
-
-            // Header
+        }
+        catch(IOException e){
+            System.out.println("An error occured");
+            e.printStackTrace();
+        }
+    }
+    
+    public void addHeader(String ... headers){
+        this.headers = headers;
+        try{
             String buf= "timestamp" ;
 
             for(String item: headers){
@@ -46,16 +57,18 @@ public class LogWriter {
             buf += "\n";
 
             this.filedesc.write(buf);
-
         }
         catch(IOException e){
-
             System.out.println("An error occured");
             e.printStackTrace();
         }
     }
     
-    public void writeLogs (String format, double ... logItems) {
+    /**
+     * @param format format of prints. log will not be formated. Ex: "%.2f"
+     * @param logItems numbers (double) to log
+     */
+    public void writeLog (String format, double ... logItems) {
 
         String buf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS").format(new Date());
 
@@ -64,7 +77,11 @@ public class LogWriter {
         for(int i = 0; i < logItems.length; i++){
 
             buf += " , " + logItems[i];
-            print += headers[i] + ": " + String.format(format,logItems[i]) + "   ";
+            if(i < headers.length){
+                print += headers[i] + ": " + String.format(format,logItems[i]) + "   ";
+            }else{
+                print += String.format(format,logItems[i]) + "   ";
+            }
 
         }
 
@@ -84,5 +101,11 @@ public class LogWriter {
             System.out.println("An error occured");
             e.printStackTrace();
         }
+    }
+    
+    public void writeLog(double ... logItems){
+        
+        writeLog("%.2f",logItems);
+        
     }
 }
