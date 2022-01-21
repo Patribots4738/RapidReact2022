@@ -13,15 +13,21 @@ public class LogWriter {
     public String filePath = "/tmp/log.csv";
 
     public LogWriter(String filePath) {
+
         this.filePath = filePath;
         init();
+
     }
-    public LogWriter(){
+
+    public LogWriter() {
+
         init();
+
     }
     
-    private void init(){
-        try{
+    private void init() {
+
+        try {
 
             File logFile = new File(filePath);
 
@@ -38,19 +44,24 @@ public class LogWriter {
             logFile.createNewFile();
 
             this.filedesc = new FileWriter(filePath);
-        }
-        catch(IOException e){
+        } catch(IOException e) {
+
             System.out.println("An error occured");
             e.printStackTrace();
+
         }
+
     }
     
-    public void addHeader(String ... headers){
+    public void addHeader(String ... headers) {
+
         this.headers = headers;
-        try{
+
+        try {
+
             String buf= "timestamp" ;
 
-            for(String item: headers){
+            for(String item: headers) {
 
                 buf += " , " + item;
 
@@ -59,18 +70,21 @@ public class LogWriter {
             buf += "\n";
 
             this.filedesc.write(buf);
-        }
-        catch(IOException e){
+
+        } catch(IOException e) {
+
             System.out.println("An error occured");
             e.printStackTrace();
+
         }
+
     }
     
     /**
      * @param format format of prints. log will not be formated. Ex: "%.2f"
      * @param logItems numbers (double) to log
      */
-    public void writeLog (String format, double ... logItems) {
+    public void writeLog(String format, double ... logItems) {
 
         String buf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS").format(new Date());
 
@@ -79,10 +93,14 @@ public class LogWriter {
         for(int i = 0; i < logItems.length; i++){
 
             buf += " , " + logItems[i];
-            if(i < headers.length){
+            if(i < headers.length) {
+
                 print += headers[i] + ": " + String.format(format,logItems[i]) + "   ";
-            }else{
+
+            } else {
+
                 print += String.format(format,logItems[i]) + "   ";
+
             }
 
         }
@@ -91,21 +109,23 @@ public class LogWriter {
 
         buf += "\n";
 
-        try{
+        try {
 
             this.filedesc.write(buf);
             this.filedesc.flush();
 
         }
 
-        catch(IOException e){
+        catch(IOException e) {
 
             System.out.println("An error occured");
             e.printStackTrace();
+
         }
+
     }
     
-    public void writeLog(double ... logItems){
+    public void writeLog(double ... logItems) {
         
         writeLog("%.2f",logItems);
         
