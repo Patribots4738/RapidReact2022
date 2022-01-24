@@ -26,26 +26,34 @@ public class Robot extends TimedRobot {
 
 	Turret turret;
 
+	Compressor compressor;
+
 	@Override
 	public void robotInit() {
 
+		compressor = new Compressor();
+
 		rightMotors = new PIDMotorGroup(new Falcon(0), new Falcon(1));
-		leftMotors = new PIDMotorGroup(new Falcon(2), new Falcon(3));
+		leftMotors = new PIDMotorGroup(new Falcon(3), new Falcon(4));
 
 		drive = new Drive(leftMotors, rightMotors);
 
 		driver = new XboxController(0);
 		operator = new XboxController(1);
 
-		intake = new Intake(new SparkMax(4, true), new DoubleSolenoid(0, 1));
+		intake = new Intake(new SparkMax(2, true), new DoubleSolenoid(0, 1));
 
 		// change 100 to correct max encoder position
-		turret = new Turret(new SparkMax(5, true), 100, 0.2);
+		//turret = new Turret(new SparkMax(5, true), 100, 0.2);
 
 	}
 
 	@Override
-	public void robotPeriodic() {}
+	public void robotPeriodic() {
+
+		compressor.setState(true);
+
+	}
 
 	@Override
 	public void autonomousInit() {} 
@@ -67,20 +75,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), driver.getAxis(XboxController.Axes.RightX));
+		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
-		if (driver.getAxis(XboxController.Axes.RightTrigger) > 0.25) {
+		/*if (driver.getAxis(XboxController.Axes.RightTrigger) > 0.25) {
 
-			intake.runIntake(0.25);
+			intake.runIntake(-.05);
 
 		} else {
 
 			intake.stopIntake();
 
-		}
+		}*/
+
+		intake.setIntakeSpeed(-driver.getAxis(XboxController.Axes.RightTrigger));
+		intake.putUpIntake();
 
 		// multipled by 0.15 so max speed is 0.15 so no break
-		turret.rotate(operator.getAxis(XboxController.Axes.RightTrigger) * 0.15);
+		//turret.rotate(operator.getAxis(XboxController.Axes.RightTrigger) * 0.15);
 
 	}
 

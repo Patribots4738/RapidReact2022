@@ -1,5 +1,6 @@
 package wrappers;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class SingleSolenoid{
@@ -11,7 +12,7 @@ public class SingleSolenoid{
 
 	public SingleSolenoid(int port) {
 
-		solenoid = new Solenoid(port);
+		solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, port);
 
 	}
 

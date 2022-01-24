@@ -1,6 +1,6 @@
 package wrappers;
 
-import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 
 public class DriverCamera {
@@ -18,7 +18,7 @@ public class DriverCamera {
 
 		try {
 
-			cam = CameraServer.getInstance().startAutomaticCapture(camNum);
+			cam = CameraServer.startAutomaticCapture();
 			cam.setResolution(240, 160);
 			cam.setFPS(30);
 			cam.setExposureManual(50);
@@ -53,7 +53,7 @@ public class DriverCamera {
 
 		try {
 
-			cam = CameraServer.getInstance().startAutomaticCapture(camNum);
+			cam = CameraServer.startAutomaticCapture(camNum);
 			cam.setResolution(240, 160);
 			cam.setFPS(30);
 			cam.setExposureManual(50);

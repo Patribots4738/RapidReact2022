@@ -4,15 +4,17 @@ import interfaces.*;
 import utils.*;
 
 import com.revrobotics.CANEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
+import com.revrobotics.RelativeEncoder;
 
 public class SparkMax implements PIDMotor {
 
 	CANSparkMax motor;
-	CANEncoder encoder;
+	RelativeEncoder encoder;
 	CANPIDController pidController;
 
 	PIDLoop PIDLoop;
@@ -25,8 +27,8 @@ public class SparkMax implements PIDMotor {
 	public SparkMax(int canID, boolean isNeo550) {
 
 		motor = new CANSparkMax(canID, CANSparkMaxLowLevel.MotorType.kBrushless);
-		encoder = new CANEncoder(motor);
-		pidController = new CANPIDController(motor);
+		encoder = motor.getEncoder();
+		pidController = motor.getPIDController();
 
 		this.isNeo550 = isNeo550;
 
