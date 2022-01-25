@@ -16,7 +16,7 @@ public class LogMotors {
     /**
      * @param m motor object to log
      */
-    public LogMotors ( PIDMotor... m) {
+    public LogMotors( PIDMotor... m) {
 
         filename = "/tmp/motor.log";
         this.motors = m;
