@@ -3,19 +3,16 @@ package wrappers;
 import interfaces.*;
 import utils.*;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 
 public class SparkMax implements PIDMotor {
 
 	CANSparkMax motor;
 	RelativeEncoder encoder;
-	CANPIDController pidController;
+	SparkMaxPIDController pidController;
 
 	PIDLoop PIDLoop;
 
@@ -97,7 +94,7 @@ public class SparkMax implements PIDMotor {
 
 	public void setPercent(double percent) {
 
-		pidController.setReference(percent, ControlType.kDutyCycle);
+		pidController.setReference(percent, CANSparkMax.ControlType.kDutyCycle);
 
 	}
 
@@ -146,8 +143,8 @@ public class SparkMax implements PIDMotor {
 	public void setPosition(double rotations, double minSpeed, double maxSpeed) {
 
 		pidController.setOutputRange(minSpeed, maxSpeed);
-
-		pidController.setReference(rotations, ControlType.kPosition);
+		pidController.setReference(rotations, CANSparkMax.ControlType.kPosition);
+		System.out.println("SETTING POSITION");
 
 	}
 
