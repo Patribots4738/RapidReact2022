@@ -28,8 +28,12 @@ public class Robot extends TimedRobot {
 
 	Compressor compressor;
 
+	DriverCamera camera;
+
 	@Override
 	public void robotInit() {
+
+		camera = new DriverCamera(0);
 
 		compressor = new Compressor();
 
