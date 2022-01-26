@@ -1,7 +1,12 @@
 package wrappers;
 
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cameraserver.CameraServer;
+
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
 
 public class DriverCamera {
 
@@ -19,9 +24,10 @@ public class DriverCamera {
 		try {
 
 			cam = CameraServer.startAutomaticCapture();
-			cam.setResolution(240, 160);
+			cam.setResolution(100, 100);
 			cam.setFPS(30);
-			cam.setExposureManual(50);
+			cam.setExposureManual(5);
+			cam.setPixelFormat(PixelFormat.kMJPEG);
 
 			constructed = true;
 
