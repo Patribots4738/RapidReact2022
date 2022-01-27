@@ -144,7 +144,6 @@ public class SparkMax implements PIDMotor {
 
 		pidController.setOutputRange(minSpeed, maxSpeed);
 		pidController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-		System.out.println("SETTING POSITION");
 
 	}
 

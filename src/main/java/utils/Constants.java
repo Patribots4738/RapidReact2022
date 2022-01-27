@@ -16,6 +16,9 @@ public final class Constants {
 	// distance from the edge of the bumber to the limelight's camera lens
 	public static final double LIMELIGHT_CAMERA_INSET = 8.625;
 
+	// amount of mini neo rotations to one full turret rotation
+	public static final double FULL_TURRET_ROTATION = 70.0;
+
 	// the time, in seconds, of a single loop of the robot code
 	public static final double LOOP_TIME = 0.02;
 

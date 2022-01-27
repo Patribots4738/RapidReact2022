@@ -24,10 +24,9 @@ public class DriverCamera {
 		try {
 
 			cam = CameraServer.startAutomaticCapture();
-			cam.setResolution(100, 100);
+			cam.setResolution(320, 240);
 			cam.setFPS(30);
 			cam.setExposureManual(5);
-			cam.setPixelFormat(PixelFormat.kMJPEG);
 
 			constructed = true;
 

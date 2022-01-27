@@ -1,24 +1,25 @@
 package wrappers;
 
 import interfaces.PIDMotor;
+import utils.*;
 
 public class Turret {
 
     PIDMotor motor;
-    double maxEncoderPosition; 
+    double maxRotation; 
     double resetEncoderSpeed;
     double acceptableError = 0.05;
     boolean iszeroing = false;
 
     /**
      * @param motor turret motor
-     * @param maxEncoderPosition maximum position of the encoder so that the turret doesn't twist it'self up, aquired through testing
+     * @param maxRotation amount of rotations of the turret centered on zeroed position
      * @param resetEncoderSpeed speed at which it zeros to
      */
-    public Turret(PIDMotor motor, double maxEncoderPosition, double resetEncoderSpeed) {
+    public Turret(PIDMotor motor, double maxRotation, double resetEncoderSpeed) {
 
         this.motor = motor;
-        this.maxEncoderPosition = maxEncoderPosition;
+        this.maxRotation = maxRotation * Constants.FULL_TURRET_ROTATION / 2;
         this.resetEncoderSpeed = resetEncoderSpeed;
         setZero();
 
@@ -30,28 +31,29 @@ public class Turret {
      */
     public void rotate(double speed) {
 
-        // overrides rotation to get it back to zero so cords dont tangle
-        if (iszeroing) {
-            
-            if (getPosition() < acceptableError && getPosition() > -acceptableError) {
-
-                iszeroing = false;
-
-            }
-
-            setPosition(resetEncoderSpeed, 0.0);
-            return;
-
-        }
-
-
         if (getPosition() >= 1.0) {
             
-            iszeroing = true;
+            if (speed > 0.0) {
+
+                motor.setSpeed(0.0);
+
+            } else {
+
+                motor.setSpeed(speed);
+
+            }
             
-        } else if(getPosition() <= -1.0) {
+        } else if (getPosition() <= -1.0) {
             
-            iszeroing = true;
+            if (speed < 0.0) {
+
+                motor.setSpeed(0.0);
+
+            } else {
+
+                motor.setSpeed(speed);
+
+            }
 
         } else {
             
@@ -68,7 +70,7 @@ public class Turret {
      */
     public void setPosition(double speed, double position) {
 
-        position *= maxEncoderPosition;
+        position *= maxRotation;
         
         motor.setPosition(position, -speed, speed);
 
@@ -79,7 +81,8 @@ public class Turret {
      */
     public double getPosition() {
 
-        return motor.getPosition() / maxEncoderPosition;
+        return motor.getPosition() / maxRotation
+        ;
 
     }
 
