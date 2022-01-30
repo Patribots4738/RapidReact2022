@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
 	PIDMotorGroup rightMotors;
 	PIDMotorGroup leftMotors;
 
-	//Intake intake;
+	Intake intake;
 
 	XboxController driver;
 	XboxController operator;
@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
 		driver = new XboxController(0);
 		operator = new XboxController(1);
 
-		//intake = new Intake(new SparkMax(2, true), new DoubleSolenoid(0, 1));
+		intake = new Intake(new SparkMax(2, true), new DoubleSolenoid(0, 1));
 
 		turret = new Turret(max, 0.75, 0.25);
 
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
+		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
 		/*if (driver.getAxis(XboxController.Axes.RightTrigger) > 0.25) {
 
@@ -92,7 +92,17 @@ public class Robot extends TimedRobot {
 
 		}*/
 
-		//intake.setIntakeSpeed(-driver.getAxis(XboxController.Axes.RightTrigger));
+		intake.setIntakeSpeed(-driver.getAxis(XboxController.Axes.RightTrigger));
+
+		if(driver.getButton(XboxController.Buttons.X)){
+			
+			intake.putDownIntake();
+
+		}else{
+
+			intake.putUpIntake();
+
+		}
 		//intake.putUpIntake();
 
 		//max.setPosition(69.9, -0.7, 0.7);
