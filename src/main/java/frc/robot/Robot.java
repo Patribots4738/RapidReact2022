@@ -26,17 +26,14 @@ public class Robot extends TimedRobot {
 
 	Turret turret;
 
-	Compressor compressor;
+	Trigger trigger;
 
-	SparkMax max;
+	Compressor compressor;
 
 	@Override
 	public void robotInit() {
 
 		compressor = new Compressor();
-
-		max = new SparkMax(2, true);
-		max.setPID(0.5, 0, 0);
 
 		rightMotors = new PIDMotorGroup(new Falcon(0), new Falcon(1));
 		leftMotors = new PIDMotorGroup(new Falcon(3), new Falcon(4));
@@ -46,9 +43,17 @@ public class Robot extends TimedRobot {
 		driver = new XboxController(0);
 		operator = new XboxController(1);
 
-		intake = new Intake(max, new DoubleSolenoid(0, 1));
+		SparkMax intakeMotor = new SparkMax(2, true);
+		intakeMotor.setPID(0.5, 0, 0);
+		intake = new Intake(intakeMotor, new DoubleSolenoid(0, 1));
 
-		//turret = new Turret(max, 0.75, 0.25);
+		SparkMax turretMotor = new SparkMax(5, true);
+		turretMotor.setPID(0.5, 0, 0);
+		turret = new Turret(turretMotor, 0.75, 0.25);
+
+		SparkMax triggerMotor = new SparkMax(6, true);
+		triggerMotor.setPID(0.5, 0, 0);
+		trigger = new Trigger(triggerMotor);
 
 	}
 
@@ -61,7 +66,11 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousInit() {} 
+	public void autonomousInit() {
+
+		turret.setZero();
+
+	} 
 
 	@Override
 	public void autonomousPeriodic() {}
@@ -75,54 +84,43 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {}
 	
 	@Override
-	public void teleopInit() {}
+	public void teleopInit() {
+
+		turret.setZero();
+
+	}
 
 	@Override
 	public void teleopPeriodic() {
 
 		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
-		/*if (driver.getAxis(XboxController.Axes.RightTrigger) > 0.25) {
+		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
 
-			intake.runIntake(-.05);
+		trigger.setSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
 
-		} else {
+		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-			intake.stopIntake();
-
-		}*/
-
-		
-		
-
-		if (driver.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(-driver.getAxis(XboxController.Axes.RightTrigger));
+			trigger.setSpeed(0.5);
 
 		} else {
 
-			intake.setIntakeSpeed(driver.getAxis(XboxController.Axes.LeftTrigger));
+			trigger.setSpeed(0.0);
 
 		}
 
-		System.out.println(max.getSpeed());
-
-		/*
-		if(driver.getButton(XboxController.Buttons.X)){
+		if (operator.getToggle(XboxController.Buttons.X)) {
 			
-			intake.putDownIntake();
-
-		}else{
-
 			intake.putUpIntake();
 
-		}*/
-		//intake.putUpIntake();
+		} else {
 
-		//max.setPosition(69.9, -0.7, 0.7);
+			intake.putDownIntake();
+
+		}
 
 		// multipled by 0.15 so max speed is 0.15 so no break
-		//turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
+		turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
 
 	}
 

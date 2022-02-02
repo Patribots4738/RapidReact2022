@@ -53,7 +53,7 @@ public class LogWriter {
 
     }
     
-    public void addHeader(String ... headers) {
+    public void header(String ... headers) {
 
         this.headers = headers;
 
@@ -84,9 +84,9 @@ public class LogWriter {
      * @param format format of prints. log will not be formated. Ex: "%.2f"
      * @param logItems numbers (double) to log
      */
-    public void writeLog(String format, double ... logItems) {
+    public void write(String format, double ... logItems) {
 
-        String buf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss.SSS").format(new Date());
+        String buf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(new Date());
 
         String print = "";
 
@@ -127,7 +127,7 @@ public class LogWriter {
     
     public void writeLog(double ... logItems) {
         
-        writeLog("%.2f",logItems);
+        write("%.2f",logItems);
         
     }
 }
