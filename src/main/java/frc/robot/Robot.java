@@ -88,6 +88,9 @@ public class Robot extends TimedRobot {
 
 		turret.setZero();
 
+		driver.setupButtons();
+		operator.setupButtons();
+
 	}
 
 	@Override
@@ -97,15 +100,25 @@ public class Robot extends TimedRobot {
 
 		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
 
-		trigger.setSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
-
 		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-			trigger.setSpeed(0.5);
+			trigger.setSpeed(0.35);
 
 		} else {
 
 			trigger.setSpeed(0.0);
+
+		}
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			trigger.setSpeed(-0.1);
+
+		} 
+		
+		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			//trigger.setSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
 
 		}
 

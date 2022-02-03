@@ -1,13 +1,17 @@
 package hardware;
 
 import utils.PIDLoop;
-import wrappers.Limelight;
+import wrappers.*;
 
 public class ShooterController {
 
 	Shooter shooter;
 
-	//Conveyor conveyor;
+	Intake intake;
+
+	Trigger trigger;
+
+	Turret turret;
 
 	Limelight limelight;
 
@@ -25,10 +29,6 @@ public class ShooterController {
 	private double converter = 1.0 / 15;
 
     public static boolean aligned = false;
-    
-	private double shortOffset = 3.55;//3.55;
-
-	private double longOffset = 1.68;
 
 	PIDLoop aimLoop;
 
@@ -38,11 +38,15 @@ public class ShooterController {
 	double FF = 1;
 	int Izone = 25;
 
-	public ShooterController(Shooter shooter, Limelight limelight, Drive drive) {
+	public ShooterController(Shooter shooter, Limelight limelight, Drive drive, Intake intake, Trigger trigger, Turret turret) {
 
 		this.shooter = shooter;
 
-		//this.conveyor = conveyor;
+		this.intake = intake;
+
+		this.trigger = trigger;
+
+		this.turret = turret;
 
 		this.limelight = limelight;
 
@@ -59,7 +63,7 @@ public class ShooterController {
 
 		shooter.stop();
 
-		//conveyor.setSpeed(0);
+		trigger.setSpeed(0.0);
 
 		shooter.eval(0);
 
@@ -68,7 +72,7 @@ public class ShooterController {
 	// checks if the robot is aligned and if the shooter is spun up, then updates internal variables accordingly
 	public void eval() {
 
-		double offset = (correctLimelightDistanceError(limelight.getDistance()) > 200) ? (longOffset) : (shortOffset);
+		double offset = correctLimelightDistanceError(limelight.getDistance());
 
 		double angle = limelight.getHorizontalAngle() - offset;
 
@@ -85,9 +89,13 @@ public class ShooterController {
 
 		eval();
 
-		//conveyor.setConveyor(Shooter.readyToFire);
+		if (Shooter.readyToFire) {
 
-		shooter.setFeeders(Shooter.readyToFire);
+			// random variables, need to be tested
+			trigger.setSpeed(0.25);
+			intake.setIntakeSpeed(0.25);
+
+		}
 
 		//System.out.println("shooter: " + Shooter.readyToFire);
 
@@ -99,9 +107,13 @@ public class ShooterController {
 
 		shooter.setShooterSpeeds(15 * 12);
 
-		//conveyor.setConveyor(Shooter.readyToFire);
+		if (Shooter.readyToFire) {
 
-		shooter.setFeeders(Shooter.readyToFire);
+			// random variables, need to be tested
+			trigger.setSpeed(0.25);
+			intake.setIntakeSpeed(0.25);
+
+		}
 
 		//System.out.println("shooter: " + Shooter.readyToFire);
 
@@ -109,14 +121,13 @@ public class ShooterController {
 
 	public double correctLimelightDistanceError(double rawDistance) {
 
-		// each index after 0 is 2 feet of distance from the target starting at 10ft away
+		// each index after 0 is 2 feet of distance from the target starting at 5ft away
 		double[] errorData = {-0.157, 0.395, 1.5,
 							  6.25, 7.1, 11.5,
 							  15.55, 26.1, 29.1
-							  -13.9, -16.9, 0.1,
-							  11.1};
+							  -13.9, -16.9};
 
-		double arrayPosition = (rawDistance - 120.0) / 24.0;
+		double arrayPosition = (rawDistance - 60.0) / 24.0;
 
 		if(arrayPosition < 0) {
 
@@ -124,9 +135,9 @@ public class ShooterController {
 
 		}
 
-		if(arrayPosition >= 11) {
+		if(arrayPosition >= 10) {
 
-			return rawDistance +20;
+			return rawDistance + 20;
 
 		}
 
@@ -144,7 +155,7 @@ public class ShooterController {
 	// this aligns the robot with the vision target found by the limelight
 	public void aim() {
 
-		double offset = (correctLimelightDistanceError(limelight.getDistance()) > 200) ? (longOffset) : (shortOffset);
+		double offset = correctLimelightDistanceError(limelight.getDistance());
 
 		double angle = ((limelight.getHorizontalAngle()) - offset);
 
@@ -164,7 +175,8 @@ public class ShooterController {
 
 		}
 
-        drive.bananaTank(speed, -speed);
+		//turret.setPosition(speed, position);
+		turret.rotate(speed);
 
 	}
 
