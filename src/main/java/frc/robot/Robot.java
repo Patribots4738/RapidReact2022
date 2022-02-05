@@ -30,6 +30,8 @@ public class Robot extends TimedRobot {
 
 	Compressor compressor;
 
+	IMU imu;
+
 	@Override
 	public void robotInit() {
 
@@ -54,6 +56,8 @@ public class Robot extends TimedRobot {
 		SparkMax triggerMotor = new SparkMax(6, true);
 		triggerMotor.setPID(0.5, 0, 0);
 		trigger = new Trigger(triggerMotor);
+
+		imu = new IMU();
 
 	}
 
@@ -96,29 +100,28 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
+		System.out.println("imu" + imu.getZRotation());
+
 		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
-
-		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
-
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
-
-			trigger.setSpeed(0.35);
-
-		} else {
-
-			trigger.setSpeed(0.0);
-
-		}
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * 0.75);
 			trigger.setSpeed(-0.1);
 
-		} 
-		
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+		} else {
 
-			//trigger.setSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
+			intake.setIntakeSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(-0.35);
+
+			} else {
+
+				trigger.setSpeed(0.0);
+
+			}
 
 		}
 
@@ -133,7 +136,7 @@ public class Robot extends TimedRobot {
 		}
 
 		// multipled by 0.15 so max speed is 0.15 so no break
-		turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
+		//turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
 
 	}
 

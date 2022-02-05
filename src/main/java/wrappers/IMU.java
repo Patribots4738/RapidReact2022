@@ -1,6 +1,6 @@
-/*package wrappers;
+package wrappers;
 
-import com.analog.adis16470.frc.*;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 public class IMU {
 
@@ -20,7 +20,7 @@ public class IMU {
      * of the roborio
      * 
      * At the current state of this library
-     *
+     */
     public IMU() {
 
         imu = new ADIS16470_IMU();
@@ -33,10 +33,10 @@ public class IMU {
      * there is always 1 earth gravity pulling towards
      * the center of the earth
      * @return acceleration on X axis in g's
-     *
+     */
     public double getXAcceleration() {
 
-        return imu.getAccelInstantX();
+        return imu.getAccelX();
 
     }
 
@@ -46,10 +46,10 @@ public class IMU {
      * there is always 1 earth gravity pulling towards
      * the center of the earth
      * @return acceleration on Y axis in g's
-     *
+     */
     public double getYAcceleration() {
 
-        return imu.getAccelInstantY();
+        return imu.getAccelY();
 
     }
 
@@ -59,10 +59,10 @@ public class IMU {
      * there is always 1 earth gravity pulling towards
      * the center of the earth
      * @return acceleration on Z axis in g's
-     *
+     */
     public double getZAcceleration() {
 
-        return imu.getAccelInstantZ();
+        return imu.getAccelZ();
 
     }
 
@@ -72,7 +72,7 @@ public class IMU {
      * -720 = 2 rotations backwards
      * +720 = 2 rotations forwards
      * @return rotations on the X axis in degrees
-     *
+     */
     public double getXRotation() {
 
         currentCompX = imu.getYComplementaryAngle();
@@ -103,7 +103,7 @@ public class IMU {
      * -720 = 2 rotations backwards
      * +720 = 2 rotations forwards
      * @return rotations on the Y axis in degrees
-     *
+     */
     public double getYRotation() {
 
         currentCompY = imu.getXComplementaryAngle();
@@ -134,37 +134,10 @@ public class IMU {
      * -720 = 2 rotations backwards
      * +720 = 2 rotations forwards
      * @return rotations on the Z axis in degrees
-     *
+     */
     public double getZRotation() {
 
        return imu.getAngle();
     }
 
-    /**
-     * @return acceleration of rotation on X axis in degrees/sec
-     *
-    public double getXRotationalAcceleration() {
-
-        return imu.getGyroInstantX();
-
-    }
-
-    /**
-     * @return acceleration of rotation on Y axis in degrees/sec
-     *
-    public double getYRotationalAcceleration() {
-
-        return imu.getGyroInstantY();
-
-    }
-
-    /**
-     * @return acceleration of rotation on Z axis in degrees/sec
-     *
-    public double getZRotationalAcceleration() {
-
-        return imu.getGyroInstantZ();
-
-    }
-
-}*/
+}
