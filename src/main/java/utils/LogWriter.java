@@ -105,7 +105,7 @@ public class LogWriter {
 
         }
 
-        System.out.println(print);
+       // System.out.println(print);
 
         buf += "\n";
 

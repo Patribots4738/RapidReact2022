@@ -32,8 +32,17 @@ public class Robot extends TimedRobot {
 
 	IMU imu;
 
+	PIDMotor topMotor;
+	PIDMotor bottomMotor;
+
 	@Override
 	public void robotInit() {
+
+		topMotor = new Falcon(7);
+		bottomMotor = new Falcon(8);
+
+		topMotor.setPID(0.5, 0, 0);
+		bottomMotor.setPID(0.5, 0, 0);
 
 		compressor = new Compressor();
 
@@ -100,14 +109,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		System.out.println("imu" + imu.getZRotation());
-
 		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
 			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * 0.75);
-			trigger.setSpeed(-0.1);
+			//trigger.setSpeed(-0.1);
+			trigger.setSpeed(0.35);
 
 		} else {
 
@@ -134,6 +142,11 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
+
+		topMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
+		bottomMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
+
+		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
 		// multipled by 0.15 so max speed is 0.15 so no break
 		//turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
