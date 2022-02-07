@@ -2,6 +2,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
+
+// for shuffleboard
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.ArrayList;
 
 import autonomous.*;
@@ -35,6 +42,11 @@ public class Robot extends TimedRobot {
 	PIDMotor topMotor;
 	PIDMotor bottomMotor;
 
+	ColorSensor colorSensor;
+	
+	ShuffleboardTab smartDashboard;
+	NetworkTableEntry intakeTestEntry;
+
 	@Override
 	public void robotInit() {
 
@@ -67,6 +79,13 @@ public class Robot extends TimedRobot {
 		trigger = new Trigger(triggerMotor);
 
 		imu = new IMU();
+
+		// R seems like best value to determine color of first intaken ball
+		colorSensor = new ColorSensor();
+
+			//for shuffleboard
+		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
+		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
 
 	}
 
@@ -106,16 +125,99 @@ public class Robot extends TimedRobot {
 
 	}
 
+	boolean intakeTesting = true;
+
+	/**
+	 * @param intakemode normal intake: 1, test intake:-1
+	 */
+	public void intake(int intakemode) {
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
+			trigger.setSpeed(-0.1);
+
+		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.LeftTrigger) * intakemode);
+			trigger.setSpeed(0.35 * intakemode);
+
+		} else {
+
+			intake.setIntakeSpeed(0.0);
+			trigger.setSpeed(0.0);
+
+		}
+
+	}
+	/*
+	public void intakeNormal() {
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
+			trigger.setSpeed(-0.1);
+
+		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.LeftTrigger));
+			trigger.setSpeed(0.35);
+
+		} else {
+
+			intake.setIntakeSpeed(0.0);
+			trigger.setSpeed(0.0);
+
+		}
+
+	}
+
+	public void intakeTest() {
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
+			trigger.setSpeed(-0.1);
+
+		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
+			trigger.setSpeed(-0.35);
+	
+		} else {
+
+			intake.setIntakeSpeed(0.0);
+			trigger.setSpeed(0.0);
+
+		}
+		
+
+	}*/
+
 	@Override
 	public void teleopPeriodic() {
 
 		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
+		//for shuffleboard
+		//intakeTesting = intakeTestEntry.getBoolean(intakeTesting);
+
+		if (intakeTesting) {
+
+			intake(-1);
+
+		} else {
+
+			intake(1);
+
+		}
+
+		/*
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
 			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * 0.75);
-			//trigger.setSpeed(-0.1);
-			trigger.setSpeed(0.35);
+			trigger.setSpeed(-0.1);
+			//trigger.setSpeed(0.35);
 
 		} else {
 
@@ -132,7 +234,7 @@ public class Robot extends TimedRobot {
 			}
 
 		}
-
+		*/
 		if (operator.getToggle(XboxController.Buttons.X)) {
 			
 			intake.putUpIntake();
@@ -143,10 +245,10 @@ public class Robot extends TimedRobot {
 
 		}
 
-		topMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
-		bottomMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
+		//topMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
+		//bottomMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
 
-		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
+		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
 		// multipled by 0.15 so max speed is 0.15 so no break
 		//turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
