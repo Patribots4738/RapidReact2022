@@ -2,13 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
-
-// for shuffleboard
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.ArrayList;
 
 import autonomous.*;
@@ -43,9 +36,6 @@ public class Robot extends TimedRobot {
 	PIDMotor bottomMotor;
 
 	ColorSensor colorSensor;
-	
-	ShuffleboardTab smartDashboard;
-	NetworkTableEntry intakeTestEntry;
 
 	@Override
 	public void robotInit() {
@@ -81,7 +71,7 @@ public class Robot extends TimedRobot {
 		imu = new IMU();
 
 		// R seems like best value to determine color of first intaken ball
-		colorSensor = new ColorSensor();
+		//colorSensor = new ColorSensor();
 
 			//for shuffleboard
 		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
@@ -114,6 +104,8 @@ public class Robot extends TimedRobot {
 	// VERY EXTRA NO TOUCH
 	@Override
 	public void disabledPeriodic() {}
+
+	double speed = 0.0;
 	
 	@Override
 	public void teleopInit() {
@@ -123,9 +115,11 @@ public class Robot extends TimedRobot {
 		driver.setupButtons();
 		operator.setupButtons();
 
+		speed = 0.0;
+
 	}
 
-	boolean intakeTesting = true;
+	boolean intakeTesting = false;
 
 	/**
 	 * @param intakemode normal intake: 1, test intake:-1
@@ -150,49 +144,6 @@ public class Robot extends TimedRobot {
 		}
 
 	}
-	/*
-	public void intakeNormal() {
-
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
-			trigger.setSpeed(-0.1);
-
-		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.LeftTrigger));
-			trigger.setSpeed(0.35);
-
-		} else {
-
-			intake.setIntakeSpeed(0.0);
-			trigger.setSpeed(0.0);
-
-		}
-
-	}
-
-	public void intakeTest() {
-
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
-			trigger.setSpeed(-0.1);
-
-		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
-			trigger.setSpeed(-0.35);
-	
-		} else {
-
-			intake.setIntakeSpeed(0.0);
-			trigger.setSpeed(0.0);
-
-		}
-		
-
-	}*/
 
 	@Override
 	public void teleopPeriodic() {
@@ -212,29 +163,6 @@ public class Robot extends TimedRobot {
 
 		}
 
-		/*
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * 0.75);
-			trigger.setSpeed(-0.1);
-			//trigger.setSpeed(0.35);
-
-		} else {
-
-			intake.setIntakeSpeed(operator.getAxis(XboxController.Axes.LeftTrigger));
-
-			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
-
-				trigger.setSpeed(-0.35);
-
-			} else {
-
-				trigger.setSpeed(0.0);
-
-			}
-
-		}
-		*/
 		if (operator.getToggle(XboxController.Buttons.X)) {
 			
 			intake.putUpIntake();
@@ -245,13 +173,25 @@ public class Robot extends TimedRobot {
 
 		}
 
-		//topMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
-		//bottomMotor.setSpeed(operator.getAxis(XboxController.Axes.LeftY) * 0.8);
+		if (operator.getButtonDown(XboxController.Buttons.Y)) {
 
-		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
+			speed += 0.05;
+
+		}
+
+		if (operator.getButtonDown(XboxController.Buttons.A)) {
+
+			speed -= 0.05;
+
+		}
+
+		topMotor.setSpeed(speed * 0.4);
+		bottomMotor.setSpeed(speed * 1.0);
+
+		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
 		// multipled by 0.15 so max speed is 0.15 so no break
-		//turret.rotate(operator.getAxis(XboxController.Axes.RightY) * 0.2);
+		turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
 
 	}
 

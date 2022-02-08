@@ -4,6 +4,7 @@ import java.util.Map;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 
 public class Dashboard {
@@ -37,7 +38,7 @@ public class Dashboard {
         }
 
     }
-
+/*
     public static class text{
 
         private NetworkTableEntry entry;
@@ -50,18 +51,18 @@ public class Dashboard {
 
         public String getValue(){
 
-            return entry.getString("no value found");
+            return entry.getString("No Value Found");
 
         }
 
         public void setValue(String value){
 
-            entry.setString(value);
+            entry.setValue(value);
 
         }
 
     }
-
+*/
     public static class toggleButton{
 
         private NetworkTableEntry entry;
@@ -84,4 +85,34 @@ public class Dashboard {
 
         }
     }
+
+    public static class boxChooser{
+
+    private SendableChooser<Integer> chooser;
+
+    public boxChooser(String label, String ... options){
+
+        chooser = new SendableChooser<>();
+
+        chooser.setDefaultOption(options[0], 0);
+
+        for(int i = 1; i < options.length; i++){
+
+            chooser.addOption(options[i], i);
+
+        }
+
+       // chooser.setDefaultOption(options[0], 0);
+
+        Shuffleboard.getTab("Data").add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+
+    }
+
+    public int getValue(){
+
+        return chooser.getSelected();
+
+    }
+}
+
 }
