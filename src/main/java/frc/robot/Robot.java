@@ -11,6 +11,7 @@ import interfaces.*;
 import networking.*;
 import utils.*;
 import wrappers.*;
+import wrappers.Dashboard.graph;
 
 public class Robot extends TimedRobot {
 
@@ -37,8 +38,12 @@ public class Robot extends TimedRobot {
 
 	ColorSensor colorSensor;
 
+	Dashboard.graph graph;
+
 	@Override
 	public void robotInit() {
+
+		graph = new Dashboard.graph("title");
 
 		topMotor = new Falcon(7);
 		bottomMotor = new Falcon(8);
@@ -147,6 +152,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+
+		graph.addData(-leftMotors.getSpeed(), rightMotors.getSpeed());
 
 		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 

@@ -88,31 +88,49 @@ public class Dashboard {
 
     public static class boxChooser{
 
-    private SendableChooser<Integer> chooser;
+        private SendableChooser<Integer> chooser;
 
-    public boxChooser(String label, String ... options){
+        public boxChooser(String label, String ... options){
 
-        chooser = new SendableChooser<>();
+            chooser = new SendableChooser<>();
 
-        chooser.setDefaultOption(options[0], 0);
+            chooser.setDefaultOption(options[0], 0);
 
-        for(int i = 1; i < options.length; i++){
+            for(int i = 1; i < options.length; i++){
 
-            chooser.addOption(options[i], i);
+                chooser.addOption(options[i], i);
+
+            }
+
+        // chooser.setDefaultOption(options[0], 0);
+
+            Shuffleboard.getTab("Data").add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         }
 
-       // chooser.setDefaultOption(options[0], 0);
+        public int getValue(){
 
-        Shuffleboard.getTab("Data").add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+            return chooser.getSelected();
 
+        }
     }
 
-    public int getValue(){
+    public static class graph{
 
-        return chooser.getSelected();
+        private NetworkTableEntry entry;
+
+        public graph(String title){
+
+            entry = Shuffleboard.getTab("Data").add(title, 0).withWidget(BuiltInWidgets.kGraph).getEntry();
+
+        }
+
+        public void addData(double ... data){
+
+            entry.setValue(data);
+
+        }
 
     }
-}
 
 }
