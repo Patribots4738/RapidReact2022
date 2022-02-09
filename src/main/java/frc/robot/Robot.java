@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
-import java.util.ArrayList;
-
 import autonomous.*;
 import autonomous.Command.CommandType;
 import hardware.*;
@@ -38,12 +36,16 @@ public class Robot extends TimedRobot {
 
 	ColorSensor colorSensor;
 
-	Dashboard.graph graph;
+	Limelight limelight;
+
+	Shooter shooter;
+
+	ShooterController shooterController;
+
+	Dashboard.graph graph; 
 
 	@Override
 	public void robotInit() {
-
-		graph = new Dashboard.graph("title");
 
 		topMotor = new Falcon(7);
 		bottomMotor = new Falcon(8);
@@ -75,12 +77,20 @@ public class Robot extends TimedRobot {
 
 		imu = new IMU();
 
+		limelight = new Limelight("limelight");
+
+		shooter = new Shooter(topMotor, bottomMotor);
+
+		shooterController = new ShooterController(shooter, limelight, drive, intake, trigger, turret);
+
 		// R seems like best value to determine color of first intaken ball
 		//colorSensor = new ColorSensor();
 
 			//for shuffleboard
 		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
 		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
+
+		graph = new Dashboard.graph("turret speed");
 
 	}
 
@@ -153,12 +163,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		graph.addData(-leftMotors.getSpeed(), rightMotors.getSpeed());
-
-		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
-
-		//for shuffleboard
-		//intakeTesting = intakeTestEntry.getBoolean(intakeTesting);
+		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
 		if (intakeTesting) {
 
@@ -195,10 +200,21 @@ public class Robot extends TimedRobot {
 		topMotor.setSpeed(speed * 0.4);
 		bottomMotor.setSpeed(speed * 1.0);
 
-		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
+		graph.addData(turret.getSpeed());
+
+		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
 		// multipled by 0.15 so max speed is 0.15 so no break
-		turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
+		//turret.setPosition(0.1, operator.getAxis(XboxController.Axes.RightX));
+		//turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
+		//turret.setPosition(0.1, 0.3);
+		//turret.setPosition(0.05, 0.005);
+
+		if (operator.getButton(XboxController.Buttons.B)) {
+
+			shooterController.aim();
+
+		}
 
 	}
 

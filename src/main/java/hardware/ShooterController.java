@@ -2,6 +2,7 @@ package hardware;
 
 import utils.PIDLoop;
 import wrappers.*;
+import wrappers.Dashboard.graph;
 
 public class ShooterController {
 
@@ -20,26 +21,27 @@ public class ShooterController {
 	// swap out current alignment math with PIDLoop class
 
 	// these may need some tuning as things change
-	private double maxSpeed = 0.12;  //0.15 worked
+	private double maxSpeed = 0.25;  //0.15 worked
 
-	private double acceptableAngleError = .9;
+	private double acceptableAngleError = 2.3;
 
-	private double minSpeed = 0.033;
+	private double minSpeed = 0.035;
 
-	private double converter = 1.0 / 15;
+	private double converter = 2.0;
 
     public static boolean aligned = false;
 
 	PIDLoop aimLoop;
 
-	double P = 0.95;
-	double I = 0.15;
-	double D = 0.075;
-	double FF = 1;
+	double P = 2.5;
+	double I = 0.0;
+	double D = 0.19;
+	double FF = 0.0;
 	int Izone = 25;
 
-	public ShooterController(Shooter shooter, Limelight limelight, Drive drive, Intake intake, Trigger trigger, Turret turret) {
+	//Dashboard.graph graph;
 
+	public ShooterController(Shooter shooter, Limelight limelight, Drive drive, Intake intake, Trigger trigger, Turret turret) {
 		this.shooter = shooter;
 
 		this.intake = intake;
@@ -51,6 +53,8 @@ public class ShooterController {
 		this.limelight = limelight;
 
 		this.drive = drive;
+
+		//graph = new Dashboard.graph("turret speed");
 		  //0.5,0.5,0 PID worked ok
 		//aimLoop = new PIDLoop(.95, .15, .075, 1, 25); GOOD PID
 		
@@ -155,28 +159,35 @@ public class ShooterController {
 	// this aligns the robot with the vision target found by the limelight
 	public void aim() {
 
-		double offset = correctLimelightDistanceError(limelight.getDistance());
+		double angle = limelight.getHorizontalAngle();
 
-		double angle = ((limelight.getHorizontalAngle()) - offset);
+		double desiredPosition = turret.getPosition() + angle / 248;
 
 		aligned = Math.abs(angle) <= acceptableAngleError;
 
-		double speed = -(aimLoop.getCommand(0, angle) * converter); 
+		double speed = -aimLoop.getCommand(desiredPosition, turret.getPosition()) * converter; 
 
-		if(Math.abs(speed) < minSpeed) {
+		if (Math.abs(speed) < minSpeed) {
 
 			speed = minSpeed * Math.signum(speed);
 
 		}
 
-		if(Math.abs(speed) > maxSpeed) {
+		if (Math.abs(speed) > maxSpeed) {
 
 			speed = maxSpeed * Math.signum(speed);
 
 		}
 
 		//turret.setPosition(speed, position);
-		turret.rotate(speed);
+		//turret.rotate(speed);
+		System.out.println("angle: " + String.format("%.2f", angle));
+		System.out.println("turret " + String.format("%.2f", turret.getPosition() + angle / 287));
+		System.out.println("positi " + String.format("%.2f", turret.getPosition()));
+		
+		//graph.addData(turret.getSpeed(), speed);
+
+		turret.setPosition(speed, desiredPosition);
 
 	}
 

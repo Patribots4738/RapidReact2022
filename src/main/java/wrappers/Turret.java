@@ -71,7 +71,19 @@ public class Turret {
     public void setPosition(double speed, double position) {
 
         position *= Constants.FULL_TURRET_ROTATION;
+
+        if (position >= maxRotation) {
+
+            position = maxRotation;
+
+        }
         
+        if (position <= -maxRotation) {
+
+            position = -maxRotation;
+
+        }
+
         motor.setPosition(position, -speed, speed);
 
     }
@@ -81,7 +93,16 @@ public class Turret {
      */
     public double getPosition() {
 
-        return motor.getPosition() / maxRotation;
+        return motor.getPosition() / Constants.FULL_TURRET_ROTATION;
+
+    }
+
+    /**
+     * @return speed of turret in turret rotations
+     */
+    public double getSpeed() {
+
+        return motor.getSpeed();
 
     }
 

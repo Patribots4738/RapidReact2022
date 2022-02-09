@@ -13,9 +13,9 @@ public class Dashboard {
 
         private NetworkTableEntry entry;
 
-        public slider(String label, double minimum, double maximum){
+        public slider(String label, double minimum, double maximum, double incrment){
 
-            entry = Shuffleboard.getTab("Data").add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", minimum, "max", maximum)).getEntry();
+            entry = Shuffleboard.getTab("Data").add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", minimum, "max", maximum, "Block increment", incrment)).getEntry();
         
         }
 
@@ -121,16 +121,52 @@ public class Dashboard {
 
         public graph(String title){
 
-            entry = Shuffleboard.getTab("Data").add(title, 0).withWidget(BuiltInWidgets.kGraph).getEntry();
+            double[] x = {};
+            entry = Shuffleboard.getTab("Data").add(title, x).withWidget(BuiltInWidgets.kGraph).getEntry();
 
         }
 
         public void addData(double ... data){
 
-            entry.setValue(data);
+            entry.setDoubleArray(data);
 
         }
 
+    }
+
+    public static class boolBox{
+        
+        private NetworkTableEntry entry;
+
+        public boolBox(String label){
+
+            entry = Shuffleboard.getTab("Data").add(label, false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+
+        }
+
+        public void setValue(Boolean value){
+
+            entry.setBoolean(value);
+
+        }
+
+    }
+
+    public static class textView{
+
+        private NetworkTableEntry entry;
+
+        public textView(String label){
+
+            entry = Shuffleboard.getTab("Data").add(label, "").withWidget(BuiltInWidgets.kTextView).getEntry();
+
+        }
+
+        public void setValue(String value){
+
+            entry.setString(value);
+
+        }
     }
 
 }
