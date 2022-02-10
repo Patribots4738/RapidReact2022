@@ -10,6 +10,7 @@ import networking.*;
 import utils.*;
 import wrappers.*;
 import wrappers.Dashboard.graph;
+import wrappers.Dashboard.slider;
 
 public class Robot extends TimedRobot {
 
@@ -43,6 +44,12 @@ public class Robot extends TimedRobot {
 	ShooterController shooterController;
 
 	Dashboard.graph graph; 
+
+	slider P;
+
+	slider I;
+
+	slider D;
 
 	@Override
 	public void robotInit() {
@@ -90,7 +97,18 @@ public class Robot extends TimedRobot {
 		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
 		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
 
+		P = new Dashboard.slider("P", 0, 10, 0.01); 
+		I = new Dashboard.slider("I", 0, 30, 0.01);
+		D = new Dashboard.slider("D", 0, 4, 0.01);
+		P.setValue(0.5);
+
 		graph = new Dashboard.graph("turret speed");
+
+		topSlider = new Dashboard.slider("top Speed", 0, 1, 0.01);
+		bottomSlider = new Dashboard.slider("bottom Speed", 0, 1, 0.01);
+
+		topGraph = new Dashboard.graph("Top Speed");
+		bottomGraph = new Dashboard.graph("Bottom Speed");
 
 	}
 
@@ -121,6 +139,14 @@ public class Robot extends TimedRobot {
 	public void disabledPeriodic() {}
 
 	double speed = 0.0;
+	double topSpeed;
+	double bottomSpeed;
+
+	Dashboard.slider topSlider;
+	Dashboard.slider bottomSlider;
+
+	Dashboard.graph topGraph;
+	Dashboard.graph bottomGraph;
 	
 	@Override
 	public void teleopInit() {
@@ -131,6 +157,8 @@ public class Robot extends TimedRobot {
 		operator.setupButtons();
 
 		speed = 0.0;
+		topSpeed = 0.0;
+		bottomSpeed = 0.0;
 
 	}
 
@@ -163,7 +191,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
+		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
 		if (intakeTesting) {
 
@@ -184,7 +212,7 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
-
+/*
 		if (operator.getButtonDown(XboxController.Buttons.Y)) {
 
 			speed += 0.05;
@@ -196,21 +224,28 @@ public class Robot extends TimedRobot {
 			speed -= 0.05;
 
 		}
+*/
 
-		topMotor.setSpeed(speed * 0.4);
-		bottomMotor.setSpeed(speed * 1.0);
+		topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
+		topMotor.setFF(1.5);
+
+		topSpeed = topSlider.getValue();
+		bottomSpeed = bottomSlider.getValue(); 
+
+		topGraph.addData(topSpeed, topMotor.getSpeed());
+		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed());
+
+		topMotor.setSpeed(topSpeed);
+		bottomMotor.setSpeed(bottomSpeed);
 
 		graph.addData(turret.getSpeed());
 
-		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
+		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
-		// multipled by 0.15 so max speed is 0.15 so no break
-		//turret.setPosition(0.1, operator.getAxis(XboxController.Axes.RightX));
-		//turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
-		//turret.setPosition(0.1, 0.3);
-		//turret.setPosition(0.05, 0.005);
+		// multipled by 0.2 so max speed is 0.2 so no break
+		turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
 
-		if (operator.getButton(XboxController.Buttons.B)) {
+		if (operator.getButton(XboxController.Buttons.A)) {
 
 			shooterController.aim();
 

@@ -3,6 +3,8 @@ package hardware;
 import utils.PIDLoop;
 import wrappers.*;
 import wrappers.Dashboard.graph;
+import wrappers.Dashboard.slider;
+import utils.*;
 
 public class ShooterController {
 
@@ -18,14 +20,11 @@ public class ShooterController {
 
 	Drive drive;
 
-	// swap out current alignment math with PIDLoop class
-
-	// these may need some tuning as things change
-	private double maxSpeed = 0.25;  //0.15 worked
+	private double maxSpeed = 0.5;
 
 	private double acceptableAngleError = 2.3;
 
-	private double minSpeed = 0.035;
+	private double minSpeed = 0.06;
 
 	private double converter = 2.0;
 
@@ -35,7 +34,7 @@ public class ShooterController {
 
 	double P = 2.5;
 	double I = 0.0;
-	double D = 0.19;
+	double D = 0.0;
 	double FF = 0.0;
 	int Izone = 25;
 
@@ -53,10 +52,6 @@ public class ShooterController {
 		this.limelight = limelight;
 
 		this.drive = drive;
-
-		//graph = new Dashboard.graph("turret speed");
-		  //0.5,0.5,0 PID worked ok
-		//aimLoop = new PIDLoop(.95, .15, .075, 1, 25); GOOD PID
 		
         aimLoop = new PIDLoop(P, I, D, FF, Izone);
         
@@ -156,16 +151,15 @@ public class ShooterController {
 
 	}
 
-	// this aligns the robot with the vision target found by the limelight
 	public void aim() {
+
+		double currentPos = turret.getPosition();
+		
+		double currentError = limelight.getHorizontalAngle() / 248;
 
 		double angle = limelight.getHorizontalAngle();
 
-		double desiredPosition = turret.getPosition() + angle / 248;
-
-		aligned = Math.abs(angle) <= acceptableAngleError;
-
-		double speed = -aimLoop.getCommand(desiredPosition, turret.getPosition()) * converter; 
+		double speed = aimLoop.getCommand(0.0, currentError) * 2.2;
 
 		if (Math.abs(speed) < minSpeed) {
 
@@ -179,16 +173,19 @@ public class ShooterController {
 
 		}
 
-		//turret.setPosition(speed, position);
-		//turret.rotate(speed);
-		System.out.println("angle: " + String.format("%.2f", angle));
-		System.out.println("turret " + String.format("%.2f", turret.getPosition() + angle / 287));
-		System.out.println("positi " + String.format("%.2f", turret.getPosition()));
-		
-		//graph.addData(turret.getSpeed(), speed);
+		aligned = Math.abs(angle) <= acceptableAngleError;
 
-		turret.setPosition(speed, desiredPosition);
+		if (!aligned) {
+
+			turret.setPosition(speed, (currentError + currentPos));
+
+		} else {
+
+			turret.setPosition(0.0, currentPos);
+
+		}
 
 	}
+
 
 }
