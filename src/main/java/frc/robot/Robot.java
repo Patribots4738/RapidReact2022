@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
+import java.security.spec.DSAGenParameterSpec;
+
 import autonomous.*;
 import autonomous.Command.CommandType;
 import hardware.*;
@@ -43,13 +45,17 @@ public class Robot extends TimedRobot {
 
 	ShooterController shooterController;
 
+	Dashboard generalDashboard;
+	Dashboard shooterDashboard;
+	
 	Dashboard.graph graph; 
 
-	slider P;
+	BangBang topBangBang;
+	BangBang bottomBangBang;
 
-	slider I;
-
-	slider D;
+	// slider P;
+	// slider I;
+	// slider D;
 
 	@Override
 	public void robotInit() {
@@ -57,8 +63,10 @@ public class Robot extends TimedRobot {
 		topMotor = new Falcon(7);
 		bottomMotor = new Falcon(8);
 
-		topMotor.setPID(0.5, 0, 0);
-		bottomMotor.setPID(0.5, 0, 0);
+		//topMotor.setPID(0.5, 0, 0);
+		//bottomMotor.setPID(0.5, 0, 0);
+		topMotor.setFF(1.0);
+		bottomMotor.setFF(1.0);
 
 		compressor = new Compressor();
 
@@ -97,18 +105,24 @@ public class Robot extends TimedRobot {
 		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
 		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
 
-		P = new Dashboard.slider("P", 0, 10, 0.01); 
+		/* P = new Dashboard.slider("P", 0, 10, 0.01); 
 		I = new Dashboard.slider("I", 0, 30, 0.01);
-		D = new Dashboard.slider("D", 0, 4, 0.01);
-		P.setValue(0.5);
+		D = new Dashboard.slider("D", 0, 4, 0.01); */
+		//P.setValue(0.5);
 
-		graph = new Dashboard.graph("turret speed");
+		shooterDashboard = new Dashboard("shooter");
 
-		topSlider = new Dashboard.slider("top Speed", 0, 1, 0.01);
-		bottomSlider = new Dashboard.slider("bottom Speed", 0, 1, 0.01);
+		graph = generalDashboard.new graph("turret speed", 10);
 
-		topGraph = new Dashboard.graph("Top Speed");
-		bottomGraph = new Dashboard.graph("Bottom Speed");
+
+		topSlider = shooterDashboard.new slider("top Speed", 0, 1, 0.01);
+		bottomSlider = shooterDashboard.new slider("bottom Speed", 0, 1, 0.01);
+
+		topGraph = shooterDashboard.new graph("Top Speed", 10);
+		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
+
+		topBangBang = new BangBang(topMotor, 0.01, 0.02);
+		bottomBangBang = new BangBang(bottomMotor, 0.01, 0.02);
 
 	}
 
@@ -138,7 +152,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {}
 
-	double speed = 0.0;
 	double topSpeed;
 	double bottomSpeed;
 
@@ -156,7 +169,9 @@ public class Robot extends TimedRobot {
 		driver.setupButtons();
 		operator.setupButtons();
 
-		speed = 0.0;
+		topBangBang.init();
+		bottomBangBang.init();
+
 		topSpeed = 0.0;
 		bottomSpeed = 0.0;
 
@@ -212,31 +227,19 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
-/*
-		if (operator.getButtonDown(XboxController.Buttons.Y)) {
 
-			speed += 0.05;
-
-		}
-
-		if (operator.getButtonDown(XboxController.Buttons.A)) {
-
-			speed -= 0.05;
-
-		}
-*/
-
-		topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
-		topMotor.setFF(1.5);
+		// topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
+		// topMotor.setFF(1.5);
 
 		topSpeed = topSlider.getValue();
 		bottomSpeed = bottomSlider.getValue(); 
 
-		topGraph.addData(topSpeed, topMotor.getSpeed());
-		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed());
+		topGraph.addData(topSpeed, topMotor.getSpeed(), topBangBang.getCommand(topSpeed));
+		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(),bottomBangBang.getCommand(bottomSpeed));
 
-		topMotor.setSpeed(topSpeed);
-		bottomMotor.setSpeed(bottomSpeed);
+		// bang bang control
+		topMotor.setSpeed(topBangBang.getCommand(topSpeed)); 
+		bottomMotor.setSpeed(bottomBangBang.getCommand(bottomSpeed)); 
 
 		graph.addData(turret.getSpeed());
 

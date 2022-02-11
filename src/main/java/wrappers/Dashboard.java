@@ -4,24 +4,33 @@ import java.util.Map;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 
 public class Dashboard {
 
-    public static class slider{
+    private ShuffleboardTab tab;
+
+    public Dashboard(String tabName) {
+
+        tab = Shuffleboard.getTab(tabName);
+
+    }
+
+    public class slider{
 
         private NetworkTableEntry entry;
 
         public slider(String label, double minimum, double maximum, double incrment){
 
-            entry = Shuffleboard.getTab("Data").add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", minimum, "max", maximum, "Block increment", incrment)).getEntry();
+            entry = tab.add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", minimum, "max", maximum, "Block increment", incrment)).getEntry();
         
         }
 
         public slider(String label){
 
-            entry = Shuffleboard.getTab("Data").add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
+            entry = tab.add(label, 0).withWidget(BuiltInWidgets.kNumberSlider).getEntry();
         
         }
 
@@ -45,7 +54,7 @@ public class Dashboard {
 
         public text(String label){
 
-            entry = Shuffleboard.getTab("Data").add(label, 0).withWidget(BuiltInWidgets.kTextView).getEntry();
+            entry = tab.add(label, 0).withWidget(BuiltInWidgets.kTextView).getEntry();
 
         }
 
@@ -63,13 +72,13 @@ public class Dashboard {
 
     }
 */
-    public static class toggleButton{
+    public class toggleButton{
 
         private NetworkTableEntry entry;
 
         public toggleButton(String label){
 
-            entry = Shuffleboard.getTab("Data").add(label, false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
+            entry = tab.add(label, false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
 
         }
 
@@ -86,7 +95,7 @@ public class Dashboard {
         }
     }
 
-    public static class boxChooser{
+    public class boxChooser{
 
         private SendableChooser<Integer> chooser;
 
@@ -104,7 +113,7 @@ public class Dashboard {
 
         // chooser.setDefaultOption(options[0], 0);
 
-            Shuffleboard.getTab("Data").add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+            tab.add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         }
 
@@ -115,14 +124,21 @@ public class Dashboard {
         }
     }
 
-    public static class graph{
+    public class graph{
 
         private NetworkTableEntry entry;
 
         public graph(String title){
 
             double[] x = {};
-            entry = Shuffleboard.getTab("Data").add(title, x).withWidget(BuiltInWidgets.kGraph).getEntry();
+            entry = tab.add(title, x).withWidget(BuiltInWidgets.kGraph).getEntry();
+
+        }
+
+        public graph(String title, double visibleTime){
+
+            double[] x = {};
+            entry = tab.add(title, x).withWidget(BuiltInWidgets.kGraph).withProperties(Map.of("Visible time", visibleTime)).getEntry();
 
         }
 
@@ -134,13 +150,13 @@ public class Dashboard {
 
     }
 
-    public static class boolBox{
+    public class boolBox{
         
         private NetworkTableEntry entry;
 
         public boolBox(String label){
 
-            entry = Shuffleboard.getTab("Data").add(label, false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
+            entry = tab.add(label, false).withWidget(BuiltInWidgets.kBooleanBox).getEntry();
 
         }
 
@@ -152,13 +168,13 @@ public class Dashboard {
 
     }
 
-    public static class textView{
+    public class textView{
 
         private NetworkTableEntry entry;
 
         public textView(String label){
 
-            entry = Shuffleboard.getTab("Data").add(label, "").withWidget(BuiltInWidgets.kTextView).getEntry();
+            entry = tab.add(label, "").withWidget(BuiltInWidgets.kTextView).getEntry();
 
         }
 

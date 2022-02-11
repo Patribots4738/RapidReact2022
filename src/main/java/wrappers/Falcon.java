@@ -31,6 +31,8 @@ public class Falcon implements PIDMotor {
 		motor.configPeakOutputReverse(-1, 20);
 		motor.setSensorPhase(false); // you might need to change this, but hopefully not
 
+		motor.enableVoltageCompensation(true);
+
 		PIDLoop = new PIDLoop(0, 0, 0);
 
 	}
