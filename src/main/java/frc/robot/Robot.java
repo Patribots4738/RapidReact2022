@@ -50,8 +50,8 @@ public class Robot extends TimedRobot {
 	
 	Dashboard.graph graph; 
 
-	BangBang topBangBang;
-	BangBang bottomBangBang;
+	DynamicBangBang topBangBang;
+	DynamicBangBang bottomBangBang;
 
 	// slider P;
 	// slider I;
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
 
 		shooterDashboard = new Dashboard("shooter");
 
-		graph = generalDashboard.new graph("turret speed", 10);
+		//graph = generalDashboard.new graph("turret speed", 10);
 
 
 		topSlider = shooterDashboard.new slider("top Speed", 0, 1, 0.01);
@@ -121,8 +121,8 @@ public class Robot extends TimedRobot {
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 
-		topBangBang = new BangBang(topMotor, 0.01, 0.02);
-		bottomBangBang = new BangBang(bottomMotor, 0.01, 0.02);
+		topBangBang = new DynamicBangBang(topMotor, 0.1, 0.03);
+		bottomBangBang = new DynamicBangBang(bottomMotor, 0.1, 0.03);
 
 	}
 
@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
+		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX));
 
 		if (intakeTesting) {
 
@@ -239,9 +239,9 @@ public class Robot extends TimedRobot {
 
 		// bang bang control
 		topMotor.setSpeed(topBangBang.getCommand(topSpeed)); 
-		bottomMotor.setSpeed(bottomBangBang.getCommand(bottomSpeed)); 
+		bottomMotor.setSpeed(bottomBangBang.getCommand(bottomSpeed));
 
-		graph.addData(turret.getSpeed());
+		//graph.addData(turret.getSpeed());
 
 		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
@@ -260,6 +260,10 @@ public class Robot extends TimedRobot {
 	public void testInit() {}
 	
 	@Override
-	public void testPeriodic() {}
+	public void testPeriodic() {
+
+
+
+	}
 
 }
