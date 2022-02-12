@@ -11,6 +11,8 @@ public class DynamicBangBang {
     private double newSpeed = 0.0;
 
     private PIDMotor motor;
+
+    private double desiredSpeed;
  
     public DynamicBangBang(PIDMotor motor, double maxIncrement, double acceptableError) {
 
@@ -24,6 +26,12 @@ public class DynamicBangBang {
 
         this.maxIncrement = maxIncrement;
         
+    }
+
+    private void setDesiredSpeed(double desiredSpeed){
+
+        this.desiredSpeed = desiredSpeed;
+
     }
 
     public void init() {
@@ -62,16 +70,19 @@ public class DynamicBangBang {
 
     private double equationM(double speed) {
 
+        setDesiredSpeed(speed);
         double m;   
-        m = ((equationH(speed) - equationF(motor.getSpeed() + 1)) * equationW(speed));
+        m = ((equationH() - equationF(motor.getSpeed() + 1)) * equationW());
         return m;
 
     }
 
     private double equationN(double speed) {
 
+        setDesiredSpeed(speed);
+
         double n;
-        n = ((equationH(speed) - equationF(2 * equationH(speed) - (motor.getSpeed() + 1))) * equationW(speed));
+        n = ((equationH() - equationF(2 * equationH() - (motor.getSpeed() + 1))) * equationW());
         return n;
         
     }
@@ -79,7 +90,7 @@ public class DynamicBangBang {
     private double equationF(double speed) {
 
         double f;
-        f = ((Math.pow(Math.E, equationG(speed))) / (Math.pow(Math.E, equationG(speed)) + 1)) * equationH(speed);
+        f = ((Math.pow(Math.E, equationG(speed))) / (Math.pow(Math.E, equationG(speed)) + 1)) * equationH();
         return f;
 
     }
@@ -95,20 +106,20 @@ public class DynamicBangBang {
     private double equationJ(double speed) {
 
         double j;
-        j = (motor.getSpeed() * (1/equationH(speed)));
+        j = (speed * (1/equationH()));
         return j;
 
     }
 
-    private double equationH(double speed) {
+    private double equationH() {
 
         double h;
-        h = speed + 1;
+        h = desiredSpeed + 1;
         return h;
 
     }
 
-    private double equationW(double speed) {
+    private double equationW() {
 
         double w;
         w = ((maxIncrement)/(2)) * 1.2;
