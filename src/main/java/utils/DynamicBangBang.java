@@ -44,26 +44,58 @@ public class DynamicBangBang {
     // desmos graph of functions: https://www.desmos.com/calculator/8rb1xl9mbz
     public double getCommand(double speed) {
 
+        double speedSign = Math.signum(speed);
         speed = Math.abs(speed);        
         double dynamicIncrement = 0.0;
 
         if (Math.abs(motor.getSpeed()) < speed - acceptableError) {
 // use m(x)
             System.out.println("BELOW");
-            dynamicIncrement = equationM(Math.abs(speed));
-            newSpeed += dynamicIncrement;
+            //dynamicIncrement = equationM(Math.abs(speed));
+            if (speedSign < 0.0) {
+
+                dynamicIncrement = -equationN(Math.abs(speed));
+                //dynamicIncrement *= -1;
+                newSpeed +=  dynamicIncrement;
+    
+            } else {
+
+                dynamicIncrement = equationM(Math.abs(speed));
+                newSpeed +=  dynamicIncrement;
+
+            }
+            //newSpeed += dynamicIncrement;
 
         } else if (Math.abs(motor.getSpeed()) > speed + acceptableError) {
 // use n(x)
             System.out.println("ABOVE");
-            dynamicIncrement = equationN(Math.abs(speed));   
-            newSpeed -=  dynamicIncrement;
+            //dynamicIncrement = equationN(Math.abs(speed));   
+            if (speedSign < 0.0) {
+
+                dynamicIncrement = -equationM(Math.abs(speed));
+                //dynamicIncrement *= -1;
+                newSpeed -=  dynamicIncrement;
+    
+            } else {
+
+                dynamicIncrement = equationN(Math.abs(speed));
+                newSpeed -=  dynamicIncrement;
+
+            }
 
             if (speed == 0) {
                 System.out.println("ZEROING");
                 dynamicIncrement = Math.signum(motor.getSpeed()) * equationN(Math.abs(0.01));
-                newSpeed -=  dynamicIncrement;
+                if (speedSign < 0.0) {
 
+                    dynamicIncrement *= -1;
+                    newSpeed -= dynamicIncrement;
+        
+                } else {
+    
+                    newSpeed -=  dynamicIncrement;
+    
+                }
             }
 
         } else if (speed == 0.0) {
@@ -71,10 +103,7 @@ public class DynamicBangBang {
             System.out.println("ZERO");
             newSpeed = 0.0;
 
-        } if (Math.signum(speed) < 0.0) {
-            newSpeed *= -1;
-
-        }
+        } 
 
         // System.out.println(String.format("Just Speed: %.2f", speed));
         System.out.println(String.format("New Speed: %.2f; increment: %.2f; Desired Speed: %.2f", newSpeed, dynamicIncrement, speed));

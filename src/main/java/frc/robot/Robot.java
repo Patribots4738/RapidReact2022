@@ -109,8 +109,8 @@ public class Robot extends TimedRobot {
 		//graph = generalDashboard.new graph("turret speed", 10);
 
 
-		topSlider = shooterDashboard.new slider("top Speed", -1, 0, 0.01);
-		bottomSlider = shooterDashboard.new slider("bottom Speed", 0, 1, 0.01);
+		topSlider = shooterDashboard.new slider("top Speed", -1, 1, 0.01);
+		bottomSlider = shooterDashboard.new slider("bottom Speed", -1, 1, 0.01);
 
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
@@ -228,19 +228,19 @@ public class Robot extends TimedRobot {
 		//turret.scan();
 
 		topSpeed = topSlider.getValue();
-		//bottomSpeed = bottomSlider.getValue(); 
+		bottomSpeed = bottomSlider.getValue(); 
 
 		//System.out.println(String.format("Desired top speed: %.2f; Desired bottom speed: %.2f", topSpeed, bottomSpeed));
 
 		double topBangSpeed = topBangBang.getCommand(topSpeed);
-		//double bottomBangSpeed = bottomBangBang.getCommand(bottomSpeed);
+		double bottomBangSpeed = bottomBangBang.getCommand(bottomSpeed);
 
 		topGraph.addData(topSpeed, topMotor.getSpeed(), topBangSpeed);
-		//bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(), bottomBangSpeed);
+		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(), bottomBangSpeed);
 
 		// bang bang control
 		topMotor.setSpeed(topBangSpeed); 
-		//bottomMotor.setSpeed(bottomBangSpeed);
+		bottomMotor.setSpeed(bottomBangSpeed);
 
 		//graph.addData(turret.getSpeed());
 
