@@ -1,5 +1,6 @@
 package utils;
 
+import edu.wpi.first.networktables.NetworkTablesJNI;
 import interfaces.PIDMotor;
 
 public class DynamicBangBang {
@@ -48,13 +49,20 @@ public class DynamicBangBang {
 
         if (motor.getSpeed() < speed - acceptableError) {
 // use m(x)
+            // System.out.println("BELOW");
             dynamicIncrement = speedSign * equationM(Math.abs(speed));
             newSpeed += dynamicIncrement;
 
         } else if (motor.getSpeed() > speed + acceptableError) {
 // use n(x)
+            // System.out.println("ABOVE");
             dynamicIncrement = speedSign * equationN(Math.abs(speed));   
             newSpeed -=  dynamicIncrement;
+
+        } else if (speed == 0.0) {
+
+            // System.out.println("ZERO");
+            newSpeed = 0.0;
 
         }
 
@@ -63,7 +71,7 @@ public class DynamicBangBang {
             newSpeed = Math.signum(newSpeed);
 
         }
-
+        // System.out.println("increment: " + String.format("%.2f", dynamicIncrement)); 
         return newSpeed;
 
     }
@@ -71,59 +79,44 @@ public class DynamicBangBang {
     private double equationM(double speed) {
 
         setDesiredSpeed(speed);
-        double m;   
-        m = ((equationH() - equationF(motor.getSpeed() + 1)) * equationW());
-        return m;
+        return ((equationH() - equationF(motor.getSpeed() + 1)) * equationW());
 
     }
 
     private double equationN(double speed) {
 
         setDesiredSpeed(speed);
-
-        double n;
-        n = ((equationH() - equationF(2 * equationH() - (motor.getSpeed() + 1))) * equationW());
-        return n;
+        return ((equationH() - equationF(2 * equationH() - (motor.getSpeed() + 1))) * equationW());
         
     }
 
     private double equationF(double speed) {
 
-        double f;
-        f = ((Math.pow(Math.E, equationG(speed))) / (Math.pow(Math.E, equationG(speed)) + 1)) * equationH();
-        return f;
+        return ((Math.pow(Math.E, equationG(speed))) / (Math.pow(Math.E, equationG(speed)) + 1)) * equationH();
 
     }
 
     private double equationG(double speed) {
     
-        double g;
-        g = (equationJ(speed) * 7 - (5));
-        return g;
+        return (equationJ(speed) * 7 - (5));
 
     }
 
     private double equationJ(double speed) {
-
-        double j;
-        j = (speed * (1/equationH()));
-        return j;
+        
+        return (speed * (1/equationH()));
 
     }
 
     private double equationH() {
 
-        double h;
-        h = desiredSpeed + 1;
-        return h;
+        return desiredSpeed + 1;
 
     }
 
     private double equationW() {
 
-        double w;
-        w = ((maxIncrement)/(2)) * 1.2;
-        return w; 
+        return ((maxIncrement)/(2)) * 1.2;
 
     }
 

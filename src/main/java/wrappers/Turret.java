@@ -6,32 +6,42 @@ import utils.*;
 public class Turret {
 
     PIDMotor motor;
-    double maxRotation; 
-    double resetEncoderSpeed;
+
+    private double maxRotation; 
+
     double acceptableError = 0.05;
     boolean iszeroing = false;
+
+    double offset = 0.01;
+    boolean isGoingRight = true;
 
     /**
      * @param motor turret motor
      * @param maxRotation amount of rotations of the turret centered on zeroed position
      * @param resetEncoderSpeed speed at which it zeros to
      */
-    public Turret(PIDMotor motor, double maxRotation, double resetEncoderSpeed) {
+    public Turret(PIDMotor motor, double maxRotation) {
 
         this.motor = motor;
         this.maxRotation = maxRotation * Constants.FULL_TURRET_ROTATION / 2;
-        this.resetEncoderSpeed = resetEncoderSpeed;
         setZero();
 
 
     }
+
+    public double getMaxRotation() {
+        
+        return maxRotation;
+
+    }
+
 
     /**
      * @param speed speed at which it rotates at
      */
     public void rotate(double speed) {
         
-        if (getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
+        if (this.getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (speed > 0.0) {
 
@@ -43,7 +53,7 @@ public class Turret {
 
             }
             
-        } else if (getPosition() <= -maxRotation / Constants.FULL_TURRET_ROTATION) {
+        } else if (this.getPosition() <= -maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (speed < 0.0) {
 
@@ -130,5 +140,43 @@ public class Turret {
         motor.resetEncoder();
 
     }
+
+    public void setIsGoingRight(boolean isGoingRight) {
+
+        this.isGoingRight = isGoingRight;
+
+    }
+
+    public boolean getIsGoingRight() {
+
+        return isGoingRight;    
+
+    }
+
+    public void scan(double speed) {
+
+        if (this.getPosition() > ((maxRotation / Constants.FULL_TURRET_ROTATION) - offset)) {
+
+            setIsGoingRight(false);
+
+        }
+
+        else if (this.getPosition() < -((maxRotation / Constants.FULL_TURRET_ROTATION) - offset)){
+
+            setIsGoingRight(true);
+
+        }
+
+        if(isGoingRight) {
+
+            this.rotate(speed);
+
+        } else {
+
+            this.rotate(-speed);
+
+        }
+
+	}
 
 }

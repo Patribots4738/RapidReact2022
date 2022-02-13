@@ -20,7 +20,7 @@ public class ShooterController {
 
 	Drive drive;
 
-	private double maxSpeed = 0.5;
+	private double maxSpeed = 0.25;
 
 	private double acceptableAngleError = 2.3;
 
@@ -30,9 +30,15 @@ public class ShooterController {
 
     public static boolean aligned = false;
 
+	private boolean isGoingRight = true;
+
+	private double offset = 0.03;
+
+	private PositionalLinearBangBang bang;
+
 	PIDLoop aimLoop;
 
-	double P = 2.5;
+	double P = 1.5;//2.0;
 	double I = 0.0;
 	double D = 0.0;
 	double FF = 0.0;
@@ -41,6 +47,7 @@ public class ShooterController {
 	//Dashboard.graph graph;
 
 	public ShooterController(Shooter shooter, Limelight limelight, Drive drive, Intake intake, Trigger trigger, Turret turret) {
+		
 		this.shooter = shooter;
 
 		this.intake = intake;
@@ -54,6 +61,8 @@ public class ShooterController {
 		this.drive = drive;
 		
         aimLoop = new PIDLoop(P, I, D, FF, Izone);
+
+		bang = new PositionalLinearBangBang(turret, 0.002, 0.01);
         
 	}
 
@@ -177,13 +186,26 @@ public class ShooterController {
 
 		if (!aligned) {
 
-			turret.setPosition(speed, (currentError + currentPos));
+			//turret.setPosition(speed, (currentError + currentPos));
+			System.out.println("speed: " + speed);
+			turret.setPosition(speed, bang.getCommand(currentPos + currentError));
 
 		} else {
 
 			turret.setPosition(0.0, currentPos);
 
 		}
+
+		System.out.println(limelight.targetFound());
+
+		if (!limelight.targetFound()) {
+
+			turret.scan(0.2);
+			turret.setIsGoingRight(Math.signum(limelight.getHorizontalAngle()) == 1.0);
+			
+		}
+
+		
 
 	}
 

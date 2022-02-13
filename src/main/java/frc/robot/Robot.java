@@ -45,17 +45,11 @@ public class Robot extends TimedRobot {
 
 	ShooterController shooterController;
 
-	Dashboard generalDashboard;
 	Dashboard shooterDashboard;
-	
-	Dashboard.graph graph; 
 
 	DynamicBangBang topBangBang;
 	DynamicBangBang bottomBangBang;
 
-	// slider P;
-	// slider I;
-	// slider D;
 
 	@Override
 	public void robotInit() {
@@ -84,7 +78,7 @@ public class Robot extends TimedRobot {
 
 		SparkMax turretMotor = new SparkMax(5, true);
 		turretMotor.setPID(0.5, 0, 0);
-		turret = new Turret(turretMotor, 0.75, 0.25);
+		turret = new Turret(turretMotor, 0.75);
 
 		SparkMax triggerMotor = new SparkMax(6, true);
 		triggerMotor.setPID(0.5, 0, 0);
@@ -92,7 +86,7 @@ public class Robot extends TimedRobot {
 
 		imu = new IMU();
 
-		limelight = new Limelight("limelight");
+		limelight = new Limelight("limelight-shooter");
 
 		shooter = new Shooter(topMotor, bottomMotor);
 
@@ -121,8 +115,8 @@ public class Robot extends TimedRobot {
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 
-		topBangBang = new DynamicBangBang(topMotor, 0.1, 0.03);
-		bottomBangBang = new DynamicBangBang(bottomMotor, 0.1, 0.03);
+		topBangBang = new DynamicBangBang(topMotor, 0.01, 0.03);
+		bottomBangBang = new DynamicBangBang(bottomMotor, 0.01, 0.03);
 
 	}
 
@@ -231,22 +225,26 @@ public class Robot extends TimedRobot {
 		// topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
 		// topMotor.setFF(1.5);
 
+		//turret.scan();
+
 		topSpeed = topSlider.getValue();
 		bottomSpeed = bottomSlider.getValue(); 
 
 		topGraph.addData(topSpeed, topMotor.getSpeed(), topBangBang.getCommand(topSpeed));
-		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(),bottomBangBang.getCommand(bottomSpeed));
+		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(), bottomBangBang.getCommand(bottomSpeed));
 
 		// bang bang control
-		topMotor.setSpeed(topBangBang.getCommand(topSpeed)); 
+		//topMotor.setSpeed(topBangBang.getCommand(topSpeed)); 
 		bottomMotor.setSpeed(bottomBangBang.getCommand(bottomSpeed));
 
 		//graph.addData(turret.getSpeed());
 
-		System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
+		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
 
 		// multipled by 0.2 so max speed is 0.2 so no break
-		turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
+		//turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
+
+		//turret.scan();
 
 		if (operator.getButton(XboxController.Buttons.A)) {
 
