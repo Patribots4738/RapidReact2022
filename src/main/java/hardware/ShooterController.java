@@ -34,7 +34,9 @@ public class ShooterController {
 
 	private double offset = 0.03;
 
-	private PositionalLinearBangBang bang;
+	private PositionalLinearBangBang linearBang;
+	
+	private DynamicBangBang dynamicBang;
 
 	PIDLoop aimLoop;
 
@@ -62,7 +64,7 @@ public class ShooterController {
 		
         aimLoop = new PIDLoop(P, I, D, FF, Izone);
 
-		bang = new PositionalLinearBangBang(turret, 0.002, 0.01);
+		linearBang = new PositionalLinearBangBang(turret, 0.002, 0.01);
         
 	}
 
@@ -188,8 +190,8 @@ public class ShooterController {
 
 			//turret.setPosition(speed, (currentError + currentPos));
 			System.out.println("speed: " + speed);
-			turret.setPosition(speed, bang.getCommand(currentPos + currentError));
-
+			turret.setPosition(speed, linearBang.getCommand(currentPos + currentError));
+			
 		} else {
 
 			turret.setPosition(0.0, currentPos);
@@ -201,13 +203,13 @@ public class ShooterController {
 		if (!limelight.targetFound()) {
 
 			turret.scan(0.2);
-			turret.setIsGoingRight(Math.signum(limelight.getHorizontalAngle()) == 1.0);
 			
+		} else {
+
+			turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
+
 		}
 
-		
-
 	}
-
 
 }
