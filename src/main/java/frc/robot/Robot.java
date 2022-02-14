@@ -115,8 +115,8 @@ public class Robot extends TimedRobot {
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 
-		topBangBang = new DynamicBangBang(topMotor, 0.01, 0.03);
-		bottomBangBang = new DynamicBangBang(bottomMotor, 0.01, 0.03);
+		topBangBang = new DynamicBangBang(topMotor, 0.01, 0.01);
+		bottomBangBang = new DynamicBangBang(bottomMotor, 0.01, 0.01);
 
 	}
 

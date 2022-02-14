@@ -14,7 +14,7 @@ public class DynamicBangBang {
     private PIDMotor motor;
 
     private double desiredSpeed;
- 
+
     public DynamicBangBang(PIDMotor motor, double maxIncrement, double acceptableError) {
 
         this.motor = motor;
@@ -26,7 +26,7 @@ public class DynamicBangBang {
     public void setMaxIncrement(double maxIncrement) {
 
         this.maxIncrement = maxIncrement;
-        
+
     }
 
     private void setDesiredSpeed(double desiredSpeed){
@@ -40,64 +40,47 @@ public class DynamicBangBang {
         newSpeed = 0.0;
 
     }
-    
+
     // desmos graph of functions: https://www.desmos.com/calculator/8rb1xl9mbz
     public double getCommand(double speed) {
-
-        double speedSign = Math.signum(speed);
+        
+        double speedSign = Math.signum(speed + motor.getSpeed());
         speed = Math.abs(speed);        
         double dynamicIncrement = 0.0;
 
         if (Math.abs(motor.getSpeed()) < speed - acceptableError) {
-// use m(x)
+            // use m(x)
             System.out.println("BELOW");
             //dynamicIncrement = equationM(Math.abs(speed));
             if (speedSign < 0.0) {
 
-                dynamicIncrement = -equationN(Math.abs(speed));
-                //dynamicIncrement *= -1;
-                newSpeed +=  dynamicIncrement;
-    
+                dynamicIncrement = equationM(speed);
+                newSpeed +=  -dynamicIncrement;
+                
             } else {
 
-                dynamicIncrement = equationM(Math.abs(speed));
+                dynamicIncrement = equationM(speed);
                 newSpeed +=  dynamicIncrement;
 
             }
             //newSpeed += dynamicIncrement;
 
         } else if (Math.abs(motor.getSpeed()) > speed + acceptableError) {
-// use n(x)
+            // use n(x)
             System.out.println("ABOVE");
             //dynamicIncrement = equationN(Math.abs(speed));   
             if (speedSign < 0.0) {
 
-                dynamicIncrement = -equationM(Math.abs(speed));
-                //dynamicIncrement *= -1;
-                newSpeed -=  dynamicIncrement;
-    
+                dynamicIncrement = equationN(speed);
+                newSpeed -=  -dynamicIncrement;
+                
             } else {
 
-                dynamicIncrement = equationN(Math.abs(speed));
+                dynamicIncrement = equationN(speed);
                 newSpeed -=  dynamicIncrement;
-
+            
             }
-
-            if (speed == 0) {
-                System.out.println("ZEROING");
-                dynamicIncrement = Math.signum(motor.getSpeed()) * equationN(Math.abs(0.01));
-                if (speedSign < 0.0) {
-
-                    dynamicIncrement *= -1;
-                    newSpeed -= dynamicIncrement;
-        
-                } else {
-    
-                    newSpeed -=  dynamicIncrement;
-    
-                }
-            }
-
+            
         } else if (speed == 0.0) {
 
             System.out.println("ZERO");
@@ -106,7 +89,7 @@ public class DynamicBangBang {
         } 
 
         // System.out.println(String.format("Just Speed: %.2f", speed));
-        System.out.println(String.format("New Speed: %.2f; increment: %.2f; Desired Speed: %.2f", newSpeed, dynamicIncrement, speed));
+        System.out.println(String.format("New Speed: %.2f; increment: %.4f; Desired Speed: %.2f; Actual Speed: %.2f; M: %.4f; N: %.4f", newSpeed, dynamicIncrement, speed * speedSign, motor.getSpeed(), equationM(speed), equationN(speed)));
 
         if (Math.abs(newSpeed) >= 1.0) {
 
@@ -121,17 +104,17 @@ public class DynamicBangBang {
     private double equationM(double speed) {
 
         setDesiredSpeed(speed);
-        return ((equationH() - equationF(motor.getSpeed() + 1)) * equationW());
+        return ((equationH() - equationF(Math.abs(motor.getSpeed()) + 1)) * equationW());
 
     }
 
     private double equationN(double speed) {
 
         setDesiredSpeed(speed);
-        return ((equationH() - equationF(2 * equationH() - (motor.getSpeed() + 1))) * equationW());
-        
-    }
+        return ((equationH() - equationF(2 * equationH() - (Math.abs(motor.getSpeed()) + 1))) * equationW());
 
+    }
+    
     private double equationF(double speed) {
 
         return ((Math.pow(Math.E, equationG(speed))) / (Math.pow(Math.E, equationG(speed)) + 1)) * equationH();
@@ -139,13 +122,13 @@ public class DynamicBangBang {
     }
 
     private double equationG(double speed) {
-    
+
         return (equationJ(speed) * 7 - (5));
 
     }
 
     private double equationJ(double speed) {
-        
+
         return (speed * (1/equationH()));
 
     }
@@ -163,4 +146,3 @@ public class DynamicBangBang {
     }
 
 } 
-
