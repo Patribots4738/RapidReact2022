@@ -14,8 +14,8 @@ public class Shooter {
 	// in decimal percent
 	private double acceptableSpeedError = 0.0075;
 
-	DynamicBangBang topBangBang = new DynamicBangBang(topWheel, 0.01, 0.0075);
-	DynamicBangBang bottomBangBang = new DynamicBangBang(bottomWheel, 0.01, 0.0075);
+	DynamicBangBang topBangBang;
+	DynamicBangBang bottomBangBang;
 
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
@@ -31,8 +31,8 @@ public class Shooter {
 		this.topWheel = topWheel;
 		this.bottomWheel = bottomWheel;
 
-		topBangBang.init();
-		bottomBangBang.init();
+		topBangBang = new DynamicBangBang(topWheel, 0.01, 0.0075);
+		bottomBangBang = new DynamicBangBang(bottomWheel, 0.01, 0.0075);
 
 	}
 
@@ -72,12 +72,11 @@ public class Shooter {
 	public void setShooterSpeeds(double distance) {
 
 		double[] speeds = distanceToSpeeds(distance);
-System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
-		//topWheel.setSpeed(topBangBang.getCommand(speeds[0]));
-		//bottomWheel.setSpeed(bottomBangBang.getCommand(-speeds[1]));
 
-		topWheel.setSpeed(speeds[0]);
-		bottomWheel.setSpeed(speeds[1]);
+		System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
+
+		topWheel.setSpeed(topBangBang.getCommand(speeds[0]));
+		bottomWheel.setSpeed(bottomBangBang.getCommand(-speeds[1]));
 
 		eval(distance);
 		

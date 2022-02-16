@@ -11,7 +11,7 @@ public final class Constants {
 	public static final double LIMELIGHT_HEIGHT = 30.25;
 
 	// in radians
-	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(28.2);//180-118.2);
+	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(28.2);
 
 	// distance from the edge of the bumber to the limelight's camera lens
 	public static final double LIMELIGHT_CAMERA_INSET = -12;
