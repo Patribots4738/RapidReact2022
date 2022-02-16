@@ -44,13 +44,14 @@ public class DynamicBangBang {
     // desmos graph of functions: https://www.desmos.com/calculator/8rb1xl9mbz
     public double getCommand(double speed) {
         
+        System.out.println(speed + motor.getSpeed());
         double speedSign = Math.signum(speed + motor.getSpeed());
         speed = Math.abs(speed);        
         double dynamicIncrement = 0.0;
 
         if (Math.abs(motor.getSpeed()) < speed - acceptableError) {
             // use m(x)
-            System.out.println("BELOW");
+            //System.out.println("BELOW");
             //dynamicIncrement = equationM(Math.abs(speed));
             if (speedSign < 0.0) {
 
@@ -67,7 +68,7 @@ public class DynamicBangBang {
 
         } else if (Math.abs(motor.getSpeed()) > speed + acceptableError) {
             // use n(x)
-            System.out.println("ABOVE");
+            //System.out.println("ABOVE");
             //dynamicIncrement = equationN(Math.abs(speed));   
             if (speedSign < 0.0) {
 
@@ -83,13 +84,13 @@ public class DynamicBangBang {
             
         } else if (speed == 0.0) {
 
-            System.out.println("ZERO");
+            //System.out.println("ZERO");
             newSpeed = 0.0;
 
         } 
 
         // System.out.println(String.format("Just Speed: %.2f", speed));
-        System.out.println(String.format("New Speed: %.2f; increment: %.4f; Desired Speed: %.2f; Actual Speed: %.2f; M: %.4f; N: %.4f", newSpeed, dynamicIncrement, speed * speedSign, motor.getSpeed(), equationM(speed), equationN(speed)));
+        //System.out.println(String.format("New Speed: %.2f; increment: %.4f; Desired Speed: %.2f; Actual Speed: %.2f; M: %.4f; N: %.4f", newSpeed, dynamicIncrement, speed * speedSign, motor.getSpeed(), equationM(speed), equationN(speed)));
 
         if (Math.abs(newSpeed) >= 1.0) {
 

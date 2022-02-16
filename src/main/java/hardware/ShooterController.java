@@ -82,28 +82,29 @@ public class ShooterController {
 	// checks if the robot is aligned and if the shooter is spun up, then updates internal variables accordingly
 	public void eval() {
 
-		double offset = correctLimelightDistanceError(limelight.getDistance());
+		double offset = limelight.getDistance();//correctLimelightDistanceError(limelight.getDistance());
 
 		double angle = limelight.getHorizontalAngle() - offset;
 
 		aligned = Math.abs(angle) <= acceptableAngleError; 
 	 
-		shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
+		shooter.eval(limelight.getDistance());//correctLimelightDistanceError(limelight.getDistance()));
 
 	}
 
 	// this spins up the shooter and sets the conveyor and feeders based on wether the shooter is up to speed
 	public void fire() {
 
-		shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+		///shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+		shooter.setShooterSpeeds(limelight.getDistance());
 
 		eval();
 
 		if (Shooter.readyToFire) {
 
 			// random variables, need to be tested
-			trigger.setSpeed(0.25);
-			intake.setIntakeSpeed(0.25);
+			trigger.setSpeed(0.35);
+			intake.setIntakeSpeed(1.0);
 
 		}
 
@@ -189,7 +190,7 @@ public class ShooterController {
 		if (!aligned) {
 
 			//turret.setPosition(speed, (currentError + currentPos));
-			System.out.println("speed: " + speed);
+			//System.out.println("speed: " + speed);
 			turret.setPosition(speed, linearBang.getCommand(currentPos + currentError));
 			
 		} else {
@@ -198,11 +199,11 @@ public class ShooterController {
 
 		}
 
-		System.out.println(limelight.targetFound());
+		//System.out.println(limelight.targetFound());
 
 		if (!limelight.targetFound()) {
 
-			turret.scan(0.2);
+			//turret.scan(0.2);
 			
 		} else {
 

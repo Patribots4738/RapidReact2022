@@ -5,16 +5,16 @@ import networking.*;
 public final class Constants {
 
 	// in inches
-	public static final double TARGET_HEIGHT = 91.25; //85 is a temporary value from joeseph's house, 92 is the one for actual competition //92;
+	public static final double TARGET_HEIGHT = 104;
 
 	// in inches
-	public static final double LIMELIGHT_HEIGHT = 41.125;
+	public static final double LIMELIGHT_HEIGHT = 30.25;
 
 	// in radians
-	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(19.1237670267);
+	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(28.2);//180-118.2);
 
 	// distance from the edge of the bumber to the limelight's camera lens
-	public static final double LIMELIGHT_CAMERA_INSET = 8.625;
+	public static final double LIMELIGHT_CAMERA_INSET = -12;
 
 	// amount of mini neo rotations to one full turret rotation
 	public static final double FULL_TURRET_ROTATION = 70.0;

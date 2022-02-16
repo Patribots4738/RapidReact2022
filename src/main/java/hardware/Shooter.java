@@ -12,21 +12,27 @@ public class Shooter {
 	public static boolean readyToFire = false;
 
 	// in decimal percent
-	private double acceptableSpeedError = 0.05;
+	private double acceptableSpeedError = 0.0075;
+
+	DynamicBangBang topBangBang = new DynamicBangBang(topWheel, 0.01, 0.0075);
+	DynamicBangBang bottomBangBang = new DynamicBangBang(bottomWheel, 0.01, 0.0075);
 
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
 	// order is topSpeed, bottomSpeed
-	private double[][] shooterSpeeds = { {0.5, 0.4}, {0.475, 0.45}, {0.45, 0.45}, {0.575, 0.375}, {0.65, 0.325}, //5-9ft
-										 {0.5, 0.4}, {0.475, 0.45}, {0.45, 0.45}, {0.575, 0.375}, {0.65, 0.325}, //10-14ft
-										 {0.7, 0.3}, {0.75, 0.225}, {0.775, 0.2}, {0.75, 0.2}, {0.75, 0.225}, //15-19ft
-										 {0.75, 0.275}, {0.75, 0.3}, {0.775, 0.3}, {0.76, 0.3}, {0.79, 0.3}, // 20-24ft
-										 {0.79, 0.3} }; // 25ft
+	private double[][] shooterSpeeds = { {0.01, 0.56}, {0.01, 0.56}, {0.05, 0.57}, {0.08, 0.57}, {0.09, 0.58}, //5-9ft
+										 {0.1, 0.59}, {0.11, 0.6}, {0.13, 0.62}, {0.14, 0.62}, {0.14, 0.63}, //10-14ft
+										 {0.14, 0.64}, {0.5, 0.65}, {0.6, 0.69}, {0.17, 0.7}, {0.17, 0.71}, //15-19ft
+										 {0.18, 0.72}, {0.17, 0.76}, {0.2, 0.79}, {0.2, 0.79}, {0.2, 0.79}, // 20-24ft
+										 {0.2, 0.79} }; // 25ft
 
 	public Shooter(PIDMotor topWheel, PIDMotor bottomWheel) {
 
 		this.topWheel = topWheel;
 		this.bottomWheel = bottomWheel;
+
+		topBangBang.init();
+		bottomBangBang.init();
 
 	}
 
@@ -66,9 +72,12 @@ public class Shooter {
 	public void setShooterSpeeds(double distance) {
 
 		double[] speeds = distanceToSpeeds(distance);
+System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
+		//topWheel.setSpeed(topBangBang.getCommand(speeds[0]));
+		//bottomWheel.setSpeed(bottomBangBang.getCommand(-speeds[1]));
 
 		topWheel.setSpeed(speeds[0]);
-		bottomWheel.setSpeed(-speeds[1]);
+		bottomWheel.setSpeed(speeds[1]);
 
 		eval(distance);
 		

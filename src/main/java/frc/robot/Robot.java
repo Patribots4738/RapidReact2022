@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
 		imu = new IMU();
 
-		limelight = new Limelight("limelight-shooter");
+		limelight = new Limelight("limelight");
 
 		shooter = new Shooter(topMotor, bottomMotor);
 
@@ -115,8 +115,8 @@ public class Robot extends TimedRobot {
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 
-		topBangBang = new DynamicBangBang(topMotor, 0.01, 0.01);
-		bottomBangBang = new DynamicBangBang(bottomMotor, 0.01, 0.01);
+		topBangBang = new DynamicBangBang(topMotor, 0.01, 0.0075);
+		bottomBangBang = new DynamicBangBang(bottomMotor, 0.01, 0.0075);
 
 	}
 
@@ -239,8 +239,8 @@ public class Robot extends TimedRobot {
 		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(), bottomBangSpeed);
 
 		// bang bang control
-		topMotor.setSpeed(topBangSpeed); 
-		bottomMotor.setSpeed(bottomBangSpeed);
+		//topMotor.setSpeed(topBangSpeed); 
+		//bottomMotor.setSpeed(bottomBangSpeed);
 
 		//graph.addData(turret.getSpeed());
 
@@ -250,12 +250,20 @@ public class Robot extends TimedRobot {
 		//turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
 
 		//turret.scan();
-/*
-		if (operator.getButton(XboxController.Buttons.A)) 
+
+		System.out.println("distance: " + limelight.getDistance());
+
+		if (operator.getButton(XboxController.Buttons.A)) {
 
 			shooterController.aim();
 
-		}*/
+		}
+
+		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
+
+			shooterController.fire();
+
+		}
 
 	}
 
