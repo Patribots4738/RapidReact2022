@@ -40,8 +40,10 @@ public class Turret {
      * @param speed speed at which it rotates at
      */
     public void rotate(double speed) {
+
+        System.out.println("pos: " + this.getPosition());
         
-        if (this.getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
+        if (this.getPosition() > maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (speed > 0.0) {
 
@@ -53,7 +55,7 @@ public class Turret {
 
             }
             
-        } else if (this.getPosition() <= -maxRotation / Constants.FULL_TURRET_ROTATION) {
+        } else if (this.getPosition() < -maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (speed < 0.0) {
 

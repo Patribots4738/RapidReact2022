@@ -3,7 +3,7 @@ package hardware;
 import utils.PIDLoop;
 import wrappers.*;
 import wrappers.Dashboard.graph;
-import wrappers.Dashboard.slider;
+import wrappers.Dashboard.slider;	
 import utils.*;
 
 public class ShooterController {
@@ -34,9 +34,7 @@ public class ShooterController {
 
 	private double offset = 0.03;
 
-	private PositionalLinearBangBang linearBang;
-	
-	private DynamicBangBang dynamicBang;
+	// private PositionalLinearBangBang linearBang; ben wut is dis
 
 	PIDLoop aimLoop;
 
@@ -63,8 +61,6 @@ public class ShooterController {
 		this.drive = drive;
 		
         aimLoop = new PIDLoop(P, I, D, FF, Izone);
-
-		linearBang = new PositionalLinearBangBang(turret, 0.002, 0.01);
         
 	}
 
@@ -191,7 +187,7 @@ public class ShooterController {
 
 			//turret.setPosition(speed, (currentError + currentPos));
 			//System.out.println("speed: " + speed);
-			turret.setPosition(speed, linearBang.getCommand(currentPos + currentError));
+			turret.setPosition(speed, currentPos + currentError);//linearBang.getCommand(currentPos + currentError));
 			
 		} else {
 
@@ -204,6 +200,7 @@ public class ShooterController {
 		if (!limelight.targetFound()) {
 
 			//turret.scan(0.2);
+			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
 			
 		} else {
 

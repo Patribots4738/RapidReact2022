@@ -31,8 +31,8 @@ public class Shooter {
 		this.topWheel = topWheel;
 		this.bottomWheel = bottomWheel;
 
-		topBangBang = new DynamicBangBang(topWheel, 0.01, 0.0075);
-		bottomBangBang = new DynamicBangBang(bottomWheel, 0.01, 0.0075);
+		topBangBang = new DynamicBangBang(0.015, 0.0075);
+		bottomBangBang = new DynamicBangBang(0.015, 0.0075);
 
 	}
 
@@ -75,8 +75,8 @@ public class Shooter {
 
 		System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
 
-		topWheel.setSpeed(topBangBang.getCommand(speeds[0]));
-		bottomWheel.setSpeed(bottomBangBang.getCommand(-speeds[1]));
+		topWheel.setSpeed(topBangBang.getCommand(speeds[0], topWheel.getSpeed()));
+		bottomWheel.setSpeed(bottomBangBang.getCommand(-speeds[1], bottomWheel.getSpeed()));
 
 		eval(distance);
 		
