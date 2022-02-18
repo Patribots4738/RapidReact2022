@@ -22,7 +22,7 @@ public class ShooterController {
 
 	private double maxSpeed = 0.25;
 
-	private double acceptableAngleError = 2.3;
+	private double acceptableAngleError = 1.3;
 
 	private double minSpeed = 0.06;
 
@@ -100,7 +100,7 @@ public class ShooterController {
 
 			// random variables, need to be tested
 			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(1.0);
+			intake.setIntakeSpeed(-1.0);
 
 		}
 
@@ -195,11 +195,12 @@ public class ShooterController {
 
 		}
 
-		//System.out.println(limelight.targetFound());
+		System.out.println(aligned);
 
 		if (!limelight.targetFound()) {
 
-			//turret.scan(0.2);
+			//0.2 fast boi
+			turret.scan(0.125);
 			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
 			
 		} else {

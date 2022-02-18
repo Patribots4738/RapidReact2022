@@ -84,10 +84,11 @@ public class Turret {
 
         position *= Constants.FULL_TURRET_ROTATION;
 
-        if (getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
+        if (this.getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (position > maxRotation) {
                 
+                motor.setPosition(maxRotation / Constants.FULL_TURRET_ROTATION, 0.0, 0.0);
 
             } else {
 
@@ -95,11 +96,11 @@ public class Turret {
 
             }
             
-        } else if (getPosition() <= -maxRotation / Constants.FULL_TURRET_ROTATION) {
+        } else if (this.getPosition() <= -maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (position < -maxRotation) {
 
-                
+                motor.setPosition(-maxRotation / Constants.FULL_TURRET_ROTATION, 0.0, 0.0);
 
             } else {
 

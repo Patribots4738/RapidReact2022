@@ -49,7 +49,7 @@ public class DynamicBangBang
             newSpeed = Math.signum(newSpeed);
         }
         
-        System.out.println(String.format("New Speed: %.4f; Increment: %.4f", newSpeed, increment));
+        //System.out.println(String.format("New Speed: %.4f; Increment: %.4f", newSpeed, increment));
         return newSpeed;
     }
 }
