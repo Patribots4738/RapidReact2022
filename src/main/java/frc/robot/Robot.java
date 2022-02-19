@@ -143,8 +143,8 @@ public class Robot extends TimedRobot {
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 
-		topBangBang = new DynamicBangBang(0.01, 0.0075);
-		bottomBangBang = new DynamicBangBang(0.01, 0.0075);
+		topBangBang = new DynamicBangBang(0.01, 0.005);
+		bottomBangBang = new DynamicBangBang(0.01, 0.005);
 
 	}
 
@@ -243,6 +243,8 @@ public class Robot extends TimedRobot {
 		
 		}
 */
+
+		// slew rate limiting
 		if (Math.abs(speedSet) - Math.abs(lastSpeedSet) < -value) {
 
 			if (speedSet + lastSpeedSet < 0.0) {
@@ -258,7 +260,7 @@ public class Robot extends TimedRobot {
 
 		}
 		
-		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX));
+		//drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX));
 
 		lastSpeedSet = speedSet;
 
@@ -289,8 +291,8 @@ public class Robot extends TimedRobot {
 		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed(), bottomBangSpeed);
 
 		// bang bang control
-		//topMotor.setSpeed(topBangSpeed); 
-		//bottomMotor.setSpeed(bottomBangSpeed);
+		topMotor.setSpeed(topBangSpeed); 
+		bottomMotor.setSpeed(bottomBangSpeed);
 
 		//topMotor.setSpeed(0.2);
 		//bottomMotor.setSpeed(0.2);
@@ -319,7 +321,7 @@ public class Robot extends TimedRobot {
 
 		} else {
 
-			shooterController.stop();
+			//shooterController.stop();
 
 		}
 
