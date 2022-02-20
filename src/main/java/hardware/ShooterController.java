@@ -129,10 +129,13 @@ public class ShooterController {
 	public double correctLimelightDistanceError(double rawDistance) {
 
 		// each index after 0 is 2 feet of distance from the target starting at 5ft away
-		double[] errorData = {-0.157, 0.395, 1.5,
+		// edit-- attempting to get it after every foot because more data --> more accuracy.
+		// explain more, tysm </3
+		double[] errorData = {-0.157, /*0.395, 1.5,
 							  6.25, 7.1, 11.5,
 							  15.55, 26.1, 29.1
-							  -13.9, -16.9};
+							  -13.9, -16.9*/
+							  };
 
 		double arrayPosition = (rawDistance - 60.0) / 24.0;
 

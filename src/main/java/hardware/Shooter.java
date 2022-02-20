@@ -31,8 +31,8 @@ public class Shooter {
 		this.topWheel = topWheel;
 		this.bottomWheel = bottomWheel;
 
-		topBangBang = new DynamicBangBang(0.01, 0.0075);
-		bottomBangBang = new DynamicBangBang(0.01, 0.0075);
+		topBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
+		bottomBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
 
 	}
 

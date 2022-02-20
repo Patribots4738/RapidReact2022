@@ -9,12 +9,9 @@ public class LinearBangBang {
     private double acceptableError = 0.03;
 
     private double newSpeed = 0.0;
-
-    private PIDMotor motor;
  
-    public LinearBangBang(PIDMotor motor, double increment, double acceptableError) {
+    public LinearBangBang(double increment, double acceptableError) {
 
-        this.motor = motor;
         this.increment = increment;
         this.acceptableError = acceptableError;
 
@@ -32,13 +29,27 @@ public class LinearBangBang {
 
     }
 
-    public double getLinearCommand(double speed) {
+    public double getCommand(double desired, double actual)
+    {
+        
+        if (Math.signum(desired) != Math.signum(actual) && (actual > acceptableError || actual < -acceptableError)) {
 
-        if (motor.getSpeed() < speed - acceptableError) {
+            // System.out.println("Switch Sign");
+            desired = 0;
+
+        }
+       
+        return getCommand(actual - desired);
+
+    }
+
+    public double getCommand(double difference) {
+
+        if (difference < 0 - acceptableError) {
 
             newSpeed += increment;
 
-        } else if (motor.getSpeed() > speed + acceptableError) {
+        } else if (difference > acceptableError) {
 
             newSpeed -=  increment;
 
@@ -51,6 +62,12 @@ public class LinearBangBang {
         }
 
         return newSpeed;
+
+    }
+
+    public void setNewSpeed(double speed) {
+
+        newSpeed = speed;
 
     }
 
