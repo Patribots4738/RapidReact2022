@@ -300,17 +300,25 @@ public class Robot extends TimedRobot {
 
 			bottomMotor.setPercent(bottomLinearBang.getCommand(bottomSlider.getValue(), bottomMotor.getSpeed()));
 
-		} else {
+		} else if (Math.abs(bottomMotor.getSpeed() - bottomSlider.getValue()) < 0.08) {
 
 			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.2);
 
-			topMotor.setSpeed(-topSlider.getValue());
+			bottomMotor.setSpeed(bottomSlider.getValue());
+
+		} else if (Math.abs(bottomSlider.getValue()) - Math.abs(bottomMotor.getSpeed()) > 0.0) {
+
+			bottomMotor.setSpeed(bottomSlider.getValue() * 2.003);
+
+		} else {
+
 			bottomMotor.setSpeed(bottomSlider.getValue());
 
 		}
+		
 
 		//topMotor.setSpeed(0.2);
-		//bottomMotor.setSpeed(0.2);
+		//bottomMotor.setSpeed(0.6);
 
 		//graph.addData(turret.getSpeed());
 
@@ -321,7 +329,8 @@ public class Robot extends TimedRobot {
 
 		//turret.scan();
 
-		// System.out.println("distance: " + String.format("%.2f", limelight.getDistance()));
+		//System.out.println("distance: " + String.format("%.2f", limelight.getDistance()));
+		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 		if (operator.getButton(XboxController.Buttons.A)) {
 

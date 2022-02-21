@@ -13,7 +13,7 @@ public class Turret {
     boolean iszeroing = false;
 
     double offset = 0.01;
-    boolean isGoingRight = true;
+    boolean isGoingRight = true; 
 
     /**
      * @param motor turret motor

@@ -1,6 +1,9 @@
 package hardware;
 
 import wrappers.*;
+
+import java.io.LineNumberReader;
+
 import interfaces.*;
 import utils.*;
 
@@ -16,6 +19,9 @@ public class Shooter {
 
 	DynamicBangBang topBangBang;
 	DynamicBangBang bottomBangBang;
+	
+	LinearBangBang topLinearBangBang;
+	LinearBangBang bottomLinearBangBang;
 
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
@@ -33,6 +39,9 @@ public class Shooter {
 
 		topBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
 		bottomBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
+
+		topLinearBangBang = new LinearBangBang(0.0005, 0.005);
+		bottomLinearBangBang = new LinearBangBang(0.0005, 0.005);
 
 	}
 
@@ -75,11 +84,53 @@ public class Shooter {
 
 		System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
 
-		topWheel.setSpeed(topBangBang.getCommand(speeds[0], topWheel.getSpeed()));
-		bottomWheel.setSpeed(bottomBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
 
-		eval(distance);
+		//top motor speed setting and calculations
 		
+		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.025) {
+
+			topWheel.setPercent(topLinearBangBang.getCommand(speeds[0], topWheel.getSpeed()));
+
+		} else if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.08) {
+
+			topLinearBangBang.setNewSpeed(speeds[0] * 1.2);
+
+			topWheel.setSpeed(speeds[0]);
+
+		} else if (Math.abs(speeds[0]) - Math.abs(speeds[0]) > 0.0) {
+
+			topWheel.setSpeed(speeds[0] * 2.003);
+
+		} else {
+
+			topWheel.setSpeed(speeds[0]);
+
+		}
+		
+		//Bottom motor speed setting and calculations
+
+		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.025) {
+
+			bottomWheel.setPercent(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
+
+		} else if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.08) {
+
+			bottomLinearBangBang.setNewSpeed(speeds[1] * 1.2);
+
+			bottomWheel.setSpeed(speeds[1]);
+
+		} else if (Math.abs(speeds[1]) - Math.abs(speeds[1]) > 0.0) {
+
+			bottomWheel.setSpeed(speeds[1] * 2.003);
+
+		} else {
+
+			bottomWheel.setSpeed(speeds[1]);
+
+		}
+		
+		eval(distance);
+
 	}
 
 	public void eval(double distance) {
