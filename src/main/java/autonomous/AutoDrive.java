@@ -278,15 +278,16 @@ public class AutoDrive {
 		double leftError = Math.abs(completePositions[0] - leftWheelPosition);
 		double rightError = Math.abs(completePositions[1] - rightWheelPosition);
 
-		//System.out.println("left error: " + leftError);
-		//System.out.println("right error: " + rightError);
+		System.out.println("left error: " + leftError);
+		System.out.println("right error: " + rightError);
 
 		if(leftError <= acceptableError && rightError <= acceptableError) {
 
+			System.out.println("HEY Im DONE WHAT THE CRUD");
 			removeCommand(0);
 
 			if(queueIsEmpty()) {
-
+System.out.println("QUEUE EMPTY");
 				return;
 
 			}

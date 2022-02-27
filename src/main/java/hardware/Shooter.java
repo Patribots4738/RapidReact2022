@@ -9,8 +9,8 @@ import utils.*;
 
 public class Shooter {
 
-	PIDMotor topWheel;
-	PIDMotor bottomWheel;
+	public PIDMotor topWheel;
+	public PIDMotor bottomWheel;
 
 	public static boolean readyToFire = false;
 
@@ -45,7 +45,11 @@ public class Shooter {
 
 	}
 
-	private double[] distanceToSpeeds(double distance) {
+	// public PIDMotor[] getMotors(){
+	// 	return {topWheel, bottomWheel};
+	// }
+
+	public double[] distanceToSpeeds(double distance) {
 
 		double feet = distance / 12.0;
 
@@ -82,12 +86,12 @@ public class Shooter {
 
 		double[] speeds = distanceToSpeeds(distance);
 
-		System.out.println("speeds: " + speeds[0] + " " + speeds[1]);
-
+		System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
+		System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
 
 		//top motor speed setting and calculations
 		
-		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.025) {
+		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.05) {
 
 			topWheel.setPercent(topLinearBangBang.getCommand(speeds[0], topWheel.getSpeed()));
 
@@ -99,7 +103,7 @@ public class Shooter {
 
 		} else if (Math.abs(speeds[0]) - Math.abs(speeds[0]) > 0.0) {
 
-			topWheel.setSpeed(speeds[0] * 2.003);
+			topWheel.setSpeed(speeds[0] /* 2.003*/);
 
 		} else {
 
@@ -109,7 +113,7 @@ public class Shooter {
 		
 		//Bottom motor speed setting and calculations
 
-		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.025) {
+		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.05) {
 
 			bottomWheel.setPercent(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
 
@@ -121,7 +125,7 @@ public class Shooter {
 
 		} else if (Math.abs(speeds[1]) - Math.abs(speeds[1]) > 0.0) {
 
-			bottomWheel.setSpeed(speeds[1] * 2.003);
+			bottomWheel.setSpeed(speeds[1] /* 2.003*/);
 
 		} else {
 

@@ -48,14 +48,17 @@ public class Robot extends TimedRobot {
 	Dashboard shooterDashboard;
 	Dashboard driveDashboard;
 
-	Dashboard.graph motorGraph;
-	Dashboard.slider P;
-	Dashboard.slider I;
-	Dashboard.slider D;
-	Dashboard.slider F;
+	Dashboard.graph topMotorGraph;
+	Dashboard.graph bottomMotorGraph;
+	// Dashboard.slider P;
+	// Dashboard.slider I;
+	// Dashboard.slider D;
+	// Dashboard.slider F;
 
 	DynamicBangBang topBangBang;
 	DynamicBangBang bottomBangBang;
+
+	AutoDrive auto;
 
 	double lastSpeedSet = 0;
 	final double value = 0.025;
@@ -67,9 +70,9 @@ public class Robot extends TimedRobot {
 		bottomMotor = new Falcon(8);
 
 		topMotor.setPID(1.5, 0, 0);
-		bottomMotor.setPID(1.5, 0, 0);
-		topMotor.setFF(1.25);
-		bottomMotor.setFF(1.25);
+		bottomMotor.setPID(1, 0, 0);
+		topMotor.setFF(1.1);
+		bottomMotor.setFF(1.1);
 
 		compressor = new Compressor();
 
@@ -101,6 +104,10 @@ public class Robot extends TimedRobot {
 
 		shooterController = new ShooterController(shooter, limelight, drive, intake, trigger, turret);
 
+		auto = new AutoDrive(leftMotors, rightMotors);
+	
+ 
+
 		// R seems like best value to determine color of first intaken ball
 		//colorSensor = new ColorSensor();
 
@@ -113,15 +120,20 @@ public class Robot extends TimedRobot {
 		D = new Dashboard.slider("D", 0, 4, 0.01); */
 		//P.setValue(0.5);
 
-		//shooterDashboard = new Dashboard("shooter");
-		driveDashboard = new Dashboard("drive");
+		shooterDashboard = new Dashboard("shooter");
+		//driveDashboard = new Dashboard("drive");
+
+		// distance = shooterDashboard.new slider("distance",0, 250, .1);
 
 		//motorGraph = driveDashboard.new graph("motor", 10);
 
-		P = driveDashboard.new slider("P", -3, 3, 0.01);
-		I = driveDashboard.new slider("I", -3, 3, 0.01);
-		D = driveDashboard.new slider("D", -30, 30, 0.01);
-		F = driveDashboard.new slider("FF", -3, 3, 0.01);
+		// P = shooterDashboard.new slider("P", -3, 3, 0.01);
+		// I = shooterDashboard.new slider("I", -3, 3, 0.01);
+		// D = shooterDashboard.new slider("D", -30, 30, 0.01);
+		// F = shooterDashboard.new slider("FF", -3, 3, 0.01);
+
+		topSlider = shooterDashboard.new slider("top Motor", -1, 1, 0.01);
+		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
 
 		//Pid values "good pid but storing for now"
 		//P = -0.32
@@ -133,38 +145,68 @@ public class Robot extends TimedRobot {
 
 		//graph = generalDashboard.new graph("turret speed", 10);
 
-		//topGraph = driveDashboard.new graph("Top Speed", 10);
-		bottomGraph = driveDashboard.new graph("Bottom Speed", 10);
+		topGraph = shooterDashboard.new graph("Top Speed", 10);
+		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
+		// bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);$
 
-		topSlider = driveDashboard.new slider("top Speed", 0, 1, 0.01);
-		bottomSlider = driveDashboard.new slider("bottom Speed", 0, 1, 0.01);
+		// topSlider = driveDashboard.new slider("top Speed", 0, 1, 0.01);
+		// bottomSlider = driveDashboard.new slider("bottom Speed", 0, 1, 0.01);
 
 		topBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
 		bottomBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
 
-		bottomLinearBang = new LinearBangBang(0.0005, 0.005);
+		topLinearBang = new LinearBangBang(0.0003, 0.005);
+		bottomLinearBang = new LinearBangBang(0.0003, 0.005);
 
 	}
 
 	LinearBangBang bottomLinearBang;
+	LinearBangBang topLinearBang;
 
 	@Override
 	public void robotPeriodic() {
 
 		compressor.setState(true);
-		//System.out.println(max.getPosition());
 
 	}
 
 	@Override
 	public void autonomousInit() {
 
+		leftMotors.setPID(0.05, 0, 5);
+		rightMotors.setPID(0.05, 0, 5);
+
 		turret.setZero();
+
+		auto.reset();
+
+		auto.addCommands(new Command(CommandType.MOVE, -120, 0.6));
+		auto.addCommands(new Command(CommandType.MOVE, 36, 0.6));
+		//auto.addCommands(new Command(CommandType.ROTATE, 0.25, 0.1));
 
 	} 
 
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
+
+		auto.executeQueue();
+
+		if (auto.queueIsEmpty()) {
+
+			intake.setIntakeSpeed(-1.0);
+			trigger.setSpeed(0.35);
+
+		} else {
+
+			intake.putDownIntake();
+			intake.setIntakeSpeed(-1.0);
+			trigger.setSpeed(-0.1);
+
+		}
+
+		bottomMotor.setSpeed(0.6);
+
+	}
 
 	// NO TOUCH
 	@Override 
@@ -182,6 +224,8 @@ public class Robot extends TimedRobot {
 
 	Dashboard.graph topGraph;
 	Dashboard.graph bottomGraph;
+
+	Dashboard.slider distance;
 
 	
 	@Override
@@ -273,29 +317,100 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
+		
+		shooter.topWheel.setFF(1.2);
+		shooter.bottomWheel.setFF(1);
 
-		topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
-		bottomMotor.setPID(P.getValue(), I.getValue(), D.getValue());
-		topMotor.setFF(F.getValue());
-		bottomMotor.setFF(F.getValue());
+		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.05) {
+
+			shooter.topWheel.setPercent(topLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
+
+		} else {
+
+			topLinearBang.setNewSpeed(topSlider.getValue() * 1.1);
+
+			shooter.topWheel.setSpeed(topSlider.getValue());
+
+		}
+
+		if (Math.abs(shooter.bottomWheel.getSpeed() - bottomSlider.getValue()) < 0.025) {
+
+			shooter.bottomWheel.setPercent(bottomLinearBang.getCommand(bottomSlider.getValue(), shooter.bottomWheel.getSpeed()));
+
+		} else {
+
+			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.05);
+
+			shooter.bottomWheel.setSpeed(bottomSlider.getValue());
+
+		}
+
+/*
+		if (Math.abs(topSlider.getValue()) - Math.abs(topSlider.getValue()) > 0.0) {
+
+			shooter.topWheel.setFF(2);
+
+		} else {
+
+			shooter.topWheel.setFF(1.11);
+
+		}
+
+		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.025) {
+
+			shooter.topWheel.setPercent(bottomLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
+
+		} else if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.08) {
+
+			bottomLinearBang.setNewSpeed(topSlider.getValue() * 1.125);
+
+			shooter.topWheel.setFF(1.11);
+			shooter.topWheel.setSpeed(topSlider.getValue());
+
+		} else if (Math.abs(topSlider.getValue()) - Math.abs(topSlider.getValue()) > 0.0) {
+
+			shooter.topWheel.setSpeed(topSlider.getValue() /* 2.003*);
+
+		} else {
+
+			shooter.topWheel.setSpeed(topSlider.getValue());
+
+		}*/
+
+		//shooter.topWheel.setSpeed(0.2);
+		//shooter.bottomWheel.setSpeed(0.65);
+
+		//shooterController.setShooterSpeeds(9 * 12);
+
+		topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
+		bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
+		// shooterController.setShooterSpeeds(distance.getValue());
+		// topGraph.addData(shooter.distanceToSpeeds(distance.getValue())[0], shooter.topWheel.getSpeed());
+		// bottomGraph.addData(shooter.distanceToSpeeds(distance.getValue())[1], shooter.bottomWheel.getSpeed());
+		// topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
+		// bottomMotor.setPID(P.getValue(), I.getValue(), D.getValue());
+		// topMotor.setFF(F.getValue());
+		// bottomMotor.setFF(F.getValue());
 
 		//turret.scan();
 
-		topSpeed = topSlider.getValue();
-		bottomSpeed = bottomSlider.getValue();
+		// topSpeed = topSlider.getValue();
+		// bottomSpeed = bottomSlider.getValue();
 
 		//System.out.println(String.format("Desired top speed: %.2f; Desired bottom speed: %.2f", topSpeed, bottomSpeed));
 
 		//double topBangSpeed = topBangBang.getCommand(topSpeed, topMotor.getSpeed());
 		// double bottomBangSpeed = bottomBangBang.getCommand(bottomSpeed, bottomMotor.getSpeed());
 
-		//topGraph.addData(-topSpeed, topMotor.getSpeed());//, topBangSpeed);
-		bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed());//, bottomBangSpeed);
+		// topGraph.addData(-topSpeed, topMotor.getSpeed());//, topBangSpeed);
+		// bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed());//, bottomBangSpeed);
+
+		
 
 		// bang bang control
 		//topMotor.setPercent(topBangSpeed); 
 		//bottomMotor.setPercent(bottomBangSpeed);
-
+/*
 		if (Math.abs(bottomMotor.getSpeed() - bottomSlider.getValue()) < 0.025) {
 
 			bottomMotor.setPercent(bottomLinearBang.getCommand(bottomSlider.getValue(), bottomMotor.getSpeed()));
@@ -314,7 +429,7 @@ public class Robot extends TimedRobot {
 
 			bottomMotor.setSpeed(bottomSlider.getValue());
 
-		}
+		}*/
 		
 
 		//topMotor.setSpeed(0.2);
@@ -337,7 +452,7 @@ public class Robot extends TimedRobot {
 			shooterController.aim();
 
 		}
-
+/*
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			shooterController.fire();
@@ -347,7 +462,7 @@ public class Robot extends TimedRobot {
 
 			//shooterController.stop();
 
-		}
+		}*/
 
 		if (intakeTesting) {
 
@@ -365,10 +480,6 @@ public class Robot extends TimedRobot {
 	public void testInit() {}
 	
 	@Override
-	public void testPeriodic() {
-
-
-
-	}
+	public void testPeriodic() {}
 
 }

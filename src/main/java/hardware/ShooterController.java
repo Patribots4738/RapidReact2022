@@ -78,13 +78,13 @@ public class ShooterController {
 	// checks if the robot is aligned and if the shooter is spun up, then updates internal variables accordingly
 	public void eval() {
 
-		double offset = limelight.getDistance();//correctLimelightDistanceError(limelight.getDistance());
+		double offset = correctLimelightDistanceError(limelight.getDistance());
 
 		double angle = limelight.getHorizontalAngle() - offset;
 
 		aligned = Math.abs(angle) <= acceptableAngleError; 
 	 
-		shooter.eval(limelight.getDistance());//correctLimelightDistanceError(limelight.getDistance()));
+		shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
 
 	}
 
@@ -132,25 +132,26 @@ public class ShooterController {
 		// edit-- attempting to get it after every foot because more data --> more accuracy.
 		// explain more, tysm </3
 		double[] errorData = {-11.38,
-			-11.1,
-			-11.6,
-			-9.8,
-			-9.6,
-			-8.1,
-			-8.5,
-			-6.9,
-			-5.6,
-			-7.06,
-			-2.86,
-			-4.6,
-			-20.9,
-			-21.25,
-			-15.6,
-			-9.11,
-			-17.12,
-			-14.34,
-			-19.3,
-			-17.38, -21.23};
+			 				  -11.1,
+							  -11.6,
+							  -9.8,
+							  -9.6,
+							  -8.1,
+							  -8.5,
+							  -6.9,
+							  -5.6,
+							  -7.06,
+							  -2.86,
+							  -4.6,
+							  -20.9,
+							  -21.25,
+							  -15.6,
+							  -9.11,
+							  -17.12,
+							  -14.34,
+							  -19.3,
+							  -17.38,
+							  -21.23};
 
 							  
 
@@ -228,6 +229,12 @@ public class ShooterController {
 			turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
 
 		}
+
+	}
+
+	public void setShooterSpeeds(double distance){
+
+		shooter.setShooterSpeeds(distance);
 
 	}
 

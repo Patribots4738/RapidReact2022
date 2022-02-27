@@ -32,18 +32,6 @@ public class Drive {
 
 	}
 
-	private double deadBandTwo(double value) {
-
-		if(Calc.isBetween(value, -deadBand * 1.5, deadBand * 1.5)) {
-
-			return 0;
-
-		}
-
-		return value;
-
-	}
-
 	public void linearArcade(double throttle, double turning) {
 
 		throttle = deadBand(throttle);
