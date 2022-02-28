@@ -60,8 +60,10 @@ public class Robot extends TimedRobot {
 
 	AutoDrive auto;
 
+	// Dashboard.
+
 	double lastSpeedSet = 0;
-	final double value = 0.025;
+	final double value = 0.025;//0.025;
 
 	@Override
 	public void robotInit() {
@@ -239,7 +241,8 @@ public class Robot extends TimedRobot {
 		topSpeed = 0.0;
 		bottomSpeed = 0.0;
 
-		lastSpeedSet = 0.0;
+		// lastSpeedSet = 0.0;
+
 
 	}
 
@@ -288,23 +291,23 @@ public class Robot extends TimedRobot {
 		}
 */
 
-		// slew rate limiting
+		//slew rate limiting
 		if (Math.abs(speedSet) - Math.abs(lastSpeedSet) < -value) {
 
 			if (speedSet + lastSpeedSet < 0.0) {
 
-				speedSet = lastSpeedSet + value;
+				speedSet = lastSpeedSet + value * (1-driver.getAxis(XboxController.Axes.RightX));
 				
 
 			} else if (speedSet + lastSpeedSet > 0.0) {
 
-				speedSet = lastSpeedSet - value;
+				speedSet = lastSpeedSet - value * (1-driver.getAxis(XboxController.Axes.RightX));
 
 			}
 
 		}
 		
-		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX));
+		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX) * 1.25);
 
 		lastSpeedSet = speedSet;
 

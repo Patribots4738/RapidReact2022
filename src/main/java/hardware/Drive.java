@@ -8,7 +8,10 @@ public class Drive {
 	MotorGroup leftMotors;
 	MotorGroup rightMotors;
 
-	private final double deadBand = 0.07;
+	double lastThrottle = 0;
+	final double acceptableAccel = 0.025;
+
+	private final double deadBand = 0.1;
 
 	public Drive(MotorGroup leftMotors, MotorGroup rightMotors) {
 
@@ -17,6 +20,8 @@ public class Drive {
 
 		leftMotors.setSpeed(0);
 		rightMotors.setSpeed(0);
+
+		
 
 	}
 
@@ -142,17 +147,56 @@ public class Drive {
 
 		throttle = Calc.bananaCurve(throttle);
 		turning = Calc.bananaCurve(turning);
+/*
+		double speedDifference = (-Math.atan(turning * Math.PI) * throttle) * (Math.abs(throttle)/throttle);
 
+		if (Math.abs(throttle) - Math.abs(lastThrottle) < -acceptableAccel) {
+
+			if (throttle + lastThrottle < 0.0) {
+
+				System.out.println("here");
+				throttle = lastThrottle + acceptableAccel;
+				
+
+			} else if (throttle + lastThrottle > 0.0) {
+
+				System.out.println("here2");
+				throttle = lastThrottle - acceptableAccel;
+
+			}
+			
+		}
+
+		lastThrottle = throttle;
+*/
 		if(throttle == 0) {
 
+			System.out.println("throttle is set to 0");
 			bananaArcade(throttle, turning);
 			
 		} else {
 
 			double speedDifference = (-Math.atan(turning * Math.PI) * throttle) * (Math.abs(throttle)/throttle);
+/*
+			if (Math.abs(throttle) - Math.abs(lastThrottle) < -acceptableAccel) {
 
+				if (throttle + lastThrottle < 0.0) {
+	
+					throttle = lastThrottle + acceptableAccel;
+					
+	
+				} else if (throttle + lastThrottle > 0.0) {
+	
+					throttle = lastThrottle - acceptableAccel;
+	
+				}
+	
+			}
+*/
 			double leftMotorInput = throttle - speedDifference;
 			double rightMotorInput = throttle + speedDifference;
+
+			//lastThrottle = throttle;
 
 			leftMotorInput = Calc.bananaCurve(leftMotorInput);
 			rightMotorInput = -Calc.bananaCurve(rightMotorInput);
