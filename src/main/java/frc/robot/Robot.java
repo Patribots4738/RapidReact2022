@@ -241,7 +241,7 @@ public class Robot extends TimedRobot {
 		topSpeed = 0.0;
 		bottomSpeed = 0.0;
 
-		// lastSpeedSet = 0.0;
+		lastSpeedSet = 0.0;
 
 
 	}
@@ -296,18 +296,19 @@ public class Robot extends TimedRobot {
 
 			if (speedSet + lastSpeedSet < 0.0) {
 
-				speedSet = lastSpeedSet + value * (1-driver.getAxis(XboxController.Axes.RightX));
+				speedSet = lastSpeedSet + value * (1 - Math.abs(driver.getAxis(XboxController.Axes.RightX)));
 				
 
 			} else if (speedSet + lastSpeedSet > 0.0) {
 
-				speedSet = lastSpeedSet - value * (1-driver.getAxis(XboxController.Axes.RightX));
+				speedSet = lastSpeedSet - value * (1 - Math.abs(driver.getAxis(XboxController.Axes.RightX)));
 
 			}
 
-		}
+		} 
 		
-		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX) * 1.25);
+		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX) * 1);
+		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX) * 1);
 
 		lastSpeedSet = speedSet;
 
