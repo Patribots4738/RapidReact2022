@@ -173,6 +173,13 @@ public class SparkMax implements PIDMotor {
 
 	}
 
+	// NOT CODED YET
+	public void setBrakeMode(boolean isBrake) {
+
+		System.out.println("CURRENT NOT CODED");
+
+	}
+
 	// NOT FUNCTIONAL
 	public double getAmperage() {
 

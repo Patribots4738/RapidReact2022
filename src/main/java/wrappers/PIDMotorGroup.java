@@ -188,6 +188,27 @@ public class PIDMotorGroup extends MotorGroup implements PIDMotor {
 
 	}
 
+	/**
+	 * @param isBrake if true, it sets it to break mode, if false, to coast mode
+	 */
+	public void setBrakeMode(boolean isBrake) {
+
+		for (PIDMotor motor : pidMotors) {
+
+			if (isBrake) {
+
+				motor.setBrakeMode(true);
+	
+			} else {
+	
+				motor.setBrakeMode(false);
+	
+			}
+
+		}
+
+	}
+
 	// NOT FUNCTIONAL
 	public double getAmperage() {
 

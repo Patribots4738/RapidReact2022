@@ -76,10 +76,16 @@ public class Robot extends TimedRobot {
 		topMotor.setFF(1.1);
 		bottomMotor.setFF(1.1);
 
+		topMotor.setBrakeMode(false);
+		bottomMotor.setBrakeMode(false);
+
 		compressor = new Compressor();
 
 		rightMotors = new PIDMotorGroup(new Falcon(0), new Falcon(1));
 		leftMotors = new PIDMotorGroup(new Falcon(3), new Falcon(4));
+
+		rightMotors.setBrakeMode(true);
+		leftMotors.setBrakeMode(true);
 
 		drive = new Drive(leftMotors, rightMotors);
 

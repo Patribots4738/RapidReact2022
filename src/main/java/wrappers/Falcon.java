@@ -32,8 +32,6 @@ public class Falcon implements PIDMotor {
 		motor.configPeakOutputReverse(-1, 20);
 		motor.setSensorPhase(false); // you might need to change this, but hopefully not
 
-		motor.setNeutralMode(NeutralMode.Brake);
-
 		PIDLoop = new PIDLoop(0, 0, 0);
 
 	}
@@ -167,6 +165,23 @@ public class Falcon implements PIDMotor {
 
 		return motor.getStatorCurrent();
 
+
+	}
+
+	/**
+	 * @param isBrake if true, it sets it to break mode, if false, to coast mode
+	 */
+	public void setBrakeMode(boolean isBrake) {
+
+		if (isBrake) {
+
+			motor.setNeutralMode(NeutralMode.Brake);
+
+		} else {
+
+			motor.setNeutralMode(NeutralMode.Coast);
+
+		}
 
 	}
 
