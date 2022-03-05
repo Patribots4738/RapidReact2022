@@ -26,11 +26,11 @@ public class Shooter {
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
 	// order is topSpeed, bottomSpeed
-	private double[][] shooterSpeeds = { {0.01, 0.56}, {0.01, 0.56}, {0.05, 0.57}, {0.08, 0.57}, {0.09, 0.58}, //5-9ft
-										 {0.1, 0.59}, {0.11, 0.6}, {0.13, 0.62}, {0.14, 0.62}, {0.14, 0.63}, //10-14ft
-										 {0.14, 0.64}, {0.5, 0.65}, {0.6, 0.69}, {0.17, 0.7}, {0.17, 0.71}, //15-19ft
-										 {0.18, 0.72}, {0.17, 0.76}, {0.2, 0.79}, {0.2, 0.79}, {0.2, 0.79}, // 20-24ft
-										 {0.2, 0.79} }; // 25ft
+	private double[][] shooterSpeeds = { {0.14, 0.63}, {0.12, 0.68}, {0.11, 0.70}, {0.09, 0.74}, {0.09, 0.76}, //5-9ft
+										 {0.09, 0.78}, {0.08, 0.79}, {0.08, 0.81}, {0.08, 0.87}, {0.08, 0.89}, //10-14ft
+										 {0.09, 0.91}, {0.11, 0.92}, {0.13, 0.93}, {0.15, 0.93}, {0.17, 0.94}, //15-19ft
+										 {0.19, 0.94}, {0.20, 0.94}, {0.22, 0.94}, {0.23, 0.94}, {0.25, 0.94}, // 20-24ft
+										 {0.31, 0.95} }; // 25ft
 
 	public Shooter(PIDMotor topWheel, PIDMotor bottomWheel) {
 

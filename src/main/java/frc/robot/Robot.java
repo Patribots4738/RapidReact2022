@@ -222,7 +222,11 @@ public class Robot extends TimedRobot {
 	
 	// VERY EXTRA NO TOUCH
 	@Override
-	public void disabledPeriodic() {}
+	public void disabledPeriodic() {
+		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
+
+	}
 
 	double topSpeed;
 	double bottomSpeed;
@@ -455,14 +459,14 @@ public class Robot extends TimedRobot {
 		//turret.scan();
 
 		//System.out.println("distance: " + String.format("%.2f", limelight.getDistance()));
-		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 		if (operator.getButton(XboxController.Buttons.A)) {
 
 			shooterController.aim();
 
 		}
-/*
+
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			shooterController.fire();
@@ -472,7 +476,7 @@ public class Robot extends TimedRobot {
 
 			//shooterController.stop();
 
-		}*/
+		}
 
 		if (intakeTesting) {
 

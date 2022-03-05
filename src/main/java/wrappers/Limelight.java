@@ -125,7 +125,6 @@ public class Limelight {
 						   Calc.degreesToRadians(getVerticalAngle()))) - Constants.LIMELIGHT_CAMERA_INSET;
 
 		distanceAvg.addValue(distance);
-
 		return distanceAvg.getAverage();
 
 	}

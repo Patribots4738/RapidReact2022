@@ -8,7 +8,7 @@ public final class Constants {
 	public static final double TARGET_HEIGHT = 104;
 
 	// in inches
-	public static final double LIMELIGHT_HEIGHT = 30.25;
+	public static final double LIMELIGHT_HEIGHT = 32.25;
 
 	// in radians
 	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(28.2);

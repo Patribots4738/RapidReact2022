@@ -131,27 +131,27 @@ public class ShooterController {
 		// each index after 0 is 2 feet of distance from the target starting at 5ft away
 		// edit-- attempting to get it after every foot because more data --> more accuracy.
 		// explain more, tysm </3
-		double[] errorData = {-11.38,
-			 				  -11.1,
-							  -11.6,
-							  -9.8,
-							  -9.6,
-							  -8.1,
-							  -8.5,
-							  -6.9,
-							  -5.6,
-							  -7.06,
-							  -2.86,
-							  -4.6,
-							  -20.9,
-							  -21.25,
-							  -15.6,
-							  -9.11,
-							  -17.12,
-							  -14.34,
-							  -19.3,
-							  -17.38,
-							  -21.23};
+		double[] errorData = {-14.34,
+							-14.8	,
+							-13.78	,
+							-13.58	,
+							-12.44	,
+							-10.04	,
+							-8.41	,
+							-6.92	,
+							-5.7	,
+							-5.1	,
+							0.89	,
+							-4.22	,
+							-0.46	,
+							-4.46	,
+							5.34	,
+							3.24	,
+							1.08	,
+							6.98	,
+							4.88	,
+							-15.99	,
+							-21.49};
 
 							  
 
@@ -163,9 +163,9 @@ public class ShooterController {
 
 		}
 
-		if(arrayPosition >= errorData.length) {
+		if(arrayPosition > errorData.length - 1) {
 
-			return rawDistance + 20;
+			return rawDistance - 20;
 
 		}
 
