@@ -40,8 +40,8 @@ public class Shooter {
 		topBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
 		bottomBangBang = new DynamicBangBang(0.01, 0.002, 0.0075);
 
-		topLinearBangBang = new LinearBangBang(0.0005, 0.005);
-		bottomLinearBangBang = new LinearBangBang(0.0005, 0.005);
+		topLinearBangBang = new LinearBangBang(0.0003, 0.005);
+		bottomLinearBangBang = new LinearBangBang(0.0003, 0.005);
 
 	}
 
@@ -86,48 +86,31 @@ public class Shooter {
 
 		double[] speeds = distanceToSpeeds(distance);
 
-		System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
-		System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
+		//System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
+		//System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
 
-		//top motor speed setting and calculations
-		
+		topWheel.setFF(1.2);
+		bottomWheel.setFF(1);
+
 		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.05) {
 
 			topWheel.setPercent(topLinearBangBang.getCommand(speeds[0], topWheel.getSpeed()));
 
-		} else if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.08) {
-
-			topLinearBangBang.setNewSpeed(speeds[0] * 1.2);
-
-			topWheel.setSpeed(speeds[0]);
-
-		} else if (Math.abs(speeds[0]) - Math.abs(speeds[0]) > 0.0) {
-
-			topWheel.setSpeed(speeds[0] /* 2.003*/);
-
 		} else {
+
+			topLinearBangBang.setNewSpeed(speeds[0] * 1.1);
 
 			topWheel.setSpeed(speeds[0]);
 
 		}
-		
-		//Bottom motor speed setting and calculations
 
-		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.05) {
+		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.025) {
 
 			bottomWheel.setPercent(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
 
-		} else if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.08) {
-
-			bottomLinearBangBang.setNewSpeed(speeds[1] * 1.2);
-
-			bottomWheel.setSpeed(speeds[1]);
-
-		} else if (Math.abs(speeds[1]) - Math.abs(speeds[1]) > 0.0) {
-
-			bottomWheel.setSpeed(speeds[1] /* 2.003*/);
-
 		} else {
+
+			bottomLinearBangBang.setNewSpeed(speeds[1] * 1.075);
 
 			bottomWheel.setSpeed(speeds[1]);
 
@@ -145,10 +128,10 @@ public class Shooter {
 		boolean bottomReady = Calc.isBetween(Math.abs(bottomWheel.getSpeed()), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
 
 		readyToFire = topReady && bottomReady;
-/*
-		System.out.println("top: " + topReady);
-		System.out.println("bottom: " + bottomReady);
-*/
+
+		//System.out.println("top: " + topReady);
+		//System.out.println("bottom: " + bottomReady);
+
 	}
 
 	public void setRawSpeeds(double topSpeed, double bottomSpeed) {

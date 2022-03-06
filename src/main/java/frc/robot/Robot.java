@@ -68,6 +68,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 
+		Timer.init();
+
 		topMotor = new Falcon(7);
 		bottomMotor = new Falcon(8);
 
@@ -332,16 +334,16 @@ public class Robot extends TimedRobot {
 
 		}
 		
-		shooter.topWheel.setFF(1.2);
+		shooter.topWheel.setFF(1);
 		shooter.bottomWheel.setFF(1);
 
-		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.05) {
+		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.025) {
 
 			shooter.topWheel.setPercent(topLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
 
 		} else {
 
-			topLinearBang.setNewSpeed(topSlider.getValue() * 1.1);
+			topLinearBang.setNewSpeed(topSlider.getValue() * 1.03);
 
 			shooter.topWheel.setSpeed(topSlider.getValue());
 
@@ -353,7 +355,7 @@ public class Robot extends TimedRobot {
 
 		} else {
 
-			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.05);
+			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.03);
 
 			shooter.bottomWheel.setSpeed(bottomSlider.getValue());
 
@@ -398,6 +400,7 @@ public class Robot extends TimedRobot {
 
 		topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
 		bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
+
 		// shooterController.setShooterSpeeds(distance.getValue());
 		// topGraph.addData(shooter.distanceToSpeeds(distance.getValue())[0], shooter.topWheel.getSpeed());
 		// bottomGraph.addData(shooter.distanceToSpeeds(distance.getValue())[1], shooter.bottomWheel.getSpeed());
@@ -459,34 +462,49 @@ public class Robot extends TimedRobot {
 		//turret.scan();
 
 		//System.out.println("distance: " + String.format("%.2f", limelight.getDistance()));
-		System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
+//FOLLOWIN CODE IS VERY GOOD
+	/*
 		if (operator.getButton(XboxController.Buttons.A)) {
 
 			shooterController.aim();
+
+		} else {
+
+			shooterController.stopAim();
 
 		}
 
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			shooterController.fire();
-			return;
 
 		} else {
+
+			if (!operator.getButton(XboxController.Buttons.B)) {
+
+				if (intakeTesting) {
+
+					intake(-1);
+		
+				} else {
+		
+					intake(1);
+		
+				}
+
+			}
 
 			//shooterController.stop();
 
 		}
 
-		if (intakeTesting) {
+		if (!operator.getButton(XboxController.Buttons.B)) {
 
-			intake(-1);
+			shooterController.firstShootingTime = true;
 
-		} else {
-
-			intake(1);
-
-		}
+		}*/
 
 	}
 

@@ -38,9 +38,9 @@ public class ShooterController {
 
 	PIDLoop aimLoop;
 
-	double P = 1.5;//2.0;
+	double P = 1.15;//1.5;
 	double I = 0.0;
-	double D = 0.0;
+	double D = 0.2;
 	double FF = 0.0;
 	int Izone = 25;
 
@@ -61,15 +61,20 @@ public class ShooterController {
 		this.drive = drive;
 		
         aimLoop = new PIDLoop(P, I, D, FF, Izone);
+
+		shootDelay = new TimeLoop(1);
         
 	}
 
 	// stops the shooter
 	public void stop() {
 
-		shooter.stop();
+		//shooter.stop();
+		shooter.topWheel.setSpeed(0.09);
+		shooter.bottomWheel.setSpeed(0.5);
 
 		trigger.setSpeed(0.0);
+		intake.setIntakeSpeed(0.0);
 
 		shooter.eval(0);
 
@@ -88,6 +93,10 @@ public class ShooterController {
 
 	}
 
+	TimeLoop shootDelay;
+	public boolean firstShootingTime = true;
+	double startTime = 0.0;
+
 	// this spins up the shooter and sets the conveyor and feeders based on wether the shooter is up to speed
 	public void fire() {
 
@@ -96,11 +105,41 @@ public class ShooterController {
 
 		eval();
 
+		System.out.println("timer time: " + Timer.getTime());
+		System.out.println("start time: " + startTime);
+
+		System.out.println("difference: " + (Timer.getTime() - startTime));
+		System.out.println("differenceBoolean: " + (Timer.getTime() - startTime > 0.6));
+		System.out.println("readyToFire: " + Shooter.readyToFire);
+
 		if (Shooter.readyToFire) {
+
+			//if(Timer.getTime() - startTime > 5) {
+
+				//System.out.println("RESTEING FIRSSHOOTINGITME");
+				//firstShootingTime = true;
+
+			//}
+
+			if (firstShootingTime) {
+
+				startTime = Timer.getTime();
+				System.out.println("RESTETING");
+				firstShootingTime = false;
+
+			}
+
+			System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
+
+			if ((Timer.getTime() - startTime) > 0.65) {
+
+				System.out.println("SECCOND BAAAAAAALLLLLLL");
+				intake.setIntakeSpeed(-1.0);
+
+			}
 
 			// random variables, need to be tested
 			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(-1.0);
 
 		}
 
@@ -188,7 +227,7 @@ public class ShooterController {
 
 		double angle = limelight.getHorizontalAngle();
 
-		double speed = aimLoop.getCommand(0.0, currentError) * 2.2;
+		double speed = aimLoop.getCommand(0.0, currentError) * 1.75;
 
 		if (Math.abs(speed) < minSpeed) {
 
@@ -206,17 +245,16 @@ public class ShooterController {
 
 		if (!aligned) {
 
+			turret.setPosition(speed, currentPos + currentError);
 			//turret.setPosition(speed, (currentError + currentPos));
 			//System.out.println("speed: " + speed);
-			turret.setPosition(speed, currentPos + currentError);//linearBang.getCommand(currentPos + currentError));
+			//linearBang.getCommand(currentPos + currentError));
 			
 		} else {
 
 			turret.setPosition(0.0, currentPos);
 
 		}
-
-		System.out.println(aligned);
 
 		if (!limelight.targetFound()) {
 
@@ -229,6 +267,14 @@ public class ShooterController {
 			turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
 
 		}
+
+		//System.out.println(aligned);
+
+	}
+
+	public void stopAim() {
+
+		turret.setPosition(0.0, turret.getPosition());
 
 	}
 
