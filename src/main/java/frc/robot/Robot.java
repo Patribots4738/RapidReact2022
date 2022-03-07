@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
 
 	Dashboard shooterDashboard;
 	Dashboard driveDashboard;
+	Dashboard autoDashboard;
 
 	Dashboard.graph topMotorGraph;
 	Dashboard.graph bottomMotorGraph;
@@ -60,10 +61,18 @@ public class Robot extends TimedRobot {
 
 	AutoDrive auto;
 
+	private int autoIndex = 2;
+
+	Countdown countdown;
+
+	Dashboard.boxChooser autoChooser;
+
 	// Dashboard.
 
 	double lastSpeedSet = 0;
-	final double value = 0.025;//0.025;
+	double lastIntakeSpeedSet;
+	final double value = 0.025;
+	final double intakeValue = 0.025;
 
 	@Override
 	public void robotInit() {
@@ -73,10 +82,8 @@ public class Robot extends TimedRobot {
 		topMotor = new Falcon(7);
 		bottomMotor = new Falcon(8);
 
-		topMotor.setPID(1.5, 0, 0);
+		topMotor.setPID(1, 0, 0);
 		bottomMotor.setPID(1, 0, 0);
-		topMotor.setFF(1.1);
-		bottomMotor.setFF(1.1);
 
 		topMotor.setBrakeMode(false);
 		bottomMotor.setBrakeMode(false);
@@ -132,6 +139,9 @@ public class Robot extends TimedRobot {
 
 		shooterDashboard = new Dashboard("shooter");
 		//driveDashboard = new Dashboard("drive");
+		autoDashboard = new Dashboard("auto");
+
+		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
 
 		// distance = shooterDashboard.new slider("distance",0, 250, .1);
 
@@ -179,7 +189,7 @@ public class Robot extends TimedRobot {
 		compressor.setState(true);
 
 	}
-
+/* 
 	@Override
 	public void autonomousInit() {
 
@@ -218,6 +228,181 @@ public class Robot extends TimedRobot {
 
 	}
 
+ */
+private boolean firstTime;
+	private boolean firstWaitTime;
+
+	@Override
+	public void autonomousInit() {
+
+		firstTime = true;
+		firstWaitTime = true;
+
+		leftMotors.setPID(0.05, 0, 5);
+		rightMotors.setPID(0.05, 0, 5);
+
+		turret.setZero();
+
+		auto.reset();
+
+		intake.putDownIntake();	
+
+		autoIndex = autoChooser.getValue();
+
+		switch(autoIndex){
+
+			case 0: //twoBall
+
+				auto.addCommands(new Command(CommandType.MOVE, -41, 0.1));
+
+				auto.addCommands(new Command(CommandType.MOVE, 46, 0.1));
+
+				//Shoot
+
+				break;	
+
+			case 1: //threeBall
+
+				auto.addCommands(new Command(CommandType.MOVE, -41, 0.1));
+			
+				auto.addCommands(new Command(CommandType.MOVE, 46, 0.1));
+			
+				//Shoot
+			
+				auto.addCommands(new Command(CommandType.ROTATE, 1.825, 0.1)); //RADIANS
+			
+				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.1));
+			
+				//Shoot
+			
+				break;
+					
+			case 2: //fourBall
+			
+				auto.addCommands(new Command(CommandType.MOVE, 41, 0.1));
+				
+				auto.addCommands(new Command(CommandType.MOVE, -46, 0.1));
+				
+				//Shoot
+				
+				auto.addCommands(new Command(CommandType.ROTATE, 1.825, 0.1)); //RADIANS
+				
+				auto.addCommands(new Command(CommandType.MOVE, 97.96, 0.1));
+				
+				auto.addCommands(new Command(CommandType.ROTATE, 0.413, 0.1)); //RADIANS
+				
+				auto.addCommands(new Command(CommandType.MOVE, 160, 0.1));
+				
+				auto.addCommands(new Command(CommandType.MOVE, -160, 0.1));
+				
+				//Shoot
+
+				break;
+		}
+		
+	} 
+
+	public void twoBallAuto() {
+
+		if (auto.queueIsEmpty()) {
+
+			if(firstTime) {
+				countdown = new Countdown(1);
+				firstTime = false;
+			}	
+			if(countdown.isRunning()){
+				shooterController.fire();
+			}
+
+		} else {
+
+			auto.executeQueue();
+
+		}
+
+	}
+
+	public void threeBallAuto() {
+		
+		if (auto.getQueueLength() == 2 || auto.queueIsEmpty()){			
+
+			if(firstTime) {
+				countdown = new Countdown(1);
+				firstTime = false;
+			}
+
+			if(!countdown.isRunning()){
+				auto.executeQueue();
+			}else{
+				shooterController.fire();
+			}
+			
+		}else {
+
+			auto.executeQueue();
+			firstTime = true;
+
+		}
+	}
+
+	public void fourBallAuto() {
+		
+		if (auto.getQueueLength() == 5 || auto.queueIsEmpty()) {
+
+			if(firstTime) {
+				countdown = new Countdown(1);
+				firstTime = false;
+			}
+
+			if(countdown.isRunning()){
+				shooterController.fire();
+			}
+
+		}else if(auto.getQueueLength() == 1){
+
+			if(firstWaitTime){
+				countdown = new Countdown(1.5);
+				firstWaitTime = false;
+			}
+
+			if(!countdown.isRunning()){
+				auto.executeQueue();
+			}
+
+		}else {
+
+			auto.executeQueue();
+			firstTime = true;
+
+		}
+
+	}
+
+	@Override
+	public void autonomousPeriodic() {
+		
+		// intake.setIntakeSpeed(-1.0);
+
+		// trigger.setSpeed(-0.1);
+
+		System.out.println(auto.getQueue());
+		auto.executeQueue();
+
+		// shooterController.aim();
+
+		// switch(autoIndex){
+		// 	case 0:
+		// 		twoBallAuto();
+		// 		break;
+		// 	case 1:
+		// 		threeBallAuto();
+		// 		break;
+		// 	case 2: 
+		// 		fourBallAuto();
+		// 		break;	
+		// }
+		
+	}
 	// NO TOUCH
 	@Override 
 	public void disabledInit() {}
@@ -226,7 +411,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		// System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 	}
 
@@ -254,6 +439,7 @@ public class Robot extends TimedRobot {
 		bottomSpeed = 0.0;
 
 		lastSpeedSet = 0.0;
+		lastIntakeSpeedSet = 0.0;
 
 
 	}
@@ -265,19 +451,51 @@ public class Robot extends TimedRobot {
 	 */
 	public void intake(int intakemode) {
 
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+		double speedSet = -operator.getAxis(XboxController.Axes.RightTrigger);
 
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
+		if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) < -intakeValue) {
+
+			if (speedSet + lastIntakeSpeedSet < 0.0) {
+
+				speedSet = lastIntakeSpeedSet + intakeValue;
+				
+
+			} else if (speedSet + lastSpeedSet > 0.0) {
+
+				speedSet = lastIntakeSpeedSet - intakeValue;
+
+			}
+
+		} 
+
+		lastIntakeSpeedSet = speedSet;
+
+		/*if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			intake.setIntakeSpeed(speedSet);
 			trigger.setSpeed(-0.1);
 
 		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-			intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.LeftTrigger) * intakemode);
+			intake.setIntakeSpeed(speedSet * intakemode);
 			trigger.setSpeed(0.35 * intakemode);
 
 		} else {
 
 			intake.setIntakeSpeed(0.0);
+			trigger.setSpeed(0.0);
+
+		}*/
+
+
+		intake.setIntakeSpeed(speedSet * intakemode);
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1 || Math.abs(speedSet) > 0.0) {
+
+			trigger.setSpeed(-0.4);
+
+		} else {
+
 			trigger.setSpeed(0.0);
 
 		}
@@ -333,13 +551,13 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
-		
-		shooter.topWheel.setFF(1);
+		/*
+		shooter.topWheel.setFF(1.1);
 		shooter.bottomWheel.setFF(1);
 
 		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.025) {
 
-			shooter.topWheel.setPercent(topLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
+			shooter.topWheel.setSpeed(topLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
 
 		} else {
 
@@ -351,7 +569,7 @@ public class Robot extends TimedRobot {
 
 		if (Math.abs(shooter.bottomWheel.getSpeed() - bottomSlider.getValue()) < 0.025) {
 
-			shooter.bottomWheel.setPercent(bottomLinearBang.getCommand(bottomSlider.getValue(), shooter.bottomWheel.getSpeed()));
+			shooter.bottomWheel.setSpeed(bottomLinearBang.getCommand(bottomSlider.getValue(), shooter.bottomWheel.getSpeed()));
 
 		} else {
 
@@ -359,7 +577,7 @@ public class Robot extends TimedRobot {
 
 			shooter.bottomWheel.setSpeed(bottomSlider.getValue());
 
-		}
+		}*/
 
 /*
 		if (Math.abs(topSlider.getValue()) - Math.abs(topSlider.getValue()) > 0.0) {
@@ -465,7 +683,7 @@ public class Robot extends TimedRobot {
 		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 //FOLLOWIN CODE IS VERY GOOD
-	/*
+	
 		if (operator.getButton(XboxController.Buttons.A)) {
 
 			shooterController.aim();
@@ -504,7 +722,7 @@ public class Robot extends TimedRobot {
 
 			shooterController.firstShootingTime = true;
 
-		}*/
+		}
 
 	}
 

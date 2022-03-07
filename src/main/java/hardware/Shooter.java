@@ -86,19 +86,19 @@ public class Shooter {
 
 		double[] speeds = distanceToSpeeds(distance);
 
-		//System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
-		//System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
+		System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
+		System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
 
-		topWheel.setFF(1.2);
+		topWheel.setFF(1.1);
 		bottomWheel.setFF(1);
 
-		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.05) {
+		if (Math.abs(topWheel.getSpeed() - speeds[0]) < 0.025) {
 
-			topWheel.setPercent(topLinearBangBang.getCommand(speeds[0], topWheel.getSpeed()));
+			topWheel.setSpeed(topLinearBangBang.getCommand(speeds[0], topWheel.getSpeed()));
 
 		} else {
 
-			topLinearBangBang.setNewSpeed(speeds[0] * 1.1);
+			topLinearBangBang.setNewSpeed(speeds[0] * 1.03);
 
 			topWheel.setSpeed(speeds[0]);
 
@@ -106,11 +106,11 @@ public class Shooter {
 
 		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.025) {
 
-			bottomWheel.setPercent(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
+			bottomWheel.setSpeed(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
 
 		} else {
 
-			bottomLinearBangBang.setNewSpeed(speeds[1] * 1.075);
+			bottomLinearBangBang.setNewSpeed(speeds[1] * 1.03);
 
 			bottomWheel.setSpeed(speeds[1]);
 
@@ -125,12 +125,12 @@ public class Shooter {
 		double[] speeds = distanceToSpeeds(distance);
 
 		boolean topReady = Calc.isBetween(topWheel.getSpeed(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
-		boolean bottomReady = Calc.isBetween(Math.abs(bottomWheel.getSpeed()), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
+		boolean bottomReady = Calc.isBetween(bottomWheel.getSpeed(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
 
 		readyToFire = topReady && bottomReady;
 
-		//System.out.println("top: " + topReady);
-		//System.out.println("bottom: " + bottomReady);
+		System.out.println("top: " + topReady);
+		System.out.println("bottom: " + bottomReady);
 
 	}
 

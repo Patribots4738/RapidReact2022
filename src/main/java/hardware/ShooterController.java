@@ -89,7 +89,7 @@ public class ShooterController {
 
 		aligned = Math.abs(angle) <= acceptableAngleError; 
 	 
-		shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
+		//shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
 
 	}
 
@@ -105,11 +105,11 @@ public class ShooterController {
 
 		eval();
 
-		System.out.println("timer time: " + Timer.getTime());
-		System.out.println("start time: " + startTime);
+		System.out.println(String.format("timer time: %.2f", Timer.getTime()));
+		System.out.println(String.format("start time: %.2f", startTime));
 
-		System.out.println("difference: " + (Timer.getTime() - startTime));
-		System.out.println("differenceBoolean: " + (Timer.getTime() - startTime > 0.6));
+		System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
+		System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
 		System.out.println("readyToFire: " + Shooter.readyToFire);
 
 		if (Shooter.readyToFire) {
