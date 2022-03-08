@@ -70,9 +70,7 @@ public class Robot extends TimedRobot {
 	// Dashboard.
 
 	double lastSpeedSet = 0;
-	double lastIntakeSpeedSet;
 	final double value = 0.025;
-	final double intakeValue = 0.025;
 
 	@Override
 	public void robotInit() {
@@ -253,9 +251,9 @@ private boolean firstTime;
 
 			case 0: //twoBall
 
-				auto.addCommands(new Command(CommandType.MOVE, -41, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 
-				auto.addCommands(new Command(CommandType.MOVE, 46, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
 
 				//Shoot
 
@@ -263,15 +261,15 @@ private boolean firstTime;
 
 			case 1: //threeBall
 
-				auto.addCommands(new Command(CommandType.MOVE, -41, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 			
-				auto.addCommands(new Command(CommandType.MOVE, 46, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
 			
 				//Shoot
 			
-				auto.addCommands(new Command(CommandType.ROTATE, 1.825, 0.1)); //RADIANS
+				auto.addCommands(new Command(CommandType.ROTATE, 0.2905, 0.25));
 			
-				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 			
 				//Shoot
 			
@@ -279,21 +277,21 @@ private boolean firstTime;
 					
 			case 2: //fourBall
 			
-				auto.addCommands(new Command(CommandType.MOVE, 41, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 				
-				auto.addCommands(new Command(CommandType.MOVE, -46, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
 				
 				//Shoot
 				
-				auto.addCommands(new Command(CommandType.ROTATE, 1.825, 0.1)); //RADIANS
+				auto.addCommands(new Command(CommandType.ROTATE, 0.2905, 0.25)); 
 				
-				auto.addCommands(new Command(CommandType.MOVE, 97.96, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 				
-				auto.addCommands(new Command(CommandType.ROTATE, 0.413, 0.1)); //RADIANS
+				auto.addCommands(new Command(CommandType.ROTATE, 0.0657, 0.25));
 				
-				auto.addCommands(new Command(CommandType.MOVE, 160, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, 160, 0.25));
 				
-				auto.addCommands(new Command(CommandType.MOVE, -160, 0.1));
+				auto.addCommands(new Command(CommandType.MOVE, -160, 0.25));
 				
 				//Shoot
 
@@ -384,8 +382,7 @@ private boolean firstTime;
 		// intake.setIntakeSpeed(-1.0);
 
 		// trigger.setSpeed(-0.1);
-
-		System.out.println(auto.getQueue());
+		
 		auto.executeQueue();
 
 		// shooterController.aim();
@@ -411,7 +408,7 @@ private boolean firstTime;
 	@Override
 	public void disabledPeriodic() {
 		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-		// System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 	}
 
@@ -439,8 +436,8 @@ private boolean firstTime;
 		bottomSpeed = 0.0;
 
 		lastSpeedSet = 0.0;
-		lastIntakeSpeedSet = 0.0;
 
+		intake.init();
 
 	}
 
@@ -451,24 +448,7 @@ private boolean firstTime;
 	 */
 	public void intake(int intakemode) {
 
-		double speedSet = -operator.getAxis(XboxController.Axes.RightTrigger);
-
-		if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) < -intakeValue) {
-
-			if (speedSet + lastIntakeSpeedSet < 0.0) {
-
-				speedSet = lastIntakeSpeedSet + intakeValue;
-				
-
-			} else if (speedSet + lastSpeedSet > 0.0) {
-
-				speedSet = lastIntakeSpeedSet - intakeValue;
-
-			}
-
-		} 
-
-		lastIntakeSpeedSet = speedSet;
+		
 
 		/*if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
@@ -488,11 +468,11 @@ private boolean firstTime;
 		}*/
 
 
-		intake.setIntakeSpeed(speedSet * intakemode);
+		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * intakemode);
 
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1 || Math.abs(speedSet) > 0.0) {
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1 || Math.abs(intake.getSpeedSet()) > 0.0) {
 
-			trigger.setSpeed(-0.4);
+			trigger.setSpeed(-0.1);
 
 		} else {
 
@@ -616,8 +596,10 @@ private boolean firstTime;
 
 		//shooterController.setShooterSpeeds(9 * 12);
 
-		topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
-		bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
+		//topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
+		//bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
+		topGraph.addData(shooter.topAverage.getAverage(), topSlider.getValue());
+		bottomGraph.addData(shooter.bottomAverage.getAverage(), bottomSlider.getValue());
 
 		// shooterController.setShooterSpeeds(distance.getValue());
 		// topGraph.addData(shooter.distanceToSpeeds(distance.getValue())[0], shooter.topWheel.getSpeed());

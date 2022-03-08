@@ -23,6 +23,9 @@ public class Shooter {
 	LinearBangBang topLinearBangBang;
 	LinearBangBang bottomLinearBangBang;
 
+	public MovingAverage topAverage;
+	public MovingAverage bottomAverage;
+
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
 	// order is topSpeed, bottomSpeed
@@ -42,6 +45,9 @@ public class Shooter {
 
 		topLinearBangBang = new LinearBangBang(0.0003, 0.005);
 		bottomLinearBangBang = new LinearBangBang(0.0003, 0.005);
+
+		topAverage = new MovingAverage(20);
+		bottomAverage = new MovingAverage(20);
 
 	}
 
@@ -69,13 +75,26 @@ public class Shooter {
 
 		double arrayPosition = feet - 5.0;
 
+		arrayPosition = Math.round(arrayPosition);
+
+		double topSpeed = shooterSpeeds[(int)arrayPosition][0];
+		double bottomSpeed = shooterSpeeds[(int)arrayPosition][1];
+
+		//System.out.println("ARRAY POSITIITOTITITTOTNTITOTN: " + arrayPosition);
+
+/*
 		int lowerIndex = (int)arrayPosition;
 		int upperIndex = lowerIndex + 1;
+
+		System.out.println(String.format("Lower Index: %d; Upper Index: %d", lowerIndex,upperIndex));
 
 		double percentBetweenPoints = arrayPosition - (double)lowerIndex;
 
 		double topSpeed = shooterSpeeds[lowerIndex][0] + (shooterSpeeds[upperIndex][0] - shooterSpeeds[lowerIndex][0]) * percentBetweenPoints;
 		double bottomSpeed = shooterSpeeds[lowerIndex][1] + (shooterSpeeds[upperIndex][1] - shooterSpeeds[lowerIndex][1]) * percentBetweenPoints;
+*/
+
+		
 
 		return new double[] {topSpeed, bottomSpeed};
 
@@ -86,8 +105,8 @@ public class Shooter {
 
 		double[] speeds = distanceToSpeeds(distance);
 
-		System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
-		System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
+		//System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
+		//System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
 
 		topWheel.setFF(1.1);
 		bottomWheel.setFF(1);
@@ -104,7 +123,7 @@ public class Shooter {
 
 		}
 
-		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.025) {
+		if (Math.abs(bottomWheel.getSpeed() - speeds[1]) < 0.05) {
 
 			bottomWheel.setSpeed(bottomLinearBangBang.getCommand(speeds[1], bottomWheel.getSpeed()));
 
@@ -124,13 +143,20 @@ public class Shooter {
 
 		double[] speeds = distanceToSpeeds(distance);
 
-		boolean topReady = Calc.isBetween(topWheel.getSpeed(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
-		boolean bottomReady = Calc.isBetween(bottomWheel.getSpeed(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
+		topAverage.addValue(topWheel.getSpeed());
+		bottomAverage.addValue(bottomWheel.getSpeed());
+
+		//boolean topReady = Calc.isBetween(topWheel.getSpeed(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
+		//boolean bottomReady = Calc.isBetween(bottomWheel.getSpeed(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
+
+		boolean topReady = Calc.isBetween(topAverage.getAverage(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
+		boolean bottomReady = Calc.isBetween(bottomAverage.getAverage(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
 
 		readyToFire = topReady && bottomReady;
 
-		System.out.println("top: " + topReady);
-		System.out.println("bottom: " + bottomReady);
+		//System.out.println("top: " + topReady);
+		//System.out.println("bottom: " + bottomReady);
+		System.out.println(String.format("Top: %.2f; Bottom: %.2f", topAverage.getAverage(), bottomAverage.getAverage()));
 
 	}
 

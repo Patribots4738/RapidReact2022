@@ -12,7 +12,7 @@ public class AutoDrive {
 
 	// details how close we can get to the specified end position of a command
 	// before calling it complete and moving to the next one
-	private double acceptableError = 0.25;
+	private double acceptableError = 0.5;
 
 	// the positions the left and right motorgroups should
 	// be at when the currently running command has been completed,

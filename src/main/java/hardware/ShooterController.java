@@ -22,7 +22,7 @@ public class ShooterController {
 
 	private double maxSpeed = 0.25;
 
-	private double acceptableAngleError = 1.3  ;
+	private double acceptableAngleError = 1.3;
 
 	private double minSpeed = 0.06;
 
@@ -83,63 +83,85 @@ public class ShooterController {
 	// checks if the robot is aligned and if the shooter is spun up, then updates internal variables accordingly
 	public void eval() {
 
-		double offset = correctLimelightDistanceError(limelight.getDistance());
+		//double offset = correctLimelightDistanceError(limelight.getDistance());
 
-		double angle = limelight.getHorizontalAngle() - offset;
+		double angle = limelight.getHorizontalAngle();// - offset;
 
 		aligned = Math.abs(angle) <= acceptableAngleError; 
 	 
-		//shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
+		shooter.eval(correctLimelightDistanceError(limelight.getDistance()));
 
 	}
 
 	TimeLoop shootDelay;
 	public boolean firstShootingTime = true;
 	double startTime = 0.0;
+	double distance = 0.0;
+
+	Countdown countdown;
+	boolean firstStopTime = true;
 
 	// this spins up the shooter and sets the conveyor and feeders based on wether the shooter is up to speed
 	public void fire() {
 
-		///shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
-		shooter.setShooterSpeeds(limelight.getDistance());
+		//shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+		//shooter.setShooterSpeeds(limelight.getDistance());
 
 		eval();
 
-		System.out.println(String.format("timer time: %.2f", Timer.getTime()));
-		System.out.println(String.format("start time: %.2f", startTime));
+		if (firstShootingTime) {
 
-		System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
-		System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
-		System.out.println("readyToFire: " + Shooter.readyToFire);
+			distance = correctLimelightDistanceError(limelight.getDistance());
+
+		}
+
+		shooter.setShooterSpeeds(distance);
+
+		//System.out.println(String.format("timer time: %.2f", Timer.getTime()));
+		//System.out.println(String.format("start time: %.2f", startTime));
+
+		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
+		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
+		//System.out.println("readyToFire: " + Shooter.readyToFire);
 
 		if (Shooter.readyToFire) {
 
-			//if(Timer.getTime() - startTime > 5) {
-
-				//System.out.println("RESTEING FIRSSHOOTINGITME");
-				//firstShootingTime = true;
-
-			//}
+			firstStopTime = true;
 
 			if (firstShootingTime) {
 
 				startTime = Timer.getTime();
-				System.out.println("RESTETING");
+				//System.out.println("RESTETING");
 				firstShootingTime = false;
 
 			}
 
-			System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
+			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
 
-			if ((Timer.getTime() - startTime) > 0.65) {
+			if ((Timer.getTime() - startTime) > 1.0) {//0.65
 
-				System.out.println("SECCOND BAAAAAAALLLLLLL");
+				//System.out.println("SECCOND BAAAAAAALLLLLLL");
 				intake.setIntakeSpeed(-1.0);
 
 			}
 
-			// random variables, need to be tested
 			trigger.setSpeed(0.35);
+
+		} else {
+
+			if (firstStopTime) {
+
+				countdown = new Countdown(0.5);
+				firstStopTime = false;
+
+			}
+
+			//if (!countdown.isRunning()) {
+
+				trigger.setSpeed(-0.1);
+				intake.setIntakeSpeed(-1.0);
+
+			//}
 
 		}
 

@@ -8,10 +8,15 @@ public class Intake {
     PIDMotor motor;
     DoubleSolenoid piston;
 
+    double lastIntakeSpeedSet;
+	final double intakeValue = 0.025;
+
     public Intake(PIDMotor motor, DoubleSolenoid piston) {
 
         this.motor = motor;
         this.piston = piston;
+
+        lastIntakeSpeedSet = 0.0;
 
     }
 
@@ -43,19 +48,65 @@ public class Intake {
 
     public void setIntakeSpeed(double speed) {
 
-        if (speed > 1.0) {
+        double speedSet = speed;
 
-            speed = 1.0;
+		if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) < -intakeValue) {
+
+			if (speedSet + lastIntakeSpeedSet < 0.0) {
+
+				speedSet = lastIntakeSpeedSet + intakeValue;
+				
+
+			} else if (speedSet + lastIntakeSpeedSet > 0.0) {
+
+				speedSet = lastIntakeSpeedSet - intakeValue;
+
+			}
+
+		} 
+
+        if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) > intakeValue) {
+
+			if (speedSet + lastIntakeSpeedSet > 0.0) {
+
+				speedSet = lastIntakeSpeedSet + intakeValue;
+				
+
+			} else if (speedSet + lastIntakeSpeedSet < 0.0) {
+
+				speedSet = lastIntakeSpeedSet - intakeValue;
+
+			}
+
+		} 
+
+		lastIntakeSpeedSet = speedSet;
+
+        if (speedSet > 1.0) {
+
+            speedSet = 1.0;
 
         }
 
-        if (speed < -1.0) {
+        if (speedSet < -1.0) {
 
-            speed = -1.0;
+            speedSet = -1.0;
 
         }
 
-        motor.setSpeed(speed);
+        motor.setSpeed(speedSet);
+
+    }
+
+    public double getSpeedSet() {
+
+        return lastIntakeSpeedSet;
+
+    }
+
+    public void init() {
+
+        lastIntakeSpeedSet = 0.0;
 
     }
 
