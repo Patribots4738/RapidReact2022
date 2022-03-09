@@ -46,8 +46,8 @@ public class Shooter {
 		topLinearBangBang = new LinearBangBang(0.0003, 0.005);
 		bottomLinearBangBang = new LinearBangBang(0.0003, 0.005);
 
-		topAverage = new MovingAverage(20);
-		bottomAverage = new MovingAverage(20);
+		topAverage = new MovingAverage(10);
+		bottomAverage = new MovingAverage(10);
 
 	}
 

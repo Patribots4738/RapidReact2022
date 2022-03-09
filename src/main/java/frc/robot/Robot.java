@@ -165,6 +165,7 @@ public class Robot extends TimedRobot {
 
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
+		triggerGraph = shooterDashboard.new graph("Trigger Speed", 10);
 		// bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);$
 
 		// topSlider = driveDashboard.new slider("top Speed", 0, 1, 0.01);
@@ -282,7 +283,7 @@ private boolean firstTime;
 				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
 				
 				//Shoot
-				
+				 
 				auto.addCommands(new Command(CommandType.ROTATE, 0.2905, 0.25)); 
 				
 				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
@@ -402,14 +403,17 @@ private boolean firstTime;
 	}
 	// NO TOUCH
 	@Override 
-	public void disabledInit() {}
-	
+	public void disabledInit() {
+		System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
+
+	}
+
 	// VERY EXTRA NO TOUCH
 	@Override
 	public void disabledPeriodic() {
 		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
 		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
-
+		
 	}
 
 	double topSpeed;
@@ -420,6 +424,7 @@ private boolean firstTime;
 
 	Dashboard.graph topGraph;
 	Dashboard.graph bottomGraph;
+	Dashboard.graph triggerGraph;
 
 	Dashboard.slider distance;
 
@@ -472,7 +477,7 @@ private boolean firstTime;
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1 || Math.abs(intake.getSpeedSet()) > 0.0) {
 
-			trigger.setSpeed(-0.1);
+			trigger.setSpeed(-0.2);
 
 		} else {
 
@@ -480,11 +485,17 @@ private boolean firstTime;
 
 		}
 
+		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			trigger.setSpeed(0.35);
+
+		}
+
 	}
 
 	@Override
 	public void teleopPeriodic() {
-
+		
 		//rightMotors.setPID(P.getValue(), I.getValue(), D.getValue());
 		//leftMotors.setPID(P.getValue(), I.getValue(), D.getValue());
 
@@ -598,8 +609,9 @@ private boolean firstTime;
 
 		//topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
 		//bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
-		topGraph.addData(shooter.topAverage.getAverage(), topSlider.getValue());
-		bottomGraph.addData(shooter.bottomAverage.getAverage(), bottomSlider.getValue());
+		topGraph.addData(shooter.topWheel.getSpeed(),shooter.topAverage.getAverage(), topSlider.getValue());
+		bottomGraph.addData(shooter.bottomWheel.getSpeed(),shooter.bottomAverage.getAverage(), bottomSlider.getValue());
+		triggerGraph.addData(shooterController.trigger.motor.getSpeed());
 
 		// shooterController.setShooterSpeeds(distance.getValue());
 		// topGraph.addData(shooter.distanceToSpeeds(distance.getValue())[0], shooter.topWheel.getSpeed());

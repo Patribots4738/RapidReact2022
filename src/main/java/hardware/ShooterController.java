@@ -12,7 +12,7 @@ public class ShooterController {
 
 	Intake intake;
 
-	Trigger trigger;
+	public Trigger trigger;
 
 	Turret turret;
 
@@ -138,10 +138,10 @@ public class ShooterController {
 
 			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
 
-			if ((Timer.getTime() - startTime) > 1.0) {//0.65
+			if ((Timer.getTime() - startTime) > 0.5) {//1.0
 
 				//System.out.println("SECCOND BAAAAAAALLLLLLL");
-				intake.setIntakeSpeed(-1.0);
+				intake.setIntakeSpeed(-0.1);
 
 			}
 
@@ -149,19 +149,8 @@ public class ShooterController {
 
 		} else {
 
-			if (firstStopTime) {
-
-				countdown = new Countdown(0.5);
-				firstStopTime = false;
-
-			}
-
-			//if (!countdown.isRunning()) {
-
-				trigger.setSpeed(-0.1);
-				intake.setIntakeSpeed(-1.0);
-
-			//}
+			trigger.setSpeed(-0.1);
+			intake.setIntakeSpeed(-0.1);
 
 		}
 

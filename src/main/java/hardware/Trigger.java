@@ -4,7 +4,7 @@ import interfaces.*;
 
 public class Trigger {
 
-    PIDMotor motor;
+    public PIDMotor motor;
     
     public Trigger(PIDMotor motor) {
 
