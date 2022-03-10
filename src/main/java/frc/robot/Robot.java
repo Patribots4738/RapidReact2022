@@ -13,6 +13,7 @@ import utils.*;
 import wrappers.*;
 import wrappers.Dashboard.graph;
 import wrappers.Dashboard.slider;
+import wrappers.Limelight.LEDMode;
 
 public class Robot extends TimedRobot {
 
@@ -234,13 +235,15 @@ private boolean firstTime;
 	@Override
 	public void autonomousInit() {
 
+		limelight.setLED(LEDMode.ON);
+
 		firstTime = true;
 		firstWaitTime = true;
 
 		leftMotors.setPID(0.05, 0, 5);
 		rightMotors.setPID(0.05, 0, 5);
 
-		turret.setZero();
+		turret.setZero(-0.125);
 
 		auto.reset();
 
@@ -254,7 +257,7 @@ private boolean firstTime;
 
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 
-				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
+				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 
 				//Shoot
 
@@ -264,11 +267,11 @@ private boolean firstTime;
 
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 			
-				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
+				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 			
 				//Shoot
 			
-				auto.addCommands(new Command(CommandType.ROTATE, 0.2905, 0.25));
+				auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
 			
 				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 			
@@ -280,15 +283,15 @@ private boolean firstTime;
 			
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 				
-				auto.addCommands(new Command(CommandType.MOVE, 46, 0.25));
+				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 				
 				//Shoot
 				 
-				auto.addCommands(new Command(CommandType.ROTATE, 0.2905, 0.25)); 
+				auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25)); 
 				
 				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 				
-				auto.addCommands(new Command(CommandType.ROTATE, 0.0657, 0.25));
+				auto.addCommands(new Command(CommandType.ROTATE, -0.0657, 0.25));
 				
 				auto.addCommands(new Command(CommandType.MOVE, 160, 0.25));
 				
@@ -299,23 +302,31 @@ private boolean firstTime;
 				break;
 		}
 		
-	} 
+	}
+	
+	boolean autoFirstTimeWait = true;
+	Countdown autoFirstWaitCountdown;
 
 	public void twoBallAuto() {
 
-		if (auto.queueIsEmpty()) {
+		if (autoFirstTimeWait) {
 
-			if(firstTime) {
-				countdown = new Countdown(1);
-				firstTime = false;
-			}	
-			if(countdown.isRunning()){
+			autoFirstWaitCountdown = new Countdown(2);
+			autoFirstTimeWait = false;
+
+		}
+
+		if (!autoFirstWaitCountdown.isRunning()) {
+
+			if (auto.queueIsEmpty()) {
+
 				shooterController.fire();
+	
+			} else {
+	
+				auto.executeQueue();
+	
 			}
-
-		} else {
-
-			auto.executeQueue();
 
 		}
 
@@ -333,7 +344,7 @@ private boolean firstTime;
 			if(!countdown.isRunning()){
 				auto.executeQueue();
 			}else{
-				shooterController.fire();
+				//shooterController.fire();
 			}
 			
 		}else {
@@ -345,7 +356,7 @@ private boolean firstTime;
 	}
 
 	public void fourBallAuto() {
-		
+		//CHANGE COUNTDOWN FOR INTAKE TIME FOR 5 BALL
 		if (auto.getQueueLength() == 5 || auto.queueIsEmpty()) {
 
 			if(firstTime) {
@@ -380,32 +391,36 @@ private boolean firstTime;
 	@Override
 	public void autonomousPeriodic() {
 		
-		// intake.setIntakeSpeed(-1.0);
+		//intake.setIntakeSpeed(-0.5);
 
-		// trigger.setSpeed(-0.1);
+		if (!shooter.readyToFire) {
+
+			trigger.setSpeed(-0.2);
+
+		}
 		
-		auto.executeQueue();
+		//auto.executeQueue();
 
-		// shooterController.aim();
+		shooterController.aim();
 
-		// switch(autoIndex){
-		// 	case 0:
-		// 		twoBallAuto();
-		// 		break;
-		// 	case 1:
-		// 		threeBallAuto();
-		// 		break;
-		// 	case 2: 
-		// 		fourBallAuto();
-		// 		break;	
-		// }
+		switch(autoIndex){
+			case 0:
+				twoBallAuto();
+				break;
+			case 1:
+				threeBallAuto();
+				break;
+			case 2: 
+				fourBallAuto();
+				break;	
+		}
 		
 	}
 	// NO TOUCH
 	@Override 
 	public void disabledInit() {
 		System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-
+		limelight.setLED(LEDMode.OFF);
 	}
 
 	// VERY EXTRA NO TOUCH
@@ -432,7 +447,9 @@ private boolean firstTime;
 	@Override
 	public void teleopInit() {
 
-		turret.setZero();
+		limelight.setLED(LEDMode.ON);
+
+		turret.setZero(-0.125);
 
 		driver.setupButtons();
 		operator.setupButtons();
@@ -721,9 +738,17 @@ private boolean firstTime;
 	}
 
 	@Override
-	public void testInit() {}
+	public void testInit() {
+
+		limelight.setLED(LEDMode.ON);
+
+	}
 	
 	@Override
-	public void testPeriodic() {}
+	public void testPeriodic() {
+
+		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
+
+	}
 
 }

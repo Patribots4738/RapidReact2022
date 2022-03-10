@@ -13,7 +13,9 @@ public class Turret {
     boolean iszeroing = false;
 
     double offset = 0.01;
-    boolean isGoingRight = true; 
+    boolean isGoingRight = false; 
+
+    double turretOffset = 0.0;
 
     /**
      * @param motor turret motor
@@ -24,8 +26,7 @@ public class Turret {
 
         this.motor = motor;
         this.maxRotation = maxRotation * Constants.FULL_TURRET_ROTATION / 2;
-        setZero();
-
+        setZero(0.0);
 
     }
 
@@ -88,11 +89,11 @@ public class Turret {
             
             if (position > maxRotation) {
                 
-                motor.setPosition(maxRotation / Constants.FULL_TURRET_ROTATION, 0.0, 0.0);
+                motor.setPosition((maxRotation / Constants.FULL_TURRET_ROTATION) + (turretOffset * Constants.FULL_TURRET_ROTATION), 0.0, 0.0);
 
             } else {
-
-                motor.setPosition(position, -speed, speed);
+                
+                motor.setPosition(position + (turretOffset * Constants.FULL_TURRET_ROTATION), -speed, speed);
 
             }
             
@@ -100,17 +101,17 @@ public class Turret {
             
             if (position < -maxRotation) {
 
-                motor.setPosition(-maxRotation / Constants.FULL_TURRET_ROTATION, 0.0, 0.0);
+                motor.setPosition((-maxRotation / Constants.FULL_TURRET_ROTATION) + (turretOffset * Constants.FULL_TURRET_ROTATION), 0.0, 0.0);
 
             } else {
 
-                motor.setPosition(position, -speed, speed);
+                motor.setPosition(position + (turretOffset * Constants.FULL_TURRET_ROTATION), -speed, speed);
 
             }
 
         } else {
             
-            motor.setPosition(position, -speed, speed);
+            motor.setPosition(position + (turretOffset * Constants.FULL_TURRET_ROTATION), -speed, speed);
 
         }
 
@@ -121,7 +122,7 @@ public class Turret {
      */
     public double getPosition() {
 
-        return motor.getPosition() / Constants.FULL_TURRET_ROTATION;
+        return motor.getPosition() / Constants.FULL_TURRET_ROTATION - turretOffset;
 
     }
 
@@ -137,10 +138,12 @@ public class Turret {
     /**
      * zeros encoder of motor, should be called
      * in auto/teleop/robot init
+     * @param offset turret zero offset in robot rotations, POSITIVE offsets are to the LEFT of the actual zero
      */
-    public void setZero() {
+    public void setZero(double turretOffset) {
 
         motor.resetEncoder();
+        this.turretOffset = turretOffset;
 
     }
 
