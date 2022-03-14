@@ -42,7 +42,7 @@ public class Turret {
      */
     public void rotate(double speed) {
 
-        System.out.println("pos: " + this.getPosition());
+        //System.out.println("pos: " + this.getPosition());
         
         if (this.getPosition() > maxRotation / Constants.FULL_TURRET_ROTATION) {
             

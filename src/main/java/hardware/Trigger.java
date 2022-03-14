@@ -30,6 +30,12 @@ public class Trigger {
 
     }
 
+    public double getSpeed() {
+
+        return motor.getSpeed();
+
+    }
+
     public void stop() {
 
         motor.setPercent(0.0);

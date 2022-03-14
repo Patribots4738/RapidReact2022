@@ -20,7 +20,7 @@ public class ShooterController {
 
 	Drive drive;
 
-	private double maxSpeed = 0.25;
+	private double maxSpeed = 0.3;//0.25;
 
 	private double acceptableAngleError = 1.3;
 

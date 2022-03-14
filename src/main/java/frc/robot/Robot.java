@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 		intake = new Intake(intakeMotor, new DoubleSolenoid(0, 1));
 
 		SparkMax turretMotor = new SparkMax(2, true);
-		turretMotor.setPID(0.5, 0, 0);
+		turretMotor.setPID(1.0, 0, 0);//0.5, 0, 0);
 		turret = new Turret(turretMotor, 1.0);
 
 		SparkMax triggerMotor = new SparkMax(6, true);
@@ -248,6 +248,8 @@ private boolean firstTime;
 
 		autoIndex = autoChooser.getValue();
 
+		shooting = false;
+
 		switch(autoIndex){
 
 			case 0: //twoBall
@@ -335,19 +337,24 @@ private boolean firstTime;
 
 	}
 
+	boolean shooting = false;
+
 	public void threeBallAuto() {
 		
-		if (auto.getQueueLength() == 2 || auto.queueIsEmpty()){			
-
+		if (auto.getQueueLength() == 3 || auto.queueIsEmpty()){			
+			//System.out.println("in pause area");
 			if(firstTime) {
 				countdown = new Countdown(7);
 				firstTime = false;
+				shooting = true;
 			}
 
 			if(!countdown.isRunning()){
 				auto.executeQueue();
+				shooting = false;
+				firstTime = true;
 			}else{
-				System.out.println("pause");
+				//System.out.println("pause");
 				shooterController.fire();
 			}
 			
@@ -397,14 +404,15 @@ private boolean firstTime;
 		
 		intake.setIntakeSpeed(-0.5);
 
-		//shooter.eval(shooterController.correctLimelightDistanceError(limelight.getDistance()));
+		if (!shooting) {
 
-		if (!shooter.readyToFire) {
-
+			//System.out.println("TRIGGER SETTING BACKWARDS");
 			trigger.setSpeed(-0.2);
 
 		}
-		
+
+		//System.out.println("TRIGGER WHEEL SPEED: " + trigger.getSpeed());
+		//System.out.println("queue length: " + auto.getQueueLength());
 		//auto.executeQueue();
 
 		shooterController.aim();

@@ -156,7 +156,7 @@ public class Shooter {
 
 		//System.out.println("top: " + topReady);
 		//System.out.println("bottom: " + bottomReady);
-		System.out.println(String.format("Top: %.2f; Bottom: %.2f", topAverage.getAverage(), bottomAverage.getAverage()));
+		//System.out.println(String.format("Top: %.2f; Bottom: %.2f", topAverage.getAverage(), bottomAverage.getAverage()));
 
 	}
 
