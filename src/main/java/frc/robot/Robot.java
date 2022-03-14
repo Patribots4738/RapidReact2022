@@ -13,7 +13,6 @@ import utils.*;
 import wrappers.*;
 import wrappers.Dashboard.graph;
 import wrappers.Dashboard.slider;
-import wrappers.Limelight.LEDMode;
 
 public class Robot extends TimedRobot {
 
@@ -100,13 +99,13 @@ public class Robot extends TimedRobot {
 		driver = new XboxController(0);
 		operator = new XboxController(1);
 
-		SparkMax intakeMotor = new SparkMax(2, true);
+		SparkMax intakeMotor = new SparkMax(5, true);
 		intakeMotor.setPID(0.5, 0, 0);
 		intake = new Intake(intakeMotor, new DoubleSolenoid(0, 1));
 
-		SparkMax turretMotor = new SparkMax(5, true);
+		SparkMax turretMotor = new SparkMax(2, true);
 		turretMotor.setPID(0.5, 0, 0);
-		turret = new Turret(turretMotor, 0.75);
+		turret = new Turret(turretMotor, 1.0);
 
 		SparkMax triggerMotor = new SparkMax(6, true);
 		triggerMotor.setPID(0.5, 0, 0);
@@ -235,15 +234,13 @@ private boolean firstTime;
 	@Override
 	public void autonomousInit() {
 
-		limelight.setLED(LEDMode.ON);
-
 		firstTime = true;
 		firstWaitTime = true;
 
 		leftMotors.setPID(0.05, 0, 5);
 		rightMotors.setPID(0.05, 0, 5);
 
-		turret.setZero(-0.125);
+		turret.setZero(0.0);
 
 		auto.reset();
 
@@ -257,7 +254,7 @@ private boolean firstTime;
 
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 
-				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
+				//auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 
 				//Shoot
 
@@ -308,22 +305,28 @@ private boolean firstTime;
 	Countdown autoFirstWaitCountdown;
 
 	public void twoBallAuto() {
-
+		//System.out.println("Two Ball Confirmed----------------");
 		if (autoFirstTimeWait) {
-
+			//System.out.println("First Time Wait Confirmed");
 			autoFirstWaitCountdown = new Countdown(2);
 			autoFirstTimeWait = false;
-
+			
 		}
+		/*
+			if (autoFirstWaitCountdown.isRunning()) {
 
+				System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
+
+			}
+		*/
 		if (!autoFirstWaitCountdown.isRunning()) {
-
+			//System.out.println("Countdown Finished");
 			if (auto.queueIsEmpty()) {
-
+				//System.out.println("Firing Now");
 				shooterController.fire();
 	
 			} else {
-	
+				//System.out.println("Progressing Queue");
 				auto.executeQueue();
 	
 			}
@@ -337,14 +340,15 @@ private boolean firstTime;
 		if (auto.getQueueLength() == 2 || auto.queueIsEmpty()){			
 
 			if(firstTime) {
-				countdown = new Countdown(1);
+				countdown = new Countdown(7);
 				firstTime = false;
 			}
 
 			if(!countdown.isRunning()){
 				auto.executeQueue();
 			}else{
-				//shooterController.fire();
+				System.out.println("pause");
+				shooterController.fire();
 			}
 			
 		}else {
@@ -391,7 +395,9 @@ private boolean firstTime;
 	@Override
 	public void autonomousPeriodic() {
 		
-		//intake.setIntakeSpeed(-0.5);
+		intake.setIntakeSpeed(-0.5);
+
+		//shooter.eval(shooterController.correctLimelightDistanceError(limelight.getDistance()));
 
 		if (!shooter.readyToFire) {
 
@@ -420,7 +426,6 @@ private boolean firstTime;
 	@Override 
 	public void disabledInit() {
 		System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-		limelight.setLED(LEDMode.OFF);
 	}
 
 	// VERY EXTRA NO TOUCH
@@ -447,9 +452,7 @@ private boolean firstTime;
 	@Override
 	public void teleopInit() {
 
-		limelight.setLED(LEDMode.ON);
-
-		turret.setZero(-0.125);
+		turret.setZero(0.0);
 
 		driver.setupButtons();
 		operator.setupButtons();
@@ -740,14 +743,12 @@ private boolean firstTime;
 	@Override
 	public void testInit() {
 
-		limelight.setLED(LEDMode.ON);
-
 	}
 	
 	@Override
 	public void testPeriodic() {
 
-		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
+		turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
 
 	}
 

@@ -38,7 +38,7 @@ public class ShooterController {
 
 	PIDLoop aimLoop;
 
-	double P = 1.15;//1.5;
+	double P = 2.4;//1.15;//1.5;
 	double I = 0.0;
 	double D = 0.2;
 	double FF = 0.0;
@@ -109,11 +109,11 @@ public class ShooterController {
 
 		eval();
 
-		if (firstShootingTime) {
+		//if (firstShootingTime) {
 
 			distance = correctLimelightDistanceError(limelight.getDistance());
 
-		}
+		//}
 
 		shooter.setShooterSpeeds(distance);
 
@@ -238,7 +238,7 @@ public class ShooterController {
 
 		double angle = limelight.getHorizontalAngle();
 
-		double speed = aimLoop.getCommand(0.0, currentError) * 1.75;
+		double speed = aimLoop.getCommand(0.0, currentError) * 2;//1.75;
 
 		if (Math.abs(speed) < minSpeed) {
 
@@ -269,8 +269,8 @@ public class ShooterController {
 
 		if (!limelight.targetFound()) {
 
-			//0.2 fast boi
-			turret.scan(0.125);
+			//0.125 previous value
+			turret.scan(0.25);
 			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
 			
 		} else {
