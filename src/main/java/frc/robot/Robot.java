@@ -45,6 +45,8 @@ public class Robot extends TimedRobot {
 
 	ShooterController shooterController;
 
+	Elevator elevator;
+
 	Dashboard shooterDashboard;
 	Dashboard driveDashboard;
 	Dashboard autoDashboard;
@@ -121,7 +123,7 @@ public class Robot extends TimedRobot {
 
 		auto = new AutoDrive(leftMotors, rightMotors);
 	
- 
+		elevator = new Elevator(new Falcon(9), new Falcon(10));
 
 		// R seems like best value to determine color of first intaken ball
 		//colorSensor = new ColorSensor();
@@ -523,6 +525,8 @@ private boolean firstTime;
 
 	@Override
 	public void teleopPeriodic() {
+
+		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
 		
 		//rightMotors.setPID(P.getValue(), I.getValue(), D.getValue());
 		//leftMotors.setPID(P.getValue(), I.getValue(), D.getValue());
@@ -756,7 +760,7 @@ private boolean firstTime;
 	@Override
 	public void testPeriodic() {
 
-		turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
+		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
 
 	}
 
