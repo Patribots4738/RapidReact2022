@@ -463,6 +463,7 @@ private boolean firstTime;
 	public void teleopInit() {
 
 		turret.setZero(0.0);
+		turret.setIsGoingRight(true);
 
 		driver.setupButtons();
 		operator.setupButtons();
@@ -514,12 +515,13 @@ private boolean firstTime;
 			trigger.setSpeed(0.0);
 
 		}
-
+/*
 		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 			trigger.setSpeed(0.35);
 
-		}
+		}*/
+
 
 	}
 
@@ -722,7 +724,16 @@ private boolean firstTime;
 
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
-			shooterController.fire();
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.1);
+
+			} else {
+
+				shooterController.fire();
+
+			}
 
 		} else {
 
@@ -760,6 +771,7 @@ private boolean firstTime;
 	@Override
 	public void testPeriodic() {
 
+		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
 		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
 
 	}
