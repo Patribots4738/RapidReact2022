@@ -268,13 +268,13 @@ private boolean firstTime;
 
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 			
-				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
+				//auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 			
 				//Shoot
 			
-				auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
+				//auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
 			
-				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
+				//auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 			
 				//Shoot
 			
@@ -314,6 +314,7 @@ private boolean firstTime;
 			//System.out.println("First Time Wait Confirmed");
 			autoFirstWaitCountdown = new Countdown(2);
 			autoFirstTimeWait = false;
+			shooting = false;
 			
 		}
 		/*
@@ -327,11 +328,13 @@ private boolean firstTime;
 			//System.out.println("Countdown Finished");
 			if (auto.queueIsEmpty()) {
 				//System.out.println("Firing Now");
-				shooterController.fire();
+				shooterController.autoFire();
+				shooting = true;
 	
 			} else {
 				//System.out.println("Progressing Queue");
 				auto.executeQueue();
+				shooting = false;
 	
 			}
 
@@ -341,28 +344,57 @@ private boolean firstTime;
 
 	boolean shooting = false;
 
+	boolean firstThreeBallTime = false;
+	boolean firstThreeBallTimeTwo = true;
+
 	public void threeBallAuto() {
 		
-		if (auto.getQueueLength() == 3 || auto.queueIsEmpty()){			
+		if (/*auto.getQueueLength() == 3 || */auto.queueIsEmpty()){			
 			//System.out.println("in pause area");
 			if(firstTime) {
-				countdown = new Countdown(7);
+				countdown = new Countdown(5);
 				firstTime = false;
 				shooting = true;
 			}
 
-			if(!countdown.isRunning()){
+			if (!countdown.isRunning()) {
 				auto.executeQueue();
 				shooting = false;
 				firstTime = true;
-			}else{
+
+				if (firstThreeBallTime) {
+
+					firstThreeBallTime = false;
+	
+					if (firstThreeBallTimeTwo) {
+	
+						firstThreeBallTimeTwo = false;
+	System.out.println("ADDING COMMANDS");
+						auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
+			
+						//Shoot
+					
+						auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
+					
+						auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
+	
+					}
+	
+				}
+
+			} else {
+
 				//System.out.println("pause");
-				shooterController.fire();
+				shooterController.autoFire();
+				shooting = true;
+				firstThreeBallTime = true;
+
 			}
 			
 		}else {
 
 			auto.executeQueue();
+			shooting = false;
 			firstTime = true;
 
 		}
@@ -403,21 +435,24 @@ private boolean firstTime;
 
 	@Override
 	public void autonomousPeriodic() {
-		
-		intake.setIntakeSpeed(-0.5);
+
+		double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
+
+		shooter.setShooterSpeeds(distance);
+
+		shooterController.aim();
 
 		if (!shooting) {
 
 			//System.out.println("TRIGGER SETTING BACKWARDS");
-			trigger.setSpeed(-0.2);
+			trigger.setSpeed(-0.65);
+			intake.setIntakeSpeed(-1.0);
 
 		}
 
 		//System.out.println("TRIGGER WHEEL SPEED: " + trigger.getSpeed());
 		//System.out.println("queue length: " + auto.getQueueLength());
 		//auto.executeQueue();
-
-		shooterController.aim();
 
 		switch(autoIndex){
 			case 0:
@@ -435,7 +470,7 @@ private boolean firstTime;
 	// NO TOUCH
 	@Override 
 	public void disabledInit() {
-		System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
+		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
 	}
 
 	// VERY EXTRA NO TOUCH
@@ -456,7 +491,7 @@ private boolean firstTime;
 	Dashboard.graph bottomGraph;
 	Dashboard.graph triggerGraph;
 
-	Dashboard.slider distance;
+	//Dashboard.slider distance;
 
 	
 	@Override
@@ -504,23 +539,31 @@ private boolean firstTime;
 		}*/
 
 
-		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger) * intakemode);
+		if (firstIntaking) {
 
-		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1 || Math.abs(intake.getSpeedSet()) > 0.0) {
-
-			trigger.setSpeed(-0.2);
-
-		} else {
-
-			trigger.setSpeed(0.0);
+			firstIntaking = false;
+			firstIntakingStartTime = Timer.getTime();
 
 		}
-/*
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-			trigger.setSpeed(0.35);
+		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
 
-		}*/
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			trigger.setSpeed(-0.65);//-0.65
+			firstIntakingStartTime = Timer.getTime();
+
+		}
+
+		if (Timer.getTime() - firstIntakingStartTime < 0.2) {
+
+			trigger.setSpeed(-0.15);
+
+		} else {	
+
+			trigger.setSpeed(-0.15);
+
+		}
 
 
 	}
@@ -528,7 +571,7 @@ private boolean firstTime;
 	@Override
 	public void teleopPeriodic() {
 
-		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
+		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
 		//rightMotors.setPID(P.getValue(), I.getValue(), D.getValue());
 		//leftMotors.setPID(P.getValue(), I.getValue(), D.getValue());
@@ -716,6 +759,37 @@ private boolean firstTime;
 
 			shooterController.aim();
 
+			// Set the scan of the turret to be the opposite of which way it is currently going
+			if (operator.getButton(XboxController.Buttons.X)) {
+
+				turret.setIsGoingRight(!turret.getIsGoingRight());
+
+			}
+
+			if (!operator.getButton(XboxController.Buttons.B)) {
+
+				double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
+
+				shooterController.setShooterSpeeds(distance);
+
+			}
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);//-0.1
+
+			} else {
+
+				if (!operator.getButton(XboxController.Buttons.B)) {
+
+					trigger.setSpeed(0.0);
+					intake.setIntakeSpeed(0.0);
+
+				}
+
+			}
+
 		} else {
 
 			shooterController.stopAim();
@@ -727,7 +801,7 @@ private boolean firstTime;
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 				trigger.setSpeed(0.35);
-				intake.setIntakeSpeed(-0.1);
+				intake.setIntakeSpeed(-0.3);//-0.1
 
 			} else {
 
@@ -737,7 +811,7 @@ private boolean firstTime;
 
 		} else {
 
-			if (!operator.getButton(XboxController.Buttons.B)) {
+			if (!operator.getButton(XboxController.Buttons.B) && !operator.getButton(XboxController.Buttons.A)) {
 
 				if (intakeTesting) {
 
@@ -768,11 +842,19 @@ private boolean firstTime;
 
 	}
 	
+	boolean firstIntaking = true;
+	double firstIntakingStartTime;
+
 	@Override
 	public void testPeriodic() {
 
-		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
+		//elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
 		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
+		shooter.topWheel.setSpeed(0.3);
+		shooter.bottomWheel.setSpeed(0.3);
+
+		intake(1);
+
 
 	}
 
