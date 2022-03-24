@@ -95,7 +95,9 @@ public class ShooterController {
 
 	TimeLoop shootDelay;
 	public boolean firstShootingTime = true;
+	public boolean firstAutoTime = true;
 	double startTime = 0.0;
+	double autoStartTime = 0.0;
 	double distance = 0.0;
 
 	Countdown countdown;
@@ -141,7 +143,7 @@ public class ShooterController {
 			if ((Timer.getTime() - startTime) > 0.5) {//1.0
 
 				//System.out.println("SECCOND BAAAAAAALLLLLLL");
-				intake.setIntakeSpeed(-0.1);
+				intake.setIntakeSpeed(-0.3);//-0.1
 
 			}
 
@@ -151,6 +153,82 @@ public class ShooterController {
 
 			trigger.setSpeed(-0.1);
 			intake.setIntakeSpeed(-0.1);
+
+		}
+
+		//System.out.println("shooter: " + Shooter.readyToFire);
+
+	}
+
+	public void autoFire() {
+
+		//shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+		//shooter.setShooterSpeeds(limelight.getDistance());
+
+		eval();
+
+		if (firstAutoTime) {
+
+			firstAutoTime = false;
+			autoStartTime = 0.0;
+
+		}
+
+
+		//if (firstShootingTime) {
+
+		//distance = correctLimelightDistanceError(limelight.getDistance());
+
+		//}
+
+		//shooter.setShooterSpeeds(distance);
+
+			//shooter.topWheel.setSpeed(0.2);
+			//shooter.bottomWheel.setSpeed(0.2);
+
+		//System.out.println(String.format("timer time: %.2f", Timer.getTime()));
+		//System.out.println(String.format("start time: %.2f", startTime));
+
+		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
+		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
+		//System.out.println("readyToFire: " + Shooter.readyToFire);
+
+		if (Timer.getTime() - autoStartTime > 3) {
+
+			firstStopTime = true;
+
+			if (firstShootingTime) {
+
+				startTime = Timer.getTime();
+				//System.out.println("RESTETING");
+				firstShootingTime = false;
+
+			}
+
+			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
+
+			if ((Timer.getTime() - startTime) > 1.0) {//1.0
+
+				//System.out.println("SECCOND BAAAAAAALLLLLLL");
+				intake.setIntakeSpeed(-0.3);
+				trigger.setSpeed(0.5);
+
+			}
+
+			if (Timer.getTime() - startTime < 0.2) {
+
+				trigger.setSpeed(0.35);
+
+			} else if ((Timer.getTime() - startTime) < 1.0) {
+
+				trigger.setSpeed(0.0);
+
+			}
+
+		} else {
+
+			trigger.setSpeed(-0.1);
+			intake.setIntakeSpeed(0);
 
 		}
 
