@@ -85,14 +85,15 @@ public class Turret {
 
         position *= Constants.FULL_TURRET_ROTATION;
 
+        //check if current position is greater than max roatation
         if (this.getPosition() >= maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (position > maxRotation) {
-                
+                //Set turret position to max rotation
                 motor.setPosition((maxRotation / Constants.FULL_TURRET_ROTATION) + (turretOffset * Constants.FULL_TURRET_ROTATION), 0.0, 0.0);
 
             } else {
-                
+                //set turret to desired position
                 motor.setPosition(position + (turretOffset * Constants.FULL_TURRET_ROTATION), -speed, speed);
 
             }

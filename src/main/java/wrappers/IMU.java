@@ -24,7 +24,7 @@ public class IMU {
     public IMU() {
 
         imu = new ADIS16470_IMU();
-
+        this.reset();
     }
 
     /**
@@ -140,4 +140,15 @@ public class IMU {
        return imu.getAngle();
     }
 
+    public void reset() {
+
+        imu.reset();
+
+    }
+
+    public void calibrate(){
+
+        imu.calibrate();
+
+    }
 }

@@ -332,7 +332,7 @@ public class ShooterController {
 
 		aligned = Math.abs(angle) <= acceptableAngleError;
 
-		if (!aligned) {
+		/*if (!aligned) {
 
 			turret.setPosition(speed, currentPos + currentError);
 			//turret.setPosition(speed, (currentError + currentPos));
@@ -343,17 +343,32 @@ public class ShooterController {
 
 			turret.setPosition(0.0, currentPos);
 
-		}
+		}*/
+
+		//System.out.println("position: " + turret.getPosition());
 
 		if (!limelight.targetFound()) {
 
 			//0.125 previous value
-			turret.scan(0.25);
+			turret.scan(0.3);
 			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
 			
 		} else {
 
 			turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
+
+			if (!aligned) {
+
+				turret.setPosition(speed, currentPos + currentError);
+				//turret.setPosition(speed, (currentError + currentPos));
+				//System.out.println("speed: " + speed);
+				//linearBang.getCommand(currentPos + currentError));
+				
+			} else {
+	
+				turret.setPosition(0.0, currentPos);
+	
+			}
 
 		}
 
