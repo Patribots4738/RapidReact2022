@@ -312,7 +312,6 @@ private boolean firstTime;
 		//System.out.println("Two Ball Confirmed----------------");
 		if (autoFirstTimeWait) {
 			//System.out.println("First Time Wait Confirmed");
-			//It may be more beneficial if we use a timer that counts up instead of counting down
 			autoFirstWaitCountdown = new Countdown(2);
 			autoFirstTimeWait = false;
 			shooting = false;
@@ -353,8 +352,6 @@ private boolean firstTime;
 		if (/*auto.getQueueLength() == 3 || */auto.queueIsEmpty()){			
 			//System.out.println("in pause area");
 			if(firstTime) {
-				//It may be more beneficial if we use a timer that counts up instead of counting down
-				//Should this countdown be 2 seconds like in 2 ball?
 				countdown = new Countdown(5);
 				firstTime = false;
 				shooting = true;
@@ -372,7 +369,7 @@ private boolean firstTime;
 					if (firstThreeBallTimeTwo) {
 	
 						firstThreeBallTimeTwo = false;
-						System.out.println("ADDING COMMANDS");
+	System.out.println("ADDING COMMANDS");
 						auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 			
 						//Shoot
@@ -553,25 +550,20 @@ private boolean firstTime;
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
-			trigger.setSpeed(-0.075);//-0.1
+			trigger.setSpeed(-0.0);//-0.65
 			firstIntakingStartTime = Timer.getTime();
 
-		} else {
-
-			trigger.setSpeed(0.0);
-
 		}
-/*
-		//what is the point of this???
+
 		if (Timer.getTime() - firstIntakingStartTime < 0.2) {
 
 			trigger.setSpeed(-0.0);//-0.15
 
 		} else {	
-			
-			trigger.setSpeed(-0.0);
 
-		}*/
+			trigger.setSpeed(-0.0);//-0.15
+
+		}
 
 
 	}
@@ -765,10 +757,10 @@ private boolean firstTime;
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
 
-			shooterController.aim();
+			//shooterController.aim();
 
 			// Set the scan of the turret to be the opposite of which way it is currently going
-			if (operator.getButton(XboxController.Buttons.Y)) {
+			if (operator.getButton(XboxController.Buttons.X)) {
 
 				turret.setIsGoingRight(!turret.getIsGoingRight());
 
@@ -778,17 +770,20 @@ private boolean firstTime;
 
 				double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
 
-				shooterController.setShooterSpeeds(distance);
+				shooterController.setShooterSpeeds(distance - 18);
+				
+				System.out.println(distance);
 
 			}
 
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-				trigger.setSpeed(0.3);
-				System.out.println("trigger: " + trigger.getSpeed());
-				intake.setIntakeSpeed(-0.4);//-0.3
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);//-0.1
 
 			} else {
+
+				shooterController.aim();
 
 				if (!operator.getButton(XboxController.Buttons.B)) {
 
@@ -813,7 +808,11 @@ private boolean firstTime;
 				intake.setIntakeSpeed(-0.3);//-0.1
 
 			} else {
+				/*if (shooter.readyToFire) {
 
+					shooterController.setTurretLock(true);
+
+				}*/
 				shooterController.fire();
 
 			}
@@ -848,7 +847,7 @@ private boolean firstTime;
 
 	@Override
 	public void testInit() {
-	
+
 	}
 	
 	boolean firstIntaking = true;
@@ -859,12 +858,10 @@ private boolean firstTime;
 
 		//elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
 		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
-		//shooter.topWheel.setSpeed(0.3);
-		//shooter.bottomWheel.setSpeed(0.3);
+		shooter.topWheel.setSpeed(0.3);
+		shooter.bottomWheel.setSpeed(0.3);
 
-		//intake(1);
-		System.out.println(String.format("X: %.4f; Y: %.4f; Z: %.4f", imu.getXRotation(), imu.getYRotation(), imu.getZRotation()));
-		//System.out.println("position: " + turret.getPosition());
+		intake(1);
 
 
 	}

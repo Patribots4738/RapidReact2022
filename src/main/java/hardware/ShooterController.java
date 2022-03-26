@@ -126,7 +126,7 @@ public class ShooterController {
 		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
 		//System.out.println("readyToFire: " + Shooter.readyToFire);
 
-		if (Shooter.readyToFire) {
+		if (shooter.readyToFire) {
 
 			firstStopTime = true;
 
@@ -242,7 +242,7 @@ public class ShooterController {
 
 		shooter.setShooterSpeeds(15 * 12);
 
-		if (Shooter.readyToFire) {
+		if (shooter.readyToFire) {
 
 			// random variables, need to be tested
 			trigger.setSpeed(0.25);
@@ -387,5 +387,11 @@ public class ShooterController {
 		shooter.setShooterSpeeds(distance);
 
 	}
+
+	/*public void setTurretLock(boolean turretLock) {
+
+		this.turretLock = turretLock;
+
+	}*/
 
 }

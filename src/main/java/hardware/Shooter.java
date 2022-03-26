@@ -12,7 +12,7 @@ public class Shooter {
 	public PIDMotor topWheel;
 	public PIDMotor bottomWheel;
 
-	public static boolean readyToFire = false;
+	public boolean readyToFire = false;
 
 	// in decimal percent
 	private double acceptableSpeedError = 0.0075;
