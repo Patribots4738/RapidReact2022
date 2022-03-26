@@ -7,7 +7,7 @@ import java.io.IOException;  // Import the IOException class to handle errors
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class LogMotors {
+public class logMotors {
 
     public String filename;
     public PIDMotor motors[];
@@ -16,7 +16,7 @@ public class LogMotors {
     /**
      * @param m motor object to log
      */
-    public LogMotors( PIDMotor... m) {
+    public logMotors( PIDMotor... m) {
 
         filename = "/tmp/motor.log";
         this.motors = m;
