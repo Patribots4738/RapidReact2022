@@ -106,7 +106,7 @@ public class Robot extends TimedRobot {
 		intake = new Intake(intakeMotor, new DoubleSolenoid(0, 1));
 
 		SparkMax turretMotor = new SparkMax(2, true);
-		turretMotor.setPID(1.0, 0, 0);//0.5, 0, 0);
+		turretMotor.setPID(1.2, 0, 0);//0.5, 0, 0);
 		turret = new Turret(turretMotor, 1.0);
 
 		SparkMax triggerMotor = new SparkMax(6, true);
@@ -440,13 +440,12 @@ private boolean firstTime;
 
 		shooter.setShooterSpeeds(distance);
 
-		shooterController.aim();
-
 		if (!shooting) {
 
 			//System.out.println("TRIGGER SETTING BACKWARDS");
-			trigger.setSpeed(-0.65);
-			intake.setIntakeSpeed(-1.0);
+			shooterController.aim();
+			trigger.setSpeed(0.0);
+			intake.setIntakeSpeed(-0.4);//-1
 
 		}
 
@@ -770,7 +769,7 @@ private boolean firstTime;
 
 				double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
 
-				shooterController.setShooterSpeeds(distance - 18);
+				shooterController.setShooterSpeeds(distance);//-18
 				
 				System.out.println(distance);
 
@@ -808,11 +807,7 @@ private boolean firstTime;
 				intake.setIntakeSpeed(-0.3);//-0.1
 
 			} else {
-				/*if (shooter.readyToFire) {
-
-					shooterController.setTurretLock(true);
-
-				}*/
+				
 				shooterController.fire();
 
 			}
@@ -857,12 +852,12 @@ private boolean firstTime;
 	public void testPeriodic() {
 
 		//elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
-		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 0.15);
-		shooter.topWheel.setSpeed(0.3);
-		shooter.bottomWheel.setSpeed(0.3);
+		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 1.0);
+		//shooter.topWheel.setSpeed(0.3);
+		//shooter.bottomWheel.setSpeed(0.3);
 
-		intake(1);
-
+		//intake(1);
+		trigger.setSpeed(0.35);
 
 	}
 
