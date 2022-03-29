@@ -266,7 +266,7 @@ private boolean firstTime;
 
 			case 1: //threeBall
 
-				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));//-41, 0.25
 			
 				//auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
 			
@@ -312,18 +312,12 @@ private boolean firstTime;
 		//System.out.println("Two Ball Confirmed----------------");
 		if (autoFirstTimeWait) {
 			//System.out.println("First Time Wait Confirmed");
-			autoFirstWaitCountdown = new Countdown(2);
+			autoFirstWaitCountdown = new Countdown(3);
 			autoFirstTimeWait = false;
 			shooting = false;
 			
 		}
-		/*
-			if (autoFirstWaitCountdown.isRunning()) {
-
-				System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
-
-			}
-		*/
+		
 		if (!autoFirstWaitCountdown.isRunning()) {
 			//System.out.println("Countdown Finished");
 			if (auto.queueIsEmpty()) {
@@ -331,14 +325,17 @@ private boolean firstTime;
 				shooterController.autoFire();
 				shooting = true;
 	
-			} else {
+			} else { //Queue not empty and timer is not running
 				//System.out.println("Progressing Queue");
 				auto.executeQueue();
 				shooting = false;
 	
 			}
 
-		}
+		} /*else { //autoFirstWaitCountdown.isRunning()
+			System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
+
+		}*/
 
 	}
 
@@ -347,20 +344,41 @@ private boolean firstTime;
 	boolean firstThreeBallTime = false;
 	boolean firstThreeBallTimeTwo = true;
 
+	boolean anotherFirst = true;
+	Countdown anotherCountdown;
+
+	boolean shotFirst = false;
+
 	public void threeBallAuto() {
+
+		if (anotherFirst) {
+
+			anotherFirst = false;
+			anotherCountdown = new Countdown(3.5);//4.3333
+
+		}
+
+		if (anotherCountdown.isRunning()) {
+
+			return;
+
+		}
 		
 		if (/*auto.getQueueLength() == 3 || */auto.queueIsEmpty()){			
 			//System.out.println("in pause area");
 			if(firstTime) {
-				countdown = new Countdown(5);
+
+				countdown = new Countdown(2.5);
 				firstTime = false;
 				shooting = true;
+
 			}
 
 			if (!countdown.isRunning()) {
 				auto.executeQueue();
 				shooting = false;
 				firstTime = true;
+				shotFirst = true;
 
 				if (firstThreeBallTime) {
 
@@ -370,7 +388,7 @@ private boolean firstTime;
 	
 						firstThreeBallTimeTwo = false;
 	System.out.println("ADDING COMMANDS");
-						auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
+						auto.addCommands(new Command(CommandType.MOVE, 43, 0.5));//41, 0.25 ; 43, 0.5
 			
 						//Shoot
 					
@@ -385,13 +403,22 @@ private boolean firstTime;
 			} else {
 
 				//System.out.println("pause");
-				shooterController.autoFire();
+
+				if (!shotFirst) {
+
+					shooterController.autoFire();
+
+				} else {
+
+					shooterController.autoSecondFire();
+
+				}
 				shooting = true;
 				firstThreeBallTime = true;
 
 			}
 			
-		}else {
+		} else {
 
 			auto.executeQueue();
 			shooting = false;
@@ -444,8 +471,8 @@ private boolean firstTime;
 
 			//System.out.println("TRIGGER SETTING BACKWARDS");
 			shooterController.aim();
-			trigger.setSpeed(0.0);
-			intake.setIntakeSpeed(-0.4);//-1
+			trigger.setSpeed(-0.3);//-0.1
+			intake.setIntakeSpeed(-1.0);//-.7
 
 		}
 
@@ -549,11 +576,15 @@ private boolean firstTime;
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
-			trigger.setSpeed(-0.0);//-0.65
+			trigger.setSpeed(-0.1);//-0.65
 			firstIntakingStartTime = Timer.getTime();
 
-		}
+		} else {
 
+			trigger.setSpeed(0.0);
+
+		}
+/*
 		if (Timer.getTime() - firstIntakingStartTime < 0.2) {
 
 			trigger.setSpeed(-0.0);//-0.15
@@ -563,7 +594,7 @@ private boolean firstTime;
 			trigger.setSpeed(-0.0);//-0.15
 
 		}
-
+*/
 
 	}
 
@@ -778,7 +809,7 @@ private boolean firstTime;
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 				trigger.setSpeed(0.35);
-				intake.setIntakeSpeed(-0.3);//-0.1
+				intake.setIntakeSpeed(-0.3);//-0.3
 
 			} else {
 
