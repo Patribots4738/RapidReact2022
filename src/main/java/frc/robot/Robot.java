@@ -58,6 +58,10 @@ public class Robot extends TimedRobot {
 	// Dashboard.slider D;
 	// Dashboard.slider F;
 
+	Dashboard.slider distanceSlider;
+
+	Dashboard.boolBox aligned;
+
 	DynamicBangBang topBangBang;
 	DynamicBangBang bottomBangBang;
 
@@ -107,7 +111,7 @@ public class Robot extends TimedRobot {
 
 		SparkMax turretMotor = new SparkMax(2, true);
 		turretMotor.setPID(1.2, 0, 0);//0.5, 0, 0);
-		turret = new Turret(turretMotor, 1.0);
+		turret = new Turret(turretMotor, 0.975);//1.0
 
 		SparkMax triggerMotor = new SparkMax(6, true);
 		triggerMotor.setPID(0.5, 0, 0);
@@ -147,6 +151,8 @@ public class Robot extends TimedRobot {
 
 		//motorGraph = driveDashboard.new graph("motor", 10);
 
+		aligned = autoDashboard.new boolBox("Aligned");
+
 		// P = shooterDashboard.new slider("P", -3, 3, 0.01);
 		// I = shooterDashboard.new slider("I", -3, 3, 0.01);
 		// D = shooterDashboard.new slider("D", -30, 30, 0.01);
@@ -154,6 +160,8 @@ public class Robot extends TimedRobot {
 
 		topSlider = shooterDashboard.new slider("top Motor", -1, 1, 0.01);
 		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
+
+		distanceSlider = shooterDashboard.new slider("distanceSlider", 0, 400, 0.01);
 
 		//Pid values "good pid but storing for now"
 		//P = -0.32
@@ -281,7 +289,7 @@ private boolean firstTime;
 				break;
 					
 			case 2: //fourBall
-			
+			/*
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 				
 				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
@@ -299,6 +307,8 @@ private boolean firstTime;
 				auto.addCommands(new Command(CommandType.MOVE, -160, 0.25));
 				
 				//Shoot
+*/
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
 
 				break;
 		}
@@ -368,7 +378,7 @@ private boolean firstTime;
 			//System.out.println("in pause area");
 			if(firstTime) {
 
-				countdown = new Countdown(2.5);
+				countdown = new Countdown(4.0);//3.5
 				firstTime = false;
 				shooting = true;
 
@@ -429,34 +439,32 @@ private boolean firstTime;
 
 	public void fourBallAuto() {
 		//CHANGE COUNTDOWN FOR INTAKE TIME FOR 5 BALL
-		if (auto.getQueueLength() == 5 || auto.queueIsEmpty()) {
-
-			if(firstTime) {
-				countdown = new Countdown(1);
-				firstTime = false;
-			}
-
-			if(countdown.isRunning()){
-				shooterController.fire();
-			}
-
-		}else if(auto.getQueueLength() == 1){
-
-			if(firstWaitTime){
-				countdown = new Countdown(1.5);
-				firstWaitTime = false;
-			}
-
-			if(!countdown.isRunning()){
-				auto.executeQueue();
-			}
-
-		}else {
-
-			auto.executeQueue();
-			firstTime = true;
-
+		if (autoFirstTimeWait) {
+			//System.out.println("First Time Wait Confirmed");
+			autoFirstWaitCountdown = new Countdown(7);
+			autoFirstTimeWait = false;
+			shooting = false;
+			
 		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			//System.out.println("Countdown Finished");
+			if (auto.queueIsEmpty()) {
+				//System.out.println("Firing Now");
+				shooterController.autoFire();
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+				//System.out.println("Progressing Queue");
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		} /*else { //autoFirstWaitCountdown.isRunning()
+			System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
+
+		}*/
 
 	}
 
@@ -470,7 +478,8 @@ private boolean firstTime;
 		if (!shooting) {
 
 			//System.out.println("TRIGGER SETTING BACKWARDS");
-			shooterController.aim();
+			//shooterController.aim();
+			shooterController.stopAim();
 			trigger.setSpeed(-0.3);//-0.1
 			intake.setIntakeSpeed(-1.0);//-.7
 
@@ -582,8 +591,15 @@ private boolean firstTime;
 		} else {
 
 			trigger.setSpeed(0.0);
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);//-0.3
+	
+			}
 
 		}
+
 /*
 		if (Timer.getTime() - firstIntakingStartTime < 0.2) {
 
@@ -600,6 +616,9 @@ private boolean firstTime;
 
 	@Override
 	public void teleopPeriodic() {
+
+		shooterController.update();
+		aligned.setValue(ShooterController.aligned);
 
 		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
@@ -784,22 +803,22 @@ private boolean firstTime;
 		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
 
 //FOLLOWIN CODE IS VERY GOOD
+
+		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+			trigger.setSpeed(0.35);
+			intake.setIntakeSpeed(-0.3);//-0.3
+
+		}
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
 
 			//shooterController.aim();
 
-			// Set the scan of the turret to be the opposite of which way it is currently going
-			if (operator.getButton(XboxController.Buttons.X)) {
-
-				turret.setIsGoingRight(!turret.getIsGoingRight());
-
-			}
-
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
-				double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
-
+				//double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
+double distance = distanceSlider.getValue();
 				shooterController.setShooterSpeeds(distance);//-18
 				
 				System.out.println(distance);
@@ -808,12 +827,30 @@ private boolean firstTime;
 
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
-				trigger.setSpeed(0.35);
-				intake.setIntakeSpeed(-0.3);//-0.3
+				//trigger.setSpeed(0.35);
+				//intake.setIntakeSpeed(-0.3);//-0.3
 
 			} else {
 
-				shooterController.aim();
+				//shooterController.aim();
+//CHANGE
+				if (operator.getButton(XboxController.Buttons.R)) {
+
+					if (Math.abs(operator.getAxis(XboxController.Axes.LeftX)) > 0.1) {
+
+						turret.rotate(operator.getAxis(XboxController.Axes.LeftX) * 0.4);
+
+					} else {
+
+						turret.rotate(0.0);
+
+					}
+
+				} else {
+
+					shooterController.aim();
+
+				}
 
 				if (!operator.getButton(XboxController.Buttons.B)) {
 

@@ -20,9 +20,9 @@ public class ShooterController {
 
 	Drive drive;
 
-	private double maxSpeed = 0.3;//0.25;
+	private double maxSpeed = 0.2;//0.3;
 
-	private double acceptableAngleError = 1.3;
+	private double acceptableAngleError = 1.5;//1.3
 
 	private double minSpeed = 0.06;
 
@@ -192,8 +192,9 @@ public class ShooterController {
 		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
 		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
 		//System.out.println("readyToFire: " + Shooter.readyToFire);
+//HEREHEREHERE
 
-		if (Timer.getTime() - autoStartTime > 1) {
+		if (Timer.getTime() - autoStartTime > 1.5) {//1
 
 			firstStopTime = true;
 
@@ -204,14 +205,14 @@ public class ShooterController {
 				firstShootingTime = false;
 
 			}
-
+//END END END
 			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
-/*
+
 			if ((Timer.getTime() - startTime) > 1.0) {//1.0
 
 				//System.out.println("SECCOND BAAAAAAALLLLLLL");
 				intake.setIntakeSpeed(-0.3);
-				trigger.setSpeed(0.5);
+				trigger.setSpeed(0.35);
 
 			}
 
@@ -223,15 +224,12 @@ public class ShooterController {
 
 				trigger.setSpeed(0.0);
 
-			}*/
-
-			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(-.3);//-0.3
+			}
 
 		} else {
 
 			trigger.setSpeed(0.0);
-			intake.setIntakeSpeed(-0.05);//-0.15
+			intake.setIntakeSpeed(0.0);//-0.15
 			this.aim();
 
 		}
@@ -273,7 +271,7 @@ public class ShooterController {
 		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
 		//System.out.println("readyToFire: " + Shooter.readyToFire);
 
-		if (Timer.getTime() - autoStartTime > 1) {
+		if (Timer.getTime() - autoStartTime > 1.5) {//1
 
 			firstStopTime = true;
 
@@ -418,7 +416,15 @@ public class ShooterController {
 
 		if (!aligned) {
 
-			turret.setPosition(speed, currentPos + currentError);
+			double setPos = currentPos + currentError;
+
+			if (Math.abs(setPos) > (turret.getMaxRotation() / Constants.FULL_TURRET_ROTATION)) {
+
+				setPos = (turret.getMaxRotation() / Constants.FULL_TURRET_ROTATION) * Math.signum(setPos);
+
+			}
+System.out.println("SETPOS: " + setPos);
+			turret.setPosition(speed, setPos);
 			//turret.setPosition(speed, (currentError + currentPos));
 			//System.out.println("speed: " + speed);
 			//linearBang.getCommand(currentPos + currentError));
@@ -442,14 +448,14 @@ public class ShooterController {
 
 			} else {
 
-				turret.scan(0.6);
+				turret.scan(0.3);
 
 			}
 			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
 			
 		} else {
 
-			turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
+			//turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
 /*
 			if (!aligned) {
 
@@ -479,6 +485,13 @@ public class ShooterController {
 	public void setShooterSpeeds(double distance){
 
 		shooter.setShooterSpeeds(distance);
+
+	}
+
+	public void update() {
+
+		double angle = limelight.getHorizontalAngle();
+		aligned = Math.abs(angle) <= acceptableAngleError;
 
 	}
 

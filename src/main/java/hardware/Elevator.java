@@ -21,6 +21,9 @@ public class Elevator {
 		
 		this.rightLifter = rightLifter;
 		this.leftLifter = leftLifter;
+
+		this.rightLifter.setBrakeMode(true);
+		this.leftLifter.setBrakeMode(true);
         //this.lifter = new PIDMotorGroup(rightLifter,leftLifter);
 
 		//this.lock = lock;
@@ -32,6 +35,12 @@ public class Elevator {
 	}
 
 	public void setElevator(double speed) {
+
+		if (Math.abs(speed) < 0.1) {
+
+			speed = 0.0;
+
+		}
 
 		rightLifter.setPercent(speed);
 		leftLifter.setPercent(-speed);/*
