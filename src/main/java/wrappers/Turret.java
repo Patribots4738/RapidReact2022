@@ -43,7 +43,9 @@ public class Turret {
     public void rotate(double speed) {
 
         //System.out.println("pos: " + this.getPosition());
-        
+
+        motor.setSpeed(speed);
+        /*
         if (this.getPosition() > maxRotation / Constants.FULL_TURRET_ROTATION) {
             
             if (speed > 0.0) {
@@ -72,7 +74,7 @@ public class Turret {
             
             motor.setSpeed(speed);
 
-        }
+        }*/
 
     }
 
@@ -115,6 +117,7 @@ public class Turret {
 
         }
 */
+/*
 System.out.println("position: " + position);
 System.out.println("maxrotation: " + maxRotation);
         if (Math.abs(position) > maxRotation) {
@@ -127,7 +130,9 @@ System.out.println("maxrotation: " + maxRotation);
             motor.setPosition(position, -speed, speed);
 
         }
-System.out.println("speed: " + speed);
+System.out.println("speed: " + speed);*/
+
+motor.setPosition(position + (turretOffset * Constants.FULL_TURRET_ROTATION), -speed, speed);
 
     }
 /*

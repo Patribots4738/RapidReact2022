@@ -8,6 +8,8 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.wpilibj.CAN;
+
 public class SparkMax implements PIDMotor {
 
 	CANSparkMax motor;
@@ -184,6 +186,12 @@ public class SparkMax implements PIDMotor {
 	public double getAmperage() {
 
 		return 0.0;
+
+	}
+
+	public CANSparkMax getCanSparkMax() {
+
+		return motor;
 
 	}
 

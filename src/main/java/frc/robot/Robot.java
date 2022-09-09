@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 
 import java.security.spec.DSAGenParameterSpec;
 
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
+
 import autonomous.*;
 import autonomous.Command.CommandType;
 import hardware.*;
@@ -111,6 +113,10 @@ public class Robot extends TimedRobot {
 
 		SparkMax turretMotor = new SparkMax(2, true);
 		turretMotor.setPID(1.2, 0, 0);//0.5, 0, 0);
+		turretMotor.getCanSparkMax().enableSoftLimit(SoftLimitDirection.kForward, true);
+		turretMotor.getCanSparkMax().enableSoftLimit(SoftLimitDirection.kReverse, true);
+		turretMotor.getCanSparkMax().setSoftLimit(SoftLimitDirection.kForward, 35);
+		turretMotor.getCanSparkMax().setSoftLimit(SoftLimitDirection.kReverse, -35);
 		turret = new Turret(turretMotor, 0.975);//1.0
 
 		SparkMax triggerMotor = new SparkMax(6, true);
