@@ -135,17 +135,14 @@ public class Robot extends TimedRobot {
 	
 		elevator = new Elevator(new Falcon(9), new Falcon(10));
 
-		// R seems like best value to determine color of first intaken ball
-		//colorSensor = new ColorSensor();
-
 			//for shuffleboard
 		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
 		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
 
-		/* P = new Dashboard.slider("P", 0, 10, 0.01); 
-		I = new Dashboard.slider("I", 0, 30, 0.01);
-		D = new Dashboard.slider("D", 0, 4, 0.01); */
-		//P.setValue(0.5);
+		// P = new Dashboard.slider("P", 0, 10, 0.01); 
+		// I = new Dashboard.slider("I", 0, 30, 0.01);
+		// D = new Dashboard.slider("D", 0, 4, 0.01); 
+		// P.setValue(0.5);
 
 		shooterDashboard = new Dashboard("shooter");
 		//driveDashboard = new Dashboard("drive");
@@ -168,13 +165,6 @@ public class Robot extends TimedRobot {
 		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
 
 		distanceSlider = shooterDashboard.new slider("distanceSlider", 0, 400, 0.01);
-
-		//Pid values "good pid but storing for now"
-		//P = -0.32
-		//I = 0 lmao
-		//D = oh no lets say 0.12
-		//F = what was f... probobly 1
-		//Comment by Lemmon "Very similar to no pid, can't tell what I like better"
 
 
 		//graph = generalDashboard.new graph("turret speed", 10);
@@ -204,47 +194,8 @@ public class Robot extends TimedRobot {
 		compressor.setState(true);
 
 	}
-/* 
-	@Override
-	public void autonomousInit() {
 
-		leftMotors.setPID(0.05, 0, 5);
-		rightMotors.setPID(0.05, 0, 5);
-
-		turret.setZero();
-
-		auto.reset();
-
-		auto.addCommands(new Command(CommandType.MOVE, -120, 0.6));
-		auto.addCommands(new Command(CommandType.MOVE, 36, 0.6));
-		//auto.addCommands(new Command(CommandType.ROTATE, 0.25, 0.1));
-
-	} 
-
-	@Override
-	public void autonomousPeriodic() {
-
-		auto.executeQueue();
-
-		if (auto.queueIsEmpty()) {
-
-			intake.setIntakeSpeed(-1.0);
-			trigger.setSpeed(0.35);
-
-		} else {
-
-			intake.putDownIntake();
-			intake.setIntakeSpeed(-1.0);
-			trigger.setSpeed(-0.1);
-
-		}
-
-		bottomMotor.setSpeed(0.6);
-
-	}
-
- */
-private boolean firstTime;
+	private boolean firstTime;
 	private boolean firstWaitTime;
 
 	@Override
@@ -924,15 +875,7 @@ double distance = distanceSlider.getValue();
 
 	@Override
 	public void testPeriodic() {
-
-		//elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.5);
-		//turret.rotate(driver.getAxis(XboxController.Axes.RightX) * 1.0);
-		//shooter.topWheel.setSpeed(0.3);
-		//shooter.bottomWheel.setSpeed(0.3);
-
-		//intake(1);
-		trigger.setSpeed(0.35);
-
+		
 	}
 
 }
