@@ -17,20 +17,16 @@ public class Elevator {
     double upperLimit = 10;
     double lowerLimit = 0;
 
-	public Elevator(PIDMotor leftLifter, PIDMotor rightLifter/*, SingleSolenoid lock*/) {
+	public Elevator(PIDMotor leftLifter, PIDMotor rightLifter) {
 		
 		this.rightLifter = rightLifter;
 		this.leftLifter = leftLifter;
 
 		this.rightLifter.setBrakeMode(true);
 		this.leftLifter.setBrakeMode(true);
-        //this.lifter = new PIDMotorGroup(rightLifter,leftLifter);
-
-		//this.lock = lock;
 
 		rightLifter.setSpeed(0.0);
 		leftLifter.setSpeed(0.0);
-        //lifter.setPercent(0);
 		
 	}
 
@@ -43,16 +39,7 @@ public class Elevator {
 		}
 
 		rightLifter.setPercent(speed);
-		leftLifter.setPercent(-speed);/*
-        if((lifter.getPosition() > upperLimit && speed > 0) || (lifter.getPosition() < lowerLimit && speed < 0)){
-
-            lifter.setPercent(0);
-        
-        } else {
-        
-            lifter.setPercent(speed);
-        
-        }*/
+		leftLifter.setPercent(-speed);
 
 	}
 
@@ -60,7 +47,6 @@ public class Elevator {
 
 		rightLifter.setPercent(defaultSpeed);
 		leftLifter.setPercent(-defaultSpeed);
-        //setElevator(defaultSpeed);
 
 	}
 
@@ -68,7 +54,6 @@ public class Elevator {
 
 		rightLifter.setPercent(-defaultSpeed);
 		leftLifter.setPercent(defaultSpeed);
-        //setElevator(-defaultSpeed);
 
 	}
 
@@ -76,7 +61,6 @@ public class Elevator {
 
 		rightLifter.setPercent(0);
 		leftLifter.setPercent(0);
-        //lifter.setPercent(0);
 
 	}
 

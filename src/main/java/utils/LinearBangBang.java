@@ -34,7 +34,6 @@ public class LinearBangBang {
         
         if (Math.signum(desired) != Math.signum(actual) && (actual > acceptableError || actual < -acceptableError)) {
 
-            // System.out.println("Switch Sign");
             desired = 0;
 
         }

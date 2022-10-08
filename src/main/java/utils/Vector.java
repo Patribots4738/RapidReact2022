@@ -4,6 +4,7 @@ public class Vector {
 
 	public double x, y, z;
 	private boolean _isPolar = false; // Do not change this unless you know what you are doing
+									  // that was a trick statement nobody knows what we're doing
 
 	public Vector(double x, double y) {
 

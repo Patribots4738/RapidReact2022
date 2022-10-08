@@ -22,7 +22,8 @@ public class Falcon implements PIDMotor {
 
 		lastSpeed = 0.0;
 
-		//this is a black box, dont touch, get Zach (unless I'm gone, then google, I'm sorry for the horrors that await you)
+		// This is a black box, dont touch, get Zach (unless I'm gone, then google, 
+		// I'm sorry for the horrors that await you) -- Zachery Royal
 		motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		motor.configAllowableClosedloopError(0, 0, 20);
 		motor.config_kF(0, 0, 20);
@@ -123,7 +124,9 @@ public class Falcon implements PIDMotor {
 	}
 
 	/**
-	 * run at end of (insert_name_here)Periodic loop in the mode you are using in robot.java (auto, teleop, disabled (wtf are you doing), or test)
+	 * run at end of (insert_name_here)
+	 * Periodic loop in the mode you are using in robot.java 
+	 * (auto, teleop, disabled (wtf are you doing), or test)
 	 */
 	public void setLastSpeed() {
 

@@ -20,9 +20,9 @@ public class ShooterController {
 
 	Drive drive;
 
-	private double maxSpeed = 0.2;//0.3;
+	private double maxSpeed = 0.2;
 
-	private double acceptableAngleError = 1.5;//1.3
+	private double acceptableAngleError = 1.5;
 
 	private double minSpeed = 0.06;
 
@@ -38,13 +38,11 @@ public class ShooterController {
 
 	PIDLoop aimLoop;
 
-	double P = 2.1;//2.4;
+	double P = 2.1;
 	double I = 0.0;
-	double D = 0.23;//0.2
+	double D = 0.23;
 	double FF = 0.0;
 	int Izone = 25;
-
-	//Dashboard.graph graph;
 
 	public ShooterController(Shooter shooter, Limelight limelight, Drive drive, Intake intake, Trigger trigger, Turret turret) {
 		
@@ -69,7 +67,6 @@ public class ShooterController {
 	// stops the shooter
 	public void stop() {
 
-		//shooter.stop();
 		shooter.topWheel.setSpeed(0.09);
 		shooter.bottomWheel.setSpeed(0.5);
 
@@ -80,12 +77,12 @@ public class ShooterController {
 
 	}
 
-	// checks if the robot is aligned and if the shooter is spun up, then updates internal variables accordingly
+	// checks if the robot is aligned 
+	// and if the shooter is spun up, 
+	// then updates internal variables accordingly
 	public void eval() {
 
-		//double offset = correctLimelightDistanceError(limelight.getDistance());
-
-		double angle = limelight.getHorizontalAngle();// - offset;
+		double angle = limelight.getHorizontalAngle();
 
 		aligned = Math.abs(angle) <= acceptableAngleError; 
 	 
@@ -103,28 +100,13 @@ public class ShooterController {
 	Countdown countdown;
 	boolean firstStopTime = true;
 
-	// this spins up the shooter and sets the conveyor and feeders based on wether the shooter is up to speed
+	// this spins up the shooter and sets the conveyor/feeders
+	// based on whether the shooter is up to speed
 	public void fire() {
 
-		//shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
-		//shooter.setShooterSpeeds(limelight.getDistance());
-
 		eval();
-
-		//if (firstShootingTime) {
-
-			distance = correctLimelightDistanceError(limelight.getDistance());
-
-		//}
-
+		distance = correctLimelightDistanceError(limelight.getDistance());
 		shooter.setShooterSpeeds(distance);
-
-		//System.out.println(String.format("timer time: %.2f", Timer.getTime()));
-		//System.out.println(String.format("start time: %.2f", startTime));
-
-		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
-		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
-		//System.out.println("readyToFire: " + Shooter.readyToFire);
 
 		if (shooter.readyToFire) {
 
@@ -133,17 +115,13 @@ public class ShooterController {
 			if (firstShootingTime) {
 
 				startTime = Timer.getTime();
-				//System.out.println("RESTETING");
 				firstShootingTime = false;
 
 			}
 
-			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
+			if ((Timer.getTime() - startTime) > 0.5) {
 
-			if ((Timer.getTime() - startTime) > 0.5) {//1.0
-
-				//System.out.println("SECCOND BAAAAAAALLLLLLL");
-				intake.setIntakeSpeed(-0.3);//-0.1
+				intake.setIntakeSpeed(-0.3);
 
 			}
 
@@ -156,14 +134,9 @@ public class ShooterController {
 
 		}
 
-		//System.out.println("shooter: " + Shooter.readyToFire);
-
 	}
 
 	public void autoFire() {
-
-		//shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
-		//shooter.setShooterSpeeds(limelight.getDistance());
 
 		eval();
 
@@ -174,43 +147,19 @@ public class ShooterController {
 
 		}
 
-
-		//if (firstShootingTime) {
-
-		//distance = correctLimelightDistanceError(limelight.getDistance());
-
-		//}
-
-		//shooter.setShooterSpeeds(distance);
-
-			//shooter.topWheel.setSpeed(0.2);
-			//shooter.bottomWheel.setSpeed(0.2);
-
-		//System.out.println(String.format("timer time: %.2f", Timer.getTime()));
-		//System.out.println(String.format("start time: %.2f", startTime));
-
-		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
-		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
-		//System.out.println("readyToFire: " + Shooter.readyToFire);
-//HEREHEREHERE
-
-		if (Timer.getTime() - autoStartTime > 1.5) {//1
+		if (Timer.getTime() - autoStartTime > 1.5) {
 
 			firstStopTime = true;
 
 			if (firstShootingTime) {
 
 				startTime = Timer.getTime();
-				//System.out.println("RESTETING");
 				firstShootingTime = false;
 
 			}
-//END END END
-			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
 
-			if ((Timer.getTime() - startTime) > 1.0) {//1.0
+			if ((Timer.getTime() - startTime) > 1.0) {
 
-				//System.out.println("SECCOND BAAAAAAALLLLLLL");
 				intake.setIntakeSpeed(-0.3);
 				trigger.setSpeed(0.35);
 
@@ -229,19 +178,15 @@ public class ShooterController {
 		} else {
 
 			trigger.setSpeed(0.0);
-			intake.setIntakeSpeed(0.0);//-0.15
+			intake.setIntakeSpeed(0.0);
 			this.aim();
 
 		}
-
-		//System.out.println("shooter: " + Shooter.readyToFire);
 
 	}
 
 	public void autoSecondFire() {
 
-		//shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
-		//shooter.setShooterSpeeds(limelight.getDistance());
 
 		eval();
 
@@ -252,74 +197,32 @@ public class ShooterController {
 
 		}
 
-
-		//if (firstShootingTime) {
-
-		//distance = correctLimelightDistanceError(limelight.getDistance());
-
-		//}
-
-		//shooter.setShooterSpeeds(distance);
-
-			//shooter.topWheel.setSpeed(0.2);
-			//shooter.bottomWheel.setSpeed(0.2);
-
-		//System.out.println(String.format("timer time: %.2f", Timer.getTime()));
-		//System.out.println(String.format("start time: %.2f", startTime));
-
-		//System.out.println(String.format("difference: %.2f", (Timer.getTime() - startTime)));
-		//System.out.println("differenceBoolean: "+  (Timer.getTime() - startTime > 0.6));
-		//System.out.println("readyToFire: " + Shooter.readyToFire);
-
-		if (Timer.getTime() - autoStartTime > 1.5) {//1
+		if (Timer.getTime() - autoStartTime > 1.5) {
 
 			firstStopTime = true;
 
 			if (firstShootingTime) {
 
 				startTime = Timer.getTime();
-				//System.out.println("RESTETING");
 				firstShootingTime = false;
 
 			}
 
-			//System.out.println("differenceBooleanTWO: " + (Timer.getTime() - startTime > 0.6));
-/*
-			if ((Timer.getTime() - startTime) > 1.0) {//1.0
-
-				//System.out.println("SECCOND BAAAAAAALLLLLLL");
-				intake.setIntakeSpeed(-0.3);
-				trigger.setSpeed(0.5);
-
-			}
-
-			if (Timer.getTime() - startTime < 0.2) {
-
-				trigger.setSpeed(0.35);
-
-			} else if ((Timer.getTime() - startTime) < 1.0) {
-
-				trigger.setSpeed(0.0);
-
-			}*/
-
 			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(-1);//-0.3
+			intake.setIntakeSpeed(-1);
 
 		} else {
 
 			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(-1);//-0.15
+			intake.setIntakeSpeed(-1);
 			this.aim();
 
 		}
 
-		//System.out.println("shooter: " + Shooter.readyToFire);
-
 	}
 
-	// this spins up the shooter and sets the conveyor and feeders based on wether the shooter is up to speed
 	// FOR WHEN LIMELIGHT CRAPS OUT
+	// forces a shot, but, again, emergency
 	public void emergencyFire() {
 
 		shooter.setShooterSpeeds(15 * 12);
@@ -327,20 +230,30 @@ public class ShooterController {
 		if (shooter.readyToFire) {
 
 			// random variables, need to be tested
+			// why ^^
 			trigger.setSpeed(0.25);
 			intake.setIntakeSpeed(0.25);
 
 		}
 
-		//System.out.println("shooter: " + Shooter.readyToFire);
-
 	}
 
 	public double correctLimelightDistanceError(double rawDistance) {
 
-		// each index after 0 is 2 feet of distance from the target starting at 5ft away
-		// edit-- attempting to get it after every foot because more data --> more accuracy.
-		// explain more, tysm </3
+		/*
+			starting at 5 feet, using this google sheet
+			https://docs.google.com/spreadsheets/d/1Aa292hdF5q5tXOj8oWQ8oRuvwU20PR3VLEx_ESRx3jg
+			you can just copy paste the values into the array
+			to do this next year: 
+			position a tape measure down the field from the target
+			start the robot at 5ft from the target,
+			the back of robot at the tape measure
+			record the limelight.getDistance(); after logging
+			record that data onto a text editor
+			then use that sheet and copy paste the output :')
+			What this does is corrects the goofy limelight to the correct distance
+			for the motor speeds to go to the correct positions --> good pewpew
+		*/
 		double[] errorData = {-14.34,
 							-14.8	,
 							-13.78	,
@@ -423,11 +336,8 @@ public class ShooterController {
 				setPos = (turret.getMaxRotation() / Constants.FULL_TURRET_ROTATION) * Math.signum(setPos);
 
 			}
-System.out.println("SETPOS: " + setPos);
+
 			turret.setPosition(speed, setPos);
-			//turret.setPosition(speed, (currentError + currentPos));
-			//System.out.println("speed: " + speed);
-			//linearBang.getCommand(currentPos + currentError));
 			
 		} else {
 
@@ -435,12 +345,8 @@ System.out.println("SETPOS: " + setPos);
 
 		}
 
-		//System.out.println("position: " + turret.getPosition());
 
 		if (!limelight.targetFound()) {
-
-			//0.125 previous value
-			//turret.scan(0.6);
 
 			if (Math.abs(turret.getPosition()) > turret.getMaxRotation() * 0.75) {
 
@@ -450,30 +356,8 @@ System.out.println("SETPOS: " + setPos);
 
 				turret.scan(0.3);
 
-			}
-			//System.out.println((limelight.getHorizontalAngle() > 0)? "Going Right" : "Going Left");
-			
-		} else {
-
-			//turret.setIsGoingRight(limelight.getHorizontalAngle() > 0);
-/*
-			if (!aligned) {
-
-				turret.setPosition(speed, currentPos + currentError);
-				//turret.setPosition(speed, (currentError + currentPos));
-				//System.out.println("speed: " + speed);
-				//linearBang.getCommand(currentPos + currentError));
-				
-			} else {
-	
-				turret.setPosition(0.0, currentPos);
-	
-			}*/
-
+			}	
 		}
-
-		//System.out.println(aligned);
-
 	}
 
 	public void stopAim() {

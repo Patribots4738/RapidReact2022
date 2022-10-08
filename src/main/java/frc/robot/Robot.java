@@ -55,10 +55,6 @@ public class Robot extends TimedRobot {
 
 	Dashboard.graph topMotorGraph;
 	Dashboard.graph bottomMotorGraph;
-	// Dashboard.slider P;
-	// Dashboard.slider I;
-	// Dashboard.slider D;
-	// Dashboard.slider F;
 
 	Dashboard.slider distanceSlider;
 
@@ -74,8 +70,6 @@ public class Robot extends TimedRobot {
 	Countdown countdown;
 
 	Dashboard.boxChooser autoChooser;
-
-	// Dashboard.
 
 	double lastSpeedSet = 0;
 	final double value = 0.025;
@@ -108,18 +102,21 @@ public class Robot extends TimedRobot {
 		operator = new XboxController(1);
 
 		SparkMax intakeMotor = new SparkMax(5, true);
+		SparkMax turretMotor = new SparkMax(2, true);
+		
 		intakeMotor.setPID(0.5, 0, 0);
 		intake = new Intake(intakeMotor, new DoubleSolenoid(0, 1));
-
-		SparkMax turretMotor = new SparkMax(2, true);
-		turretMotor.setPID(1.2, 0, 0);//0.5, 0, 0);
+		
+		turretMotor.setPID(1.2, 0, 0);
 		turretMotor.getCanSparkMax().enableSoftLimit(SoftLimitDirection.kForward, true);
 		turretMotor.getCanSparkMax().enableSoftLimit(SoftLimitDirection.kReverse, true);
 		turretMotor.getCanSparkMax().setSoftLimit(SoftLimitDirection.kForward, 35);
 		turretMotor.getCanSparkMax().setSoftLimit(SoftLimitDirection.kReverse, -35);
-		turret = new Turret(turretMotor, 0.975);//1.0
+		
+		turret = new Turret(turretMotor, 0.975);
 
 		SparkMax triggerMotor = new SparkMax(6, true);
+		
 		triggerMotor.setPID(0.5, 0, 0);
 		trigger = new Trigger(triggerMotor);
 
@@ -135,31 +132,12 @@ public class Robot extends TimedRobot {
 	
 		elevator = new Elevator(new Falcon(9), new Falcon(10));
 
-			//for shuffleboard
-		//smartDashboard = Shuffleboard.getTab("SmartDashboard");
-		//intakeTestEntry = smartDashboard.add("intakeTesting", intakeTesting).getEntry();
-
-		// P = new Dashboard.slider("P", 0, 10, 0.01); 
-		// I = new Dashboard.slider("I", 0, 30, 0.01);
-		// D = new Dashboard.slider("D", 0, 4, 0.01); 
-		// P.setValue(0.5);
-
 		shooterDashboard = new Dashboard("shooter");
-		//driveDashboard = new Dashboard("drive");
 		autoDashboard = new Dashboard("auto");
 
 		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
 
-		// distance = shooterDashboard.new slider("distance",0, 250, .1);
-
-		//motorGraph = driveDashboard.new graph("motor", 10);
-
 		aligned = autoDashboard.new boolBox("Aligned");
-
-		// P = shooterDashboard.new slider("P", -3, 3, 0.01);
-		// I = shooterDashboard.new slider("I", -3, 3, 0.01);
-		// D = shooterDashboard.new slider("D", -30, 30, 0.01);
-		// F = shooterDashboard.new slider("FF", -3, 3, 0.01);
 
 		topSlider = shooterDashboard.new slider("top Motor", -1, 1, 0.01);
 		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
@@ -167,15 +145,9 @@ public class Robot extends TimedRobot {
 		distanceSlider = shooterDashboard.new slider("distanceSlider", 0, 400, 0.01);
 
 
-		//graph = generalDashboard.new graph("turret speed", 10);
-
 		topGraph = shooterDashboard.new graph("Top Speed", 10);
 		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
 		triggerGraph = shooterDashboard.new graph("Trigger Speed", 10);
-		// bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);$
-
-		// topSlider = driveDashboard.new slider("top Speed", 0, 1, 0.01);
-		// bottomSlider = driveDashboard.new slider("bottom Speed", 0, 1, 0.01);
 
 		topBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
 		bottomBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
@@ -196,13 +168,11 @@ public class Robot extends TimedRobot {
 	}
 
 	private boolean firstTime;
-	private boolean firstWaitTime;
 
 	@Override
 	public void autonomousInit() {
 
 		firstTime = true;
-		firstWaitTime = true;
 
 		leftMotors.setPID(0.05, 0, 5);
 		rightMotors.setPID(0.05, 0, 5);
@@ -223,48 +193,16 @@ public class Robot extends TimedRobot {
 
 				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 
-				//auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
-
-				//Shoot
-
 				break;	
 
 			case 1: //threeBall
 
-				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));//-41, 0.25
-			
-				//auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
-			
-				//Shoot
-			
-				//auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
-			
-				//auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
-			
-				//Shoot
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 			
 				break;
 					
 			case 2: //fourBall
-			/*
-				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
 				
-				auto.addCommands(new Command(CommandType.MOVE, 41, 0.25));
-				
-				//Shoot
-				 
-				auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25)); 
-				
-				auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
-				
-				auto.addCommands(new Command(CommandType.ROTATE, -0.0657, 0.25));
-				
-				auto.addCommands(new Command(CommandType.MOVE, 160, 0.25));
-				
-				auto.addCommands(new Command(CommandType.MOVE, -160, 0.25));
-				
-				//Shoot
-*/
 				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
 
 				break;
@@ -276,9 +214,9 @@ public class Robot extends TimedRobot {
 	Countdown autoFirstWaitCountdown;
 
 	public void twoBallAuto() {
-		//System.out.println("Two Ball Confirmed----------------");
+		
 		if (autoFirstTimeWait) {
-			//System.out.println("First Time Wait Confirmed");
+		
 			autoFirstWaitCountdown = new Countdown(3);
 			autoFirstTimeWait = false;
 			shooting = false;
@@ -286,23 +224,20 @@ public class Robot extends TimedRobot {
 		}
 		
 		if (!autoFirstWaitCountdown.isRunning()) {
-			//System.out.println("Countdown Finished");
+			
 			if (auto.queueIsEmpty()) {
-				//System.out.println("Firing Now");
+			
 				shooterController.autoFire();
 				shooting = true;
 	
 			} else { //Queue not empty and timer is not running
-				//System.out.println("Progressing Queue");
+			
 				auto.executeQueue();
 				shooting = false;
 	
 			}
 
-		} /*else { //autoFirstWaitCountdown.isRunning()
-			System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
-
-		}*/
+		}
 
 	}
 
@@ -321,7 +256,7 @@ public class Robot extends TimedRobot {
 		if (anotherFirst) {
 
 			anotherFirst = false;
-			anotherCountdown = new Countdown(3.5);//4.3333
+			anotherCountdown = new Countdown(3.5);
 
 		}
 
@@ -331,11 +266,11 @@ public class Robot extends TimedRobot {
 
 		}
 		
-		if (/*auto.getQueueLength() == 3 || */auto.queueIsEmpty()){			
-			//System.out.println("in pause area");
+		if (auto.queueIsEmpty()){			
+			
 			if(firstTime) {
 
-				countdown = new Countdown(4.0);//3.5
+				countdown = new Countdown(4.0);
 				firstTime = false;
 				shooting = true;
 
@@ -354,13 +289,8 @@ public class Robot extends TimedRobot {
 					if (firstThreeBallTimeTwo) {
 	
 						firstThreeBallTimeTwo = false;
-	System.out.println("ADDING COMMANDS");
-						auto.addCommands(new Command(CommandType.MOVE, 43, 0.5));//41, 0.25 ; 43, 0.5
-			
-						//Shoot
-					
+						auto.addCommands(new Command(CommandType.MOVE, 43, 0.5));
 						auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
-					
 						auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
 	
 					}
@@ -368,8 +298,6 @@ public class Robot extends TimedRobot {
 				}
 
 			} else {
-
-				//System.out.println("pause");
 
 				if (!shotFirst) {
 
@@ -395,9 +323,10 @@ public class Robot extends TimedRobot {
 	}
 
 	public void fourBallAuto() {
+
 		//CHANGE COUNTDOWN FOR INTAKE TIME FOR 5 BALL
 		if (autoFirstTimeWait) {
-			//System.out.println("First Time Wait Confirmed");
+
 			autoFirstWaitCountdown = new Countdown(7);
 			autoFirstTimeWait = false;
 			shooting = false;
@@ -405,23 +334,20 @@ public class Robot extends TimedRobot {
 		}
 		
 		if (!autoFirstWaitCountdown.isRunning()) {
-			//System.out.println("Countdown Finished");
+
 			if (auto.queueIsEmpty()) {
-				//System.out.println("Firing Now");
+
 				shooterController.autoFire();
 				shooting = true;
 	
 			} else { //Queue not empty and timer is not running
-				//System.out.println("Progressing Queue");
+				//Progresses the queue
 				auto.executeQueue();
 				shooting = false;
 	
 			}
 
-		} /*else { //autoFirstWaitCountdown.isRunning()
-			System.out.println(String.format("Countdown: %.2f", autoFirstWaitCountdown.timeRemaining()));
-
-		}*/
+		}
 
 	}
 
@@ -434,17 +360,11 @@ public class Robot extends TimedRobot {
 
 		if (!shooting) {
 
-			//System.out.println("TRIGGER SETTING BACKWARDS");
-			//shooterController.aim();
 			shooterController.stopAim();
-			trigger.setSpeed(-0.3);//-0.1
-			intake.setIntakeSpeed(-1.0);//-.7
+			trigger.setSpeed(-0.3);
+			intake.setIntakeSpeed(-1.0);
 
 		}
-
-		//System.out.println("TRIGGER WHEEL SPEED: " + trigger.getSpeed());
-		//System.out.println("queue length: " + auto.getQueueLength());
-		//auto.executeQueue();
 
 		switch(autoIndex){
 			case 0:
@@ -459,20 +379,18 @@ public class Robot extends TimedRobot {
 		}
 		
 	}
+	
 	// NO TOUCH
+	// IF ANYTHING IS IN EITHER OF THESE LINES, 
+	// THE ROBOT WILL NOT WORK IN COMP
 	@Override 
-	public void disabledInit() {
-		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-	}
+	public void disabledInit() {}
 
 	// VERY EXTRA NO TOUCH
 	@Override
-	public void disabledPeriodic() {
-		//System.out.println(String.format("distance: %.2f; distanceCorrected: %.2f", limelight.getDistance(), shooterController.correctLimelightDistanceError(limelight.getDistance())));
-		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
-		
-	}
+	public void disabledPeriodic() {}
 
+	
 	double topSpeed;
 	double bottomSpeed;
 
@@ -482,9 +400,6 @@ public class Robot extends TimedRobot {
 	Dashboard.graph topGraph;
 	Dashboard.graph bottomGraph;
 	Dashboard.graph triggerGraph;
-
-	//Dashboard.slider distance;
-
 	
 	@Override
 	public void teleopInit() {
@@ -511,26 +426,6 @@ public class Robot extends TimedRobot {
 	 */
 	public void intake(int intakemode) {
 
-		
-
-		/*if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(speedSet);
-			trigger.setSpeed(-0.1);
-
-		} else if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
-
-			intake.setIntakeSpeed(speedSet * intakemode);
-			trigger.setSpeed(0.35 * intakemode);
-
-		} else {
-
-			intake.setIntakeSpeed(0.0);
-			trigger.setSpeed(0.0);
-
-		}*/
-
-
 		if (firstIntaking) {
 
 			firstIntaking = false;
@@ -542,32 +437,21 @@ public class Robot extends TimedRobot {
 
 		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
 
-			trigger.setSpeed(-0.1);//-0.65
+			trigger.setSpeed(-0.1);
 			firstIntakingStartTime = Timer.getTime();
 
 		} else {
 
 			trigger.setSpeed(0.0);
+
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 				trigger.setSpeed(0.35);
-				intake.setIntakeSpeed(-0.3);//-0.3
+				intake.setIntakeSpeed(-0.3);
 	
 			}
 
 		}
-
-/*
-		if (Timer.getTime() - firstIntakingStartTime < 0.2) {
-
-			trigger.setSpeed(-0.0);//-0.15
-
-		} else {	
-
-			trigger.setSpeed(-0.0);//-0.15
-
-		}
-*/
 
 	}
 
@@ -579,21 +463,9 @@ public class Robot extends TimedRobot {
 
 		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
-		//rightMotors.setPID(P.getValue(), I.getValue(), D.getValue());
-		//leftMotors.setPID(P.getValue(), I.getValue(), D.getValue());
-
-		//motorGraph.addData(-rightMotors.getSpeed(), driver.getAxis(XboxController.Axes.LeftY));
-
 		double speedSet = driver.getAxis(XboxController.Axes.LeftY);
-/*
-		slow down to 0 when changing direction
-
-		if (Math.signum(speedSet) != Math.signum(lastSpeedSet) && ((lastSpeedSet > 0.07) || lastSpeedSet < -0.07)) {
-			
-			speedSet = 0;
 		
-		}
-*/
+		//slow down to 0 when changing direction
 
 		//slew rate limiting
 		if (Math.abs(speedSet) - Math.abs(lastSpeedSet) < -value) {
@@ -612,7 +484,6 @@ public class Robot extends TimedRobot {
 		} 
 		
 		drive.curvature(speedSet, -driver.getAxis(XboxController.Axes.RightX) * 1);
-		//drive.curvature(driver.getAxis(XboxController.Axes.LeftY), -driver.getAxis(XboxController.Axes.RightX) * 1);
 
 		lastSpeedSet = speedSet;
 
@@ -625,196 +496,52 @@ public class Robot extends TimedRobot {
 			intake.putDownIntake();
 
 		}
-		/*
-		shooter.topWheel.setFF(1.1);
-		shooter.bottomWheel.setFF(1);
 
-		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.025) {
-
-			shooter.topWheel.setSpeed(topLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
-
-		} else {
-
-			topLinearBang.setNewSpeed(topSlider.getValue() * 1.03);
-
-			shooter.topWheel.setSpeed(topSlider.getValue());
-
-		}
-
-		if (Math.abs(shooter.bottomWheel.getSpeed() - bottomSlider.getValue()) < 0.025) {
-
-			shooter.bottomWheel.setSpeed(bottomLinearBang.getCommand(bottomSlider.getValue(), shooter.bottomWheel.getSpeed()));
-
-		} else {
-
-			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.03);
-
-			shooter.bottomWheel.setSpeed(bottomSlider.getValue());
-
-		}*/
-
-/*
-		if (Math.abs(topSlider.getValue()) - Math.abs(topSlider.getValue()) > 0.0) {
-
-			shooter.topWheel.setFF(2);
-
-		} else {
-
-			shooter.topWheel.setFF(1.11);
-
-		}
-
-		if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.025) {
-
-			shooter.topWheel.setPercent(bottomLinearBang.getCommand(topSlider.getValue(), shooter.topWheel.getSpeed()));
-
-		} else if (Math.abs(shooter.topWheel.getSpeed() - topSlider.getValue()) < 0.08) {
-
-			bottomLinearBang.setNewSpeed(topSlider.getValue() * 1.125);
-
-			shooter.topWheel.setFF(1.11);
-			shooter.topWheel.setSpeed(topSlider.getValue());
-
-		} else if (Math.abs(topSlider.getValue()) - Math.abs(topSlider.getValue()) > 0.0) {
-
-			shooter.topWheel.setSpeed(topSlider.getValue() /* 2.003*);
-
-		} else {
-
-			shooter.topWheel.setSpeed(topSlider.getValue());
-
-		}*/
-
-		//shooter.topWheel.setSpeed(0.2);
-		//shooter.bottomWheel.setSpeed(0.65);
-
-		//shooterController.setShooterSpeeds(9 * 12);
-
-		//topGraph.addData(shooter.topWheel.getSpeed(), topSlider.getValue());
-		//bottomGraph.addData(shooter.bottomWheel.getSpeed(), bottomSlider.getValue());
 		topGraph.addData(shooter.topWheel.getSpeed(),shooter.topAverage.getAverage(), topSlider.getValue());
 		bottomGraph.addData(shooter.bottomWheel.getSpeed(),shooter.bottomAverage.getAverage(), bottomSlider.getValue());
 		triggerGraph.addData(shooterController.trigger.motor.getSpeed());
 
-		// shooterController.setShooterSpeeds(distance.getValue());
-		// topGraph.addData(shooter.distanceToSpeeds(distance.getValue())[0], shooter.topWheel.getSpeed());
-		// bottomGraph.addData(shooter.distanceToSpeeds(distance.getValue())[1], shooter.bottomWheel.getSpeed());
-		// topMotor.setPID(P.getValue(), I.getValue(), D.getValue());
-		// bottomMotor.setPID(P.getValue(), I.getValue(), D.getValue());
-		// topMotor.setFF(F.getValue());
-		// bottomMotor.setFF(F.getValue());
-
-		//turret.scan();
-
-		// topSpeed = topSlider.getValue();
-		// bottomSpeed = bottomSlider.getValue();
-
-		//System.out.println(String.format("Desired top speed: %.2f; Desired bottom speed: %.2f", topSpeed, bottomSpeed));
-
-		//double topBangSpeed = topBangBang.getCommand(topSpeed, topMotor.getSpeed());
-		// double bottomBangSpeed = bottomBangBang.getCommand(bottomSpeed, bottomMotor.getSpeed());
-
-		// topGraph.addData(-topSpeed, topMotor.getSpeed());//, topBangSpeed);
-		// bottomGraph.addData(bottomSpeed, bottomMotor.getSpeed());//, bottomBangSpeed);
-
-		
-
-		// bang bang control
-		//topMotor.setPercent(topBangSpeed); 
-		//bottomMotor.setPercent(bottomBangSpeed);
-/*
-		if (Math.abs(bottomMotor.getSpeed() - bottomSlider.getValue()) < 0.025) {
-
-			bottomMotor.setPercent(bottomLinearBang.getCommand(bottomSlider.getValue(), bottomMotor.getSpeed()));
-
-		} else if (Math.abs(bottomMotor.getSpeed() - bottomSlider.getValue()) < 0.08) {
-
-			bottomLinearBang.setNewSpeed(bottomSlider.getValue() * 1.2);
-
-			bottomMotor.setSpeed(bottomSlider.getValue());
-
-		} else if (Math.abs(bottomSlider.getValue()) - Math.abs(bottomMotor.getSpeed()) > 0.0) {
-
-			bottomMotor.setSpeed(bottomSlider.getValue() * 2.003);
-
-		} else {
-
-			bottomMotor.setSpeed(bottomSlider.getValue());
-
-		}*/
-		
-
-		//topMotor.setSpeed(0.2);
-		//bottomMotor.setSpeed(0.6);
-
-		//graph.addData(turret.getSpeed());
-
-		//System.out.println("topmotor " + String.format("%.2f", topMotor.getSpeed()) + ", bottomotor " + String.format("%.2f", bottomMotor.getSpeed()));
-
-		// multipled by 0.2 so max speed is 0.2 so no break
-		//turret.rotate(operator.getAxis(XboxController.Axes.RightX) * 0.2);
-
-		//turret.scan();
-
-		//System.out.println("distance: " + String.format("%.2f", limelight.getDistance()));
-		//System.out.println("distanceCorrected: " + String.format("%.2f", shooterController.correctLimelightDistanceError(limelight.getDistance())));
-
-//FOLLOWIN CODE IS VERY GOOD
-
+		// Operator controls: 
 		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 			trigger.setSpeed(0.35);
-			intake.setIntakeSpeed(-0.3);//-0.3
+			intake.setIntakeSpeed(-0.3);
 
 		}
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
 
-			//shooterController.aim();
-
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
-				//double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
-double distance = distanceSlider.getValue();
-				shooterController.setShooterSpeeds(distance);//-18
-				
-				System.out.println(distance);
+				double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
+				// for manual input of turret speed testing:
+				// double distance = distanceSlider.getValue();
+				shooterController.setShooterSpeeds(distance);
 
 			}
+			
+			if (operator.getButton(XboxController.Buttons.R)) {
 
-			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+				if (Math.abs(operator.getAxis(XboxController.Axes.LeftX)) > 0.1) {
 
-				//trigger.setSpeed(0.35);
-				//intake.setIntakeSpeed(-0.3);//-0.3
-
-			} else {
-
-				//shooterController.aim();
-//CHANGE
-				if (operator.getButton(XboxController.Buttons.R)) {
-
-					if (Math.abs(operator.getAxis(XboxController.Axes.LeftX)) > 0.1) {
-
-						turret.rotate(operator.getAxis(XboxController.Axes.LeftX) * 0.4);
-
-					} else {
-
-						turret.rotate(0.0);
-
-					}
+					turret.rotate(operator.getAxis(XboxController.Axes.LeftX) * 0.4);
 
 				} else {
 
-					shooterController.aim();
+					turret.rotate(0.0);
 
 				}
 
-				if (!operator.getButton(XboxController.Buttons.B)) {
+			} else {
 
-					trigger.setSpeed(0.0);
-					intake.setIntakeSpeed(0.0);
+				shooterController.aim();
 
-				}
+			}
+
+			if (!operator.getButton(XboxController.Buttons.B)) {
+
+				trigger.setSpeed(0.0);
+				intake.setIntakeSpeed(0.0);
 
 			}
 
@@ -829,7 +556,7 @@ double distance = distanceSlider.getValue();
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 				trigger.setSpeed(0.35);
-				intake.setIntakeSpeed(-0.3);//-0.1
+				intake.setIntakeSpeed(-0.3);
 
 			} else {
 				
@@ -853,8 +580,6 @@ double distance = distanceSlider.getValue();
 
 			}
 
-			//shooterController.stop();
-
 		}
 
 		if (!operator.getButton(XboxController.Buttons.B)) {
@@ -866,16 +591,12 @@ double distance = distanceSlider.getValue();
 	}
 
 	@Override
-	public void testInit() {
-
-	}
+	public void testInit() {}
 	
 	boolean firstIntaking = true;
 	double firstIntakingStartTime;
 
 	@Override
-	public void testPeriodic() {
-		
-	}
+	public void testPeriodic() {}
 
 }

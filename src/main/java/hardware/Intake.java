@@ -49,38 +49,6 @@ public class Intake {
     public void setIntakeSpeed(double speed) {
 
         double speedSet = speed;
-/*
-		if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) < -intakeValue) {
-
-			if (speedSet + lastIntakeSpeedSet < 0.0) {
-
-				speedSet = lastIntakeSpeedSet + intakeValue;
-				
-
-			} else if (speedSet + lastIntakeSpeedSet > 0.0) {
-
-				speedSet = lastIntakeSpeedSet - intakeValue;
-
-			}
-
-		} 
-
-        if (Math.abs(speedSet) - Math.abs(lastIntakeSpeedSet) > intakeValue) {
-
-			if (speedSet + lastIntakeSpeedSet > 0.0) {
-
-				speedSet = lastIntakeSpeedSet + intakeValue;
-				
-
-			} else if (speedSet + lastIntakeSpeedSet < 0.0) {
-
-				speedSet = lastIntakeSpeedSet - intakeValue;
-
-			}
-
-		} 
-*/
-		//lastIntakeSpeedSet = speedSet;
 
         if (speedSet > 1.0) {
 

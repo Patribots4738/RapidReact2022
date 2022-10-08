@@ -29,11 +29,12 @@ public class Shooter {
 	// each index in this array is another foot of distance from the target, starting at 5ft away, ending at 25ft away
 	// these will be used to determine the speeds the shooter wheels need to be at when the robot is firing
 	// order is topSpeed, bottomSpeed
-	private double[][] shooterSpeeds = { {0.14, 0.63}, {0.12, 0.68}, {0.11, 0.70}, /*{0.09, 0.74}*/{0.09, 0.76}, {0.09, 0.76}, //5-9ft
-{0.08/*0.09*/, /*0.78*/0.81}, {0.08, 0.79}, {0.08, 0.81}, {0.08, 0.87}, {0.08, 0.89}, //10-14ft
-										 {0.09, 0.91}, {0.11, 0.92}, {0.13, 0.93}, {0.15, 0.93}, {0.17, 0.94}, //15-19ft
-										 {0.19, 0.94}, {0.20, 0.94}, {0.22, 0.94}, {0.23, 0.94}, {0.25, 0.94}, // 20-24ft
-										 {0.31, 0.95} }; // 25ft
+	private double[][] shooterSpeeds = { 
+		{0.14, 0.63}, {0.12, 0.68}, {0.11, 0.70},{0.09, 0.76}, {0.09, 0.76}, //5-9ft
+		{0.08,0.81}, {0.08, 0.79}, {0.08, 0.81}, {0.08, 0.87}, {0.08, 0.89}, //10-14ft
+		{0.09, 0.91}, {0.11, 0.92}, {0.13, 0.93}, {0.15, 0.93}, {0.17, 0.94}, //15-19ft
+		{0.19, 0.94}, {0.20, 0.94}, {0.22, 0.94}, {0.23, 0.94}, {0.25, 0.94}, // 20-24ft
+		{0.31, 0.95} }; // 25ft
 
 	public Shooter(PIDMotor topWheel, PIDMotor bottomWheel) {
 
@@ -50,10 +51,6 @@ public class Shooter {
 		bottomAverage = new MovingAverage(10);
 
 	}
-
-	// public PIDMotor[] getMotors(){
-	// 	return {topWheel, bottomWheel};
-	// }
 
 	public double[] distanceToSpeeds(double distance) {
 
@@ -74,27 +71,9 @@ public class Shooter {
 		}
 
 		double arrayPosition = feet - 5.0;
-
 		arrayPosition = Math.round(arrayPosition);
-
 		double topSpeed = shooterSpeeds[(int)arrayPosition][0];
 		double bottomSpeed = shooterSpeeds[(int)arrayPosition][1];
-
-		//System.out.println("ARRAY POSITIITOTITITTOTNTITOTN: " + arrayPosition);
-
-/*
-		int lowerIndex = (int)arrayPosition;
-		int upperIndex = lowerIndex + 1;
-
-		System.out.println(String.format("Lower Index: %d; Upper Index: %d", lowerIndex,upperIndex));
-
-		double percentBetweenPoints = arrayPosition - (double)lowerIndex;
-
-		double topSpeed = shooterSpeeds[lowerIndex][0] + (shooterSpeeds[upperIndex][0] - shooterSpeeds[lowerIndex][0]) * percentBetweenPoints;
-		double bottomSpeed = shooterSpeeds[lowerIndex][1] + (shooterSpeeds[upperIndex][1] - shooterSpeeds[lowerIndex][1]) * percentBetweenPoints;
-*/
-
-		
 
 		return new double[] {topSpeed, bottomSpeed};
 
@@ -104,9 +83,6 @@ public class Shooter {
 	public void setShooterSpeeds(double distance) {
 
 		double[] speeds = distanceToSpeeds(distance);
-
-		//System.out.println(String.format("speeds:     %.4f; %.4f", speeds[0], speeds[1]));
-		//System.out.println(String.format("realSpeeds: %.4f; %.4f" , topWheel.getSpeed(), bottomWheel.getSpeed()));
 
 		topWheel.setFF(1.1);
 		bottomWheel.setFF(1);
@@ -146,17 +122,10 @@ public class Shooter {
 		topAverage.addValue(topWheel.getSpeed());
 		bottomAverage.addValue(bottomWheel.getSpeed());
 
-		//boolean topReady = Calc.isBetween(topWheel.getSpeed(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
-		//boolean bottomReady = Calc.isBetween(bottomWheel.getSpeed(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
-
 		boolean topReady = Calc.isBetween(topAverage.getAverage(), speeds[0] - acceptableSpeedError, speeds[0] + acceptableSpeedError);
 		boolean bottomReady = Calc.isBetween(bottomAverage.getAverage(), speeds[1] - acceptableSpeedError, speeds[1] + acceptableSpeedError);
 
 		readyToFire = topReady && bottomReady;
-
-		//System.out.println("top: " + topReady);
-		//System.out.println("bottom: " + bottomReady);
-		//System.out.println(String.format("Top: %.2f; Bottom: %.2f", topAverage.getAverage(), bottomAverage.getAverage()));
 
 	}
 

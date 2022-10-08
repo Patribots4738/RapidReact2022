@@ -38,13 +38,14 @@ public class logMotors {
             fd.createNewFile();
             this.filedesc = new FileWriter(this.filename);
 
-            // Header
             String buf="timestamp,";
             int i = 0;
 
             while (i < this.motors.length) {
+                
                 buf += String.format("%d position,%d speed", i, i);
                 i++;
+            
             }
 
             buf += "\n";

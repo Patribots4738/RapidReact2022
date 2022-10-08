@@ -47,31 +47,7 @@ public class Dashboard {
         }
 
     }
-/*
-    public static class text{
-
-        private NetworkTableEntry entry;
-
-        public text(String label){
-
-            entry = tab.add(label, 0).withWidget(BuiltInWidgets.kTextView).getEntry();
-
-        }
-
-        public String getValue(){
-
-            return entry.getString("No Value Found");
-
-        }
-
-        public void setValue(String value){
-
-            entry.setValue(value);
-
-        }
-
-    }
-*/
+  
     public class toggleButton{
 
         private NetworkTableEntry entry;
@@ -110,8 +86,6 @@ public class Dashboard {
                 chooser.addOption(options[i], i);
 
             }
-
-        // chooser.setDefaultOption(options[0], 0);
 
             tab.add(label, chooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 

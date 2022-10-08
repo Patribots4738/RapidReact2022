@@ -63,13 +63,6 @@ public class Limelight {
 
 	public boolean targetFound() {
 
-		// whether the limelight has any valid targets
-		//int found = Integer.valueOf((String)limelightTable.get("tv"));
-
-		// returns if the value is true or false
-		//return (found == 1) ? true : false;
-		//return ((String)limelightTable.get("tv") == null) ? false : true;
-
 		return (this.getTargetAreaPercent() > 0.01) ? true : false;
 
 	}
