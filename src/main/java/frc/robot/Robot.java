@@ -13,8 +13,6 @@ import interfaces.*;
 import networking.*;
 import utils.*;
 import wrappers.*;
-import wrappers.Dashboard.graph;
-import wrappers.Dashboard.slider;
 
 public class Robot extends TimedRobot {
 
@@ -49,14 +47,7 @@ public class Robot extends TimedRobot {
 
 	Elevator elevator;
 
-	Dashboard shooterDashboard;
-	Dashboard driveDashboard;
 	Dashboard autoDashboard;
-
-	Dashboard.graph topMotorGraph;
-	Dashboard.graph bottomMotorGraph;
-
-	Dashboard.slider distanceSlider;
 
 	Dashboard.boolBox aligned;
 
@@ -132,22 +123,11 @@ public class Robot extends TimedRobot {
 	
 		elevator = new Elevator(new Falcon(9), new Falcon(10));
 
-		shooterDashboard = new Dashboard("shooter");
 		autoDashboard = new Dashboard("auto");
 
 		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
 
 		aligned = autoDashboard.new boolBox("Aligned");
-
-		topSlider = shooterDashboard.new slider("top Motor", -1, 1, 0.01);
-		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
-
-		distanceSlider = shooterDashboard.new slider("distanceSlider", 0, 400, 0.01);
-
-
-		topGraph = shooterDashboard.new graph("Top Speed", 10);
-		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
-		triggerGraph = shooterDashboard.new graph("Trigger Speed", 10);
 
 		topBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
 		bottomBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
@@ -394,13 +374,6 @@ public class Robot extends TimedRobot {
 	double topSpeed;
 	double bottomSpeed;
 
-	Dashboard.slider topSlider;
-	Dashboard.slider bottomSlider;
-
-	Dashboard.graph topGraph;
-	Dashboard.graph bottomGraph;
-	Dashboard.graph triggerGraph;
-	
 	@Override
 	public void teleopInit() {
 

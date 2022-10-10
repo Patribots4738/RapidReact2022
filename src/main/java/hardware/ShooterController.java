@@ -2,8 +2,6 @@ package hardware;
 
 import utils.PIDLoop;
 import wrappers.*;
-import wrappers.Dashboard.graph;
-import wrappers.Dashboard.slider;	
 import utils.*;
 
 public class ShooterController {
