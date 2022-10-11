@@ -470,10 +470,6 @@ public class Robot extends TimedRobot {
 
 		}
 
-		topGraph.addData(shooter.topWheel.getSpeed(),shooter.topAverage.getAverage(), topSlider.getValue());
-		bottomGraph.addData(shooter.bottomWheel.getSpeed(),shooter.bottomAverage.getAverage(), bottomSlider.getValue());
-		triggerGraph.addData(shooterController.trigger.motor.getSpeed());
-
 		// Operator controls: 
 		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
