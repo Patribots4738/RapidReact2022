@@ -71,9 +71,19 @@ public class Shooter {
 		}
 
 		double arrayPosition = feet - 5.0;
-		arrayPosition = Math.round(arrayPosition);
-		double topSpeed = shooterSpeeds[(int)arrayPosition][0];
-		double bottomSpeed = shooterSpeeds[(int)arrayPosition][1];
+		
+		// Following should be commented back in if you do NOT want lienar interpolation
+		//arrayPosition = Math.round(arrayPosition);
+		//double topSpeed = shooterSpeeds[(int)arrayPosition][0];
+		//double bottomSpeed = shooterSpeeds[(int)arrayPosition][1];
+
+		// Following should be commented out if you do NOT want linear interpolation
+		int lowerIndex = (int)arrayPosition;
+		int upperIndex = lowerIndex + 1;
+		//System.out.println(String.format("Lower Index: %d; Upper Index: %d", lowerIndex,upperIndex));
+		double percentBetweenPoints = arrayPosition - (double)lowerIndex;
+		double topSpeed = shooterSpeeds[lowerIndex][0] + (shooterSpeeds[upperIndex][0] - shooterSpeeds[lowerIndex][0]) * percentBetweenPoints;
+		double bottomSpeed = shooterSpeeds[lowerIndex][1] + (shooterSpeeds[upperIndex][1] - shooterSpeeds[lowerIndex][1]) * percentBetweenPoints;
 
 		return new double[] {topSpeed, bottomSpeed};
 
