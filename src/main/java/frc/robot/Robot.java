@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
 
 		autoDashboard = new Dashboard("auto");
 
-		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
+		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "the long boi 2-Ball", "3-Ball", "4-Ball");
 
 		aligned = autoDashboard.new boolBox("Aligned");
 
@@ -175,13 +175,19 @@ public class Robot extends TimedRobot {
 
 				break;	
 
-			case 1: //threeBall
+			case 1: // LOOONG BOIII TWO BALL
+
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
+
+				break;
+
+			case 2: //threeBall
 
 				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 			
 				break;
 					
-			case 2: //fourBall
+			case 3: //fourBall
 				
 				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
 
@@ -194,6 +200,34 @@ public class Robot extends TimedRobot {
 	Countdown autoFirstWaitCountdown;
 
 	public void twoBallAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+			
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire();
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	public void longTwoBallAuto() {
 		
 		if (autoFirstTimeWait) {
 		
@@ -351,9 +385,12 @@ public class Robot extends TimedRobot {
 				twoBallAuto();
 				break;
 			case 1:
+				longTwoBallAuto();
+				break;
+			case 2:
 				threeBallAuto();
 				break;
-			case 2: 
+			case 3: 
 				fourBallAuto();
 				break;	
 		}
