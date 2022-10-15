@@ -469,7 +469,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		shooterController.update();
-		aligned.setValue(ShooterController.aligned);
+
+		aligned.setValue(ShooterController.aligned && shooter.readyToFire);
 
 		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
@@ -557,6 +558,7 @@ public class Robot extends TimedRobot {
 
 		}
 
+		// Unsure as to why this is static but the robot runs :-)
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
