@@ -509,14 +509,25 @@ public class Robot extends TimedRobot {
 		}
 
 		// Operator controls: 
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+	/*	if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 			trigger.setSpeed(0.35);
 			intake.setIntakeSpeed(-0.3);
 
-		}
+		}*/
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);
+	
+			} else {
+
+				trigger.setSpeed(0.0);
+
+			}
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
@@ -547,8 +558,8 @@ public class Robot extends TimedRobot {
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
-				trigger.setSpeed(0.0);
-				intake.setIntakeSpeed(0.0);
+				//trigger.setSpeed(0.0);
+				//intake.setIntakeSpeed(0.0);
 
 			}
 
@@ -568,7 +579,7 @@ public class Robot extends TimedRobot {
 
 			} else {
 				
-				shooterController.fire();
+				//shooterController.fire();
 
 			}
 
