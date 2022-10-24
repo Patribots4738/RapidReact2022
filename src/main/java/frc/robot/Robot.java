@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
 
 		autoDashboard = new Dashboard("auto");
 
-		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "the long boi 2-Ball", "3-Ball", "4-Ball");
+		autoChooser = autoDashboard.new boxChooser("Auto path", "top", "mid", "hanger", "3-Ball", "4-Ball");
 
 		aligned = autoDashboard.new boolBox("Aligned");
 
@@ -401,10 +401,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-
-		double distance = shooterController.correctLimelightDistanceError(limelight.getDistance());
-
-		shooter.setShooterSpeeds(distance);
 
 		if (!shooting) {
 
