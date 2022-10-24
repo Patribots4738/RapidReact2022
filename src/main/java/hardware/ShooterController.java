@@ -2,8 +2,6 @@ package hardware;
 
 import utils.PIDLoop;
 import wrappers.*;
-import wrappers.Dashboard.graph;
-import wrappers.Dashboard.slider;	
 import utils.*;
 
 public class ShooterController {
@@ -136,7 +134,7 @@ public class ShooterController {
 
 	}
 
-	public void autoFire() {
+	public void autoFire(int auto) {
 
 		eval();
 
@@ -179,7 +177,35 @@ public class ShooterController {
 
 			trigger.setSpeed(0.0);
 			intake.setIntakeSpeed(0.0);
-			this.aim();
+			
+			//10/23/22 - hardcoding values for auto
+			switch (auto)
+			{
+				case 0: // topTarmac
+				{
+					turret.setPosition(0.1, -80);
+					shooter.setShooterSpeeds(limelight.getDistance());
+					break;
+				}
+				case 1: // midTarmac
+				{
+					turret.setPosition(0.1, -90);
+					shooter.setShooterSpeeds(limelight.getDistance());
+					break;
+				}
+				case 2: // hangerTarmac
+				{
+					turret.setPosition(0.1, -100);
+					shooter.setShooterSpeeds(limelight.getDistance());
+					break;
+				}
+				case 3: // threeBall and fourBall
+				{
+					this.aim();
+					break;
+				}
+			}
+			
 
 		}
 
@@ -230,7 +256,8 @@ public class ShooterController {
 		if (shooter.readyToFire) {
 
 			// random variables, need to be tested
-			// why ^^
+			
+			// why are these random? ^^
 			trigger.setSpeed(0.25);
 			intake.setIntakeSpeed(0.25);
 
@@ -254,27 +281,29 @@ public class ShooterController {
 			What this does is corrects the goofy limelight to the correct distance
 			for the motor speeds to go to the correct positions --> good pewpew
 		*/
-		double[] errorData = {-14.34,
-							-14.8	,
-							-13.78	,
+
+		double[] errorData = {-14.34, // 5ft
+							-14.8	, 
+							-13.78	, 
 							-13.58	,
 							-12.44	,
-							-10.04	,
+							-10.04	, // 10ft
 							-8.41	,
 							-6.92	,
 							-5.7	,
 							-5.1	,
-							0.89	,
+							0.89	, // 15ft
 							-4.22	,
 							-0.46	,
 							-4.46	,
 							5.34	,
-							3.24	,
+							3.24	, // 20ft
 							1.08	,
 							6.98	,
 							4.88	,
 							-15.99	,
-							-21.49};
+							-21.49    // 25ft
+							};		
 
 							  
 

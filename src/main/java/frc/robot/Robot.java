@@ -13,8 +13,6 @@ import interfaces.*;
 import networking.*;
 import utils.*;
 import wrappers.*;
-import wrappers.Dashboard.graph;
-import wrappers.Dashboard.slider;
 
 public class Robot extends TimedRobot {
 
@@ -49,14 +47,7 @@ public class Robot extends TimedRobot {
 
 	Elevator elevator;
 
-	Dashboard shooterDashboard;
-	Dashboard driveDashboard;
 	Dashboard autoDashboard;
-
-	Dashboard.graph topMotorGraph;
-	Dashboard.graph bottomMotorGraph;
-
-	Dashboard.slider distanceSlider;
 
 	Dashboard.boolBox aligned;
 
@@ -65,7 +56,7 @@ public class Robot extends TimedRobot {
 
 	AutoDrive auto;
 
-	private int autoIndex = 2;
+	private int autoIndex = 3;
 
 	Countdown countdown;
 
@@ -132,22 +123,11 @@ public class Robot extends TimedRobot {
 	
 		elevator = new Elevator(new Falcon(9), new Falcon(10));
 
-		shooterDashboard = new Dashboard("shooter");
 		autoDashboard = new Dashboard("auto");
 
-		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
+		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "the long boi 2-Ball", "3-Ball", "4-Ball");
 
 		aligned = autoDashboard.new boolBox("Aligned");
-
-		topSlider = shooterDashboard.new slider("top Motor", -1, 1, 0.01);
-		bottomSlider = shooterDashboard.new slider("bottom Motor", -1, 1, 0.01);
-
-		distanceSlider = shooterDashboard.new slider("distanceSlider", 0, 400, 0.01);
-
-
-		topGraph = shooterDashboard.new graph("Top Speed", 10);
-		bottomGraph = shooterDashboard.new graph("Bottom Speed", 10);
-		triggerGraph = shooterDashboard.new graph("Trigger Speed", 10);
 
 		topBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
 		bottomBangBang = new DynamicBangBang(0.016, 0.0003, 0.005);
@@ -189,19 +169,31 @@ public class Robot extends TimedRobot {
 
 		switch(autoIndex){
 
-			case 0: //twoBall
+			case 0: // topTarmac
 
-				auto.addCommands(new Command(CommandType.MOVE, -41, 0.25));
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 
 				break;	
 
-			case 1: //threeBall
+			case 1: // midTarmac
+
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
+
+				break;
+
+			case 2: // hangerTarmac
+
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
+
+				break;
+
+			case 3: // threeBall
 
 				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 			
 				break;
 					
-			case 2: //fourBall
+			case 4: // fourBall
 				
 				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
 
@@ -213,7 +205,7 @@ public class Robot extends TimedRobot {
 	boolean autoFirstTimeWait = true;
 	Countdown autoFirstWaitCountdown;
 
-	public void twoBallAuto() {
+	public void topTarmacAuto() {
 		
 		if (autoFirstTimeWait) {
 		
@@ -227,7 +219,63 @@ public class Robot extends TimedRobot {
 			
 			if (auto.queueIsEmpty()) {
 			
-				shooterController.autoFire();
+				shooterController.autoFire(0);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	public void midTarmacAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+		
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire(1);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	public void hangerTarmacAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+		
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire(2);
 				shooting = true;
 	
 			} else { //Queue not empty and timer is not running
@@ -301,7 +349,7 @@ public class Robot extends TimedRobot {
 
 				if (!shotFirst) {
 
-					shooterController.autoFire();
+					shooterController.autoFire(3);
 
 				} else {
 
@@ -337,7 +385,7 @@ public class Robot extends TimedRobot {
 
 			if (auto.queueIsEmpty()) {
 
-				shooterController.autoFire();
+				shooterController.autoFire(3);
 				shooting = true;
 	
 			} else { //Queue not empty and timer is not running
@@ -368,12 +416,18 @@ public class Robot extends TimedRobot {
 
 		switch(autoIndex){
 			case 0:
-				twoBallAuto();
+				topTarmacAuto();
 				break;
 			case 1:
+				midTarmacAuto();
+				break;
+			case 2:
+				hangerTarmacAuto();
+				break;
+			case 3:
 				threeBallAuto();
 				break;
-			case 2: 
+			case 4: 
 				fourBallAuto();
 				break;	
 		}
@@ -394,13 +448,6 @@ public class Robot extends TimedRobot {
 	double topSpeed;
 	double bottomSpeed;
 
-	Dashboard.slider topSlider;
-	Dashboard.slider bottomSlider;
-
-	Dashboard.graph topGraph;
-	Dashboard.graph bottomGraph;
-	Dashboard.graph triggerGraph;
-	
 	@Override
 	public void teleopInit() {
 
@@ -459,7 +506,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 
 		shooterController.update();
-		aligned.setValue(ShooterController.aligned);
+
+		aligned.setValue(ShooterController.aligned && shooter.readyToFire);
 
 		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
@@ -497,19 +545,26 @@ public class Robot extends TimedRobot {
 
 		}
 
-		topGraph.addData(shooter.topWheel.getSpeed(),shooter.topAverage.getAverage(), topSlider.getValue());
-		bottomGraph.addData(shooter.bottomWheel.getSpeed(),shooter.bottomAverage.getAverage(), bottomSlider.getValue());
-		triggerGraph.addData(shooterController.trigger.motor.getSpeed());
-
 		// Operator controls: 
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+	/*	if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 			trigger.setSpeed(0.35);
 			intake.setIntakeSpeed(-0.3);
 
-		}
+		}*/
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);
+	
+			} else {
+
+				trigger.setSpeed(0.0);
+
+			}
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
@@ -540,8 +595,8 @@ public class Robot extends TimedRobot {
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
-				trigger.setSpeed(0.0);
-				intake.setIntakeSpeed(0.0);
+				//trigger.setSpeed(0.0);
+				//intake.setIntakeSpeed(0.0);
 
 			}
 
@@ -551,6 +606,7 @@ public class Robot extends TimedRobot {
 
 		}
 
+		// Unsure as to why this is static but the robot runs :-)
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
@@ -560,7 +616,7 @@ public class Robot extends TimedRobot {
 
 			} else {
 				
-				shooterController.fire();
+				//shooterController.fire();
 
 			}
 
