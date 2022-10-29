@@ -184,19 +184,19 @@ public class ShooterController {
 				case 0: // topTarmac
 				{
 					turret.setPosition(0.1, (-80/360));
-					shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+					shooter.setShooterSpeeds(10.33);
 					break;
 				}
 				case 1: // midTarmac
 				{
 					turret.setPosition(0.1, (-90/360));
-					shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+					shooter.setShooterSpeeds(12.2);
 					break;
 				}
 				case 2: // hangerTarmac
 				{
 					turret.setPosition(0.1, (-100/360));
-					shooter.setShooterSpeeds(correctLimelightDistanceError(limelight.getDistance()));
+					shooter.setShooterSpeeds(13.12);
 					break;
 				}
 				case 3: // threeBall and fourBall
