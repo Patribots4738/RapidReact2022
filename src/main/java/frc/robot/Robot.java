@@ -177,13 +177,15 @@ public class Robot extends TimedRobot {
 
 			case 1: // midTarmac
 
-				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 
 				break;
 
 			case 2: // hangerTarmac
 
-				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
+				// due to hangertarmac being a good pain, midtarmac wil attempt to go 43in 	
+				//auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 
 				break;
 
@@ -405,8 +407,18 @@ public class Robot extends TimedRobot {
 		if (!shooting) {
 
 			shooterController.stopAim();
-			trigger.setSpeed(-0.3);
-			intake.setIntakeSpeed(-1.0);
+
+			/*if (autoIndex == 1) {
+
+				trigger.setSpeed(0.0);
+				intake.setIntakeSpeed(0.0);
+
+			} else {*/
+
+				trigger.setSpeed(-0.3);//-0.3
+				intake.setIntakeSpeed(-1.0);//-1.0
+
+			//}
 
 		}
 

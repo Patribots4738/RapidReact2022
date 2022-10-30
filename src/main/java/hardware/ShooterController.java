@@ -156,16 +156,36 @@ public class ShooterController {
 
 			}
 
-			if ((Timer.getTime() - startTime) > 1.0) {
+			if (((Timer.getTime() - startTime) > 1.0) && (Timer.getTime() - startTime) < 1.5) {
 
-				intake.setIntakeSpeed(-0.3);
+				intake.setIntakeSpeed(-0.275);//0.3
+				trigger.setSpeed(0.35);
+
+			} else if (((Timer.getTime() - startTime) > 1.5) && (Timer.getTime() - startTime) < 2) {
+
+				intake.setIntakeSpeed(-1.0);
+				trigger.setSpeed(-0.3);
+
+			} else if ((Timer.getTime() - startTime) > 2) {
+
+				intake.setIntakeSpeed(-0.275);//0.3
 				trigger.setSpeed(0.35);
 
 			}
 
-			if (Timer.getTime() - startTime < 0.2) {
+			if (Timer.getTime() - startTime < 0.3) {
 
-				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(0.1);
+				trigger.setSpeed(-0.3);
+
+			} else if ((Timer.getTime() - startTime > 0.3) && (Timer.getTime() - startTime < 0.5)) {
+
+				intake.setIntakeSpeed(0);
+				trigger.setSpeed(0.0);
+
+			} else if ((Timer.getTime() - startTime) < 0.6 && (Timer.getTime() - startTime) > 0.5) {
+
+				trigger.setSpeed(0.35);//0.35
 
 			} else if ((Timer.getTime() - startTime) < 1.0) {
 
@@ -175,28 +195,46 @@ public class ShooterController {
 
 		} else {
 
-			trigger.setSpeed(0.0);
-			intake.setIntakeSpeed(0.0);
+			if (Timer.getTime() - autoStartTime < 1.0) {
+
+				trigger.setSpeed(-0.3);//-0.3
+				intake.setIntakeSpeed(-1.0);//-1.0
+
+			} else {
+
+				trigger.setSpeed(0.0);
+				intake.setIntakeSpeed(0.0);
+
+			}
 			
-			//10/23/22 - hardcoding values for auto
+			// 10/23/22 - hardcoding values for auto
 			switch (auto)
 			{
 				case 0: // topTarmac
 				{
-					turret.setPosition(0.1, (-80/360));
-					shooter.setShooterSpeeds(10.33);
+					turret.setPosition(0.1, -(0.222));
+					shooter.setShooterSpeeds(10.33 * 12);
 					break;
 				}
 				case 1: // midTarmac
 				{
-					turret.setPosition(0.1, (-90/360));
-					shooter.setShooterSpeeds(12.2);
+					turret.setPosition(0.1, -(0.25));
+					
+					// due to hangertarmac being a good pain, midtarmac wil attempt to go 43in 
+					// rather than 77in
+					// shooter.setShooterSpeeds(12.2 * 12); 
+					shooter.setShooterSpeeds(10.33 * 12);
+					
 					break;
 				}
 				case 2: // hangerTarmac
 				{
-					turret.setPosition(0.1, (-100/360));
-					shooter.setShooterSpeeds(13.12);
+					turret.setPosition(0.1, -(0.2575));//0.2639
+					
+					// due to the below comment, hanger tarmac will attempt to only move 43in
+					// shooter.setShooterSpeeds(12.5 * 12); // 13.12; 12.25 sorta worked ?
+					shooter.setShooterSpeeds(10.33 * 12);
+					
 					break;
 				}
 				case 3: // threeBall and fourBall
