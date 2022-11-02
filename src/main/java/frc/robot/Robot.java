@@ -177,15 +177,15 @@ public class Robot extends TimedRobot {
 
 			case 1: // midTarmac
 
+				// due to hangertarmac being a good pain, midtarmac wil attempt to go 43in 	
 				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
 
 				break;
 
 			case 2: // hangerTarmac
 
-				// due to hangertarmac being a good pain, midtarmac wil attempt to go 43in 	
-				//auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));  
-				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
+				// even though hangertarmac was a great pain, maybe it works now
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
 
 				break;
 
