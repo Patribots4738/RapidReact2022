@@ -560,6 +560,18 @@ public class Robot extends TimedRobot {
 			intake.setIntakeSpeed(-0.3);
 
 		}*/
+
+		// zero the turret when left joystick button is pressed 
+		// NOT TESTED AS OF 11/4/2022 11:30am
+		if (operator.getButton(XboxController.Buttons.LJ)) {
+
+			turret.setPosition(0.2, 0.0);
+
+		} else if (!operator.getButton(XboxController.Buttons.A)) {
+
+			turret.setPosition(0.0, turret.getPosition());
+
+		}
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
 

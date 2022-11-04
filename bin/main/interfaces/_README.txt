@@ -1,0 +1,1 @@
+This folder is for java interfaces used in structuring the code
