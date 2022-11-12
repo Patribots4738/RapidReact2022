@@ -20,6 +20,8 @@ public interface PIDMotor extends Motor {
 	public void setAccelerationPercent(double speed, double increment);
 	public void setLastSpeed();
 
+	public void setBrakeMode(boolean isBreak);
+
 	public double getAmperage();
 
 }

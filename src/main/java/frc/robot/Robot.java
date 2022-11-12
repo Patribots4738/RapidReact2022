@@ -2,7 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
-import java.util.ArrayList;
+import java.security.spec.DSAGenParameterSpec;
+
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 
 import autonomous.*;
 import autonomous.Command.CommandType;
@@ -14,12 +16,6 @@ import wrappers.*;
 
 public class Robot extends TimedRobot {
 
-<<<<<<< Updated upstream
-	AutoPath autoPath;
-
-	@Override
-	public void robotInit() {}
-=======
 	Drive drive;
 
 	PIDMotorGroup rightMotors;
@@ -51,7 +47,6 @@ public class Robot extends TimedRobot {
 
 	Elevator elevator;
 
-	Dashboard shooterDashboard;
 	Dashboard autoDashboard;
 
 	Dashboard.boolBox aligned;
@@ -61,7 +56,7 @@ public class Robot extends TimedRobot {
 
 	AutoDrive auto;
 
-	private int autoIndex = 2;
+	private int autoIndex = 3;
 
 	Countdown countdown;
 
@@ -130,7 +125,7 @@ public class Robot extends TimedRobot {
 
 		autoDashboard = new Dashboard("auto");
 
-		autoChooser = autoDashboard.new boxChooser("Auto path", "2-Ball", "3-Ball", "4-Ball");
+		autoChooser = autoDashboard.new boxChooser("Auto path", "top", "mid", "hanger", "3-Ball", "4-Ball");
 
 		aligned = autoDashboard.new boolBox("Aligned");
 
@@ -144,43 +139,383 @@ public class Robot extends TimedRobot {
 
 	LinearBangBang bottomLinearBang;
 	LinearBangBang topLinearBang;
->>>>>>> Stashed changes
 
 	@Override
-	public void robotPeriodic() {}
+	public void robotPeriodic() {
+
+		compressor.setState(true);
+
+	}
+
+	private boolean firstTime;
 
 	@Override
-	public void autonomousInit() {} 
+	public void autonomousInit() {
+
+		firstTime = true;
+
+		leftMotors.setPID(0.05, 0, 5);
+		rightMotors.setPID(0.05, 0, 5);
+
+		turret.setZero(0.0);
+
+		auto.reset();
+
+		intake.putDownIntake();	
+
+		autoIndex = autoChooser.getValue();
+
+		shooting = false;
+
+		switch(autoIndex){
+
+			case 0: // topTarmac
+
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
+
+				break;	
+
+			case 1: // midTarmac
+
+				// due to hangertarmac being a good pain, midtarmac wil attempt to go 43in 	
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
+
+				break;
+
+			case 2: // hangerTarmac
+
+				// even though hangertarmac was a great pain, maybe it works now
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
+
+				break;
+
+			case 3: // threeBall
+
+				auto.addCommands(new Command(CommandType.MOVE, -43, 0.25));
+			
+				break;
+					
+			case 4: // fourBall
+				
+				auto.addCommands(new Command(CommandType.MOVE, -77, 0.25));
+
+				break;
+		}
+		
+	}
+	
+	boolean autoFirstTimeWait = true;
+	Countdown autoFirstWaitCountdown;
+
+	public void topTarmacAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+			
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire(0);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	public void midTarmacAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+		
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire(1);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	public void hangerTarmacAuto() {
+		
+		if (autoFirstTimeWait) {
+		
+			autoFirstWaitCountdown = new Countdown(3);
+			autoFirstTimeWait = false;
+			shooting = false;
+		
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+			
+			if (auto.queueIsEmpty()) {
+			
+				shooterController.autoFire(2);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+			
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
+
+	boolean shooting = false;
+
+	boolean firstThreeBallTime = false;
+	boolean firstThreeBallTimeTwo = true;
+
+	boolean anotherFirst = true;
+	Countdown anotherCountdown;
+
+	boolean shotFirst = false;
+
+	public void threeBallAuto() {
+
+		if (anotherFirst) {
+
+			anotherFirst = false;
+			anotherCountdown = new Countdown(3.5);
+
+		}
+
+		if (anotherCountdown.isRunning()) {
+
+			return;
+
+		}
+		
+		if (auto.queueIsEmpty()){			
+			
+			if(firstTime) {
+
+				countdown = new Countdown(4.0);
+				firstTime = false;
+				shooting = true;
+
+			}
+
+			if (!countdown.isRunning()) {
+				auto.executeQueue();
+				shooting = false;
+				firstTime = true;
+				shotFirst = true;
+
+				if (firstThreeBallTime) {
+
+					firstThreeBallTime = false;
+	
+					if (firstThreeBallTimeTwo) {
+	
+						firstThreeBallTimeTwo = false;
+						auto.addCommands(new Command(CommandType.MOVE, 43, 0.5));
+						auto.addCommands(new Command(CommandType.ROTATE, -0.305, 0.25));
+						auto.addCommands(new Command(CommandType.MOVE, -97.96, 0.25));
+	
+					}
+	
+				}
+
+			} else {
+
+				if (!shotFirst) {
+
+					shooterController.autoFire(3);
+
+				} else {
+
+					shooterController.autoSecondFire();
+
+				}
+				shooting = true;
+				firstThreeBallTime = true;
+
+			}
+			
+		} else {
+
+			auto.executeQueue();
+			shooting = false;
+			firstTime = true;
+
+		}
+	}
+
+	public void fourBallAuto() {
+
+		//CHANGE COUNTDOWN FOR INTAKE TIME FOR 5 BALL
+		if (autoFirstTimeWait) {
+
+			autoFirstWaitCountdown = new Countdown(7);
+			autoFirstTimeWait = false;
+			shooting = false;
+			
+		}
+		
+		if (!autoFirstWaitCountdown.isRunning()) {
+
+			if (auto.queueIsEmpty()) {
+
+				shooterController.autoFire(3);
+				shooting = true;
+	
+			} else { //Queue not empty and timer is not running
+				//Progresses the queue
+				auto.executeQueue();
+				shooting = false;
+	
+			}
+
+		}
+
+	}
 
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
 
+		if (!shooting) {
+
+			shooterController.stopAim();
+
+			/*if (autoIndex == 1) {
+
+				trigger.setSpeed(0.0);
+				intake.setIntakeSpeed(0.0);
+
+			} else {*/
+
+				trigger.setSpeed(-0.3);//-0.3
+				intake.setIntakeSpeed(-1.0);//-1.0
+
+			//}
+
+		}
+
+		switch(autoIndex){
+			case 0:
+				topTarmacAuto();
+				break;
+			case 1:
+				midTarmacAuto();
+				break;
+			case 2:
+				hangerTarmacAuto();
+				break;
+			case 3:
+				threeBallAuto();
+				break;
+			case 4: 
+				fourBallAuto();
+				break;	
+		}
+		
+	}
+	
 	// NO TOUCH
+	// IF ANYTHING IS IN EITHER OF THESE LINES, 
+	// THE ROBOT WILL NOT WORK IN COMP
 	@Override 
 	public void disabledInit() {}
-	
+
 	// VERY EXTRA NO TOUCH
 	@Override
 	public void disabledPeriodic() {}
-<<<<<<< Updated upstream
-=======
 
 	
 	double topSpeed;
 	double bottomSpeed;
->>>>>>> Stashed changes
-	
-	@Override
-	public void teleopInit() {}
 
 	@Override
-<<<<<<< Updated upstream
-	public void teleopPeriodic() {}
-=======
+	public void teleopInit() {
+
+		turret.setZero(0.0);
+		turret.setIsGoingRight(true);
+
+		driver.setupButtons();
+		operator.setupButtons();
+
+		topSpeed = 0.0;
+		bottomSpeed = 0.0;
+
+		lastSpeedSet = 0.0;
+
+		intake.init();
+
+	}
+
+	boolean intakeTesting = false;
+
+	/**
+	 * @param intakemode normal intake: 1, test intake:-1
+	 */
+	public void intake(int intakemode) {
+
+		if (firstIntaking) {
+
+			firstIntaking = false;
+			firstIntakingStartTime = Timer.getTime();
+
+		}
+
+		intake.setIntakeSpeed(-operator.getAxis(XboxController.Axes.RightTrigger));
+
+		if (operator.getAxis(XboxController.Axes.RightTrigger) > 0.1) {
+
+			trigger.setSpeed(-0.1);
+			firstIntakingStartTime = Timer.getTime();
+
+		} else {
+
+			trigger.setSpeed(0.0);
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);
+	
+			}
+
+		}
+
+	}
+
+	@Override
 	public void teleopPeriodic() {
 
 		shooterController.update();
-		aligned.setValue(ShooterController.aligned);
+
+		aligned.setValue(ShooterController.aligned && shooter.readyToFire);
 
 		elevator.setElevator(operator.getAxis(XboxController.Axes.RightY) * 0.75);
 		
@@ -219,14 +554,25 @@ public class Robot extends TimedRobot {
 		}
 
 		// Operator controls: 
-		if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+	/*	if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
 
 			trigger.setSpeed(0.35);
 			intake.setIntakeSpeed(-0.3);
 
-		}
+		}*/
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
+
+			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
+
+				trigger.setSpeed(0.35);
+				intake.setIntakeSpeed(-0.3);
+	
+			} else {
+
+				trigger.setSpeed(0.0);
+
+			}
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
@@ -257,8 +603,8 @@ public class Robot extends TimedRobot {
 
 			if (!operator.getButton(XboxController.Buttons.B)) {
 
-				trigger.setSpeed(0.0);
-				intake.setIntakeSpeed(0.0);
+				//trigger.setSpeed(0.0);
+				//intake.setIntakeSpeed(0.0);
 
 			}
 
@@ -268,6 +614,7 @@ public class Robot extends TimedRobot {
 
 		}
 
+		// Unsure as to why this is static but the robot runs :-)
 		if (shooterController.aligned && operator.getButton(XboxController.Buttons.B)) {
 
 			if (operator.getAxis(XboxController.Axes.LeftTrigger) > 0.1) {
@@ -277,7 +624,7 @@ public class Robot extends TimedRobot {
 
 			} else {
 				
-				shooterController.fire();
+				//shooterController.fire();
 
 			}
 
@@ -306,11 +653,13 @@ public class Robot extends TimedRobot {
 		}
 
 	}
->>>>>>> Stashed changes
 
 	@Override
 	public void testInit() {}
 	
+	boolean firstIntaking = true;
+	double firstIntakingStartTime;
+
 	@Override
 	public void testPeriodic() {}
 

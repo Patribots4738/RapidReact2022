@@ -1,5 +1,6 @@
 package wrappers;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class DoubleSolenoid {
@@ -12,7 +13,7 @@ public class DoubleSolenoid {
 
 	public DoubleSolenoid(int port1, int port2) {
 
-		DoubleSolenoid = new edu.wpi.first.wpilibj.DoubleSolenoid(port1, port2);
+		DoubleSolenoid = new edu.wpi.first.wpilibj.DoubleSolenoid(PneumaticsModuleType.CTREPCM, port1, port2);
 
 		state = 0;
 

@@ -12,7 +12,7 @@ public class AutoDrive {
 
 	// details how close we can get to the specified end position of a command
 	// before calling it complete and moving to the next one
-	private double acceptableError = 0.25;
+	private double acceptableError = 0.5;
 
 	// the positions the left and right motorgroups should
 	// be at when the currently running command has been completed,
@@ -131,8 +131,6 @@ public class AutoDrive {
 	// this command will be called once to start executing a command
 	public void executeCommand(Command command) {
 
-		//System.out.println("executing a command");
-
 		Command.CommandType commandType = command.getType();
 
 		double value = command.getValue();
@@ -170,43 +168,29 @@ public class AutoDrive {
 
 			double outerScalar = 1 + Constants.ROBOT_WHEEL_SPACING / 2 / radius;
 			double innerScalar = 1 - Constants.ROBOT_WHEEL_SPACING / 2 / radius;
-
 			double leftSpeed = speed;
 			double rightSpeed = speed;
-			
-			System.out.println("radius: " + radius);
-			System.out.println("arcLength: " + arcLength);
-
-			System.out.println("outerScalar: " + outerScalar);
-			System.out.println("innerScalar: " + innerScalar);
 
 			// decide which one based on sign of height
 			if (arcHeight > 0) {
-				System.out.println("arcHeight positive");
-				completePositions[0] += arcLength * outerScalar;
-				completePositions[1] -= arcLength * innerScalar;
+				
+				completePositions[0] += Calc.inchesToDrive(arcLength * outerScalar);
+				completePositions[1] -= Calc.inchesToDrive(arcLength * innerScalar);
 
 				leftSpeed *= outerScalar;
 				rightSpeed *= innerScalar;
 
-			} else {
-
-				completePositions[0] += arcLength * innerScalar;
-				completePositions[1] -= arcLength * outerScalar;
+			} else { 
+				
+				completePositions[0] += Calc.inchesToDrive(arcLength * innerScalar);
+				completePositions[1] -= Calc.inchesToDrive(arcLength * outerScalar);
 
 				leftSpeed *= innerScalar;
 				rightSpeed *= outerScalar;
-
 			}
 
-			System.out.println("leftSpeed: " + leftSpeed);
-			System.out.println("rightSpeed: " + rightSpeed);
-
-			System.out.println("left complete position: " + completePositions[0]);
-			System.out.println("right complete position: " + completePositions[1]);
-
-			leftMotors.setPosition(Calc.inchesToDrive(completePositions[0]), -leftSpeed, leftSpeed);
-			rightMotors.setPosition(Calc.inchesToDrive(completePositions[1]), -rightSpeed, rightSpeed);
+			leftMotors.setPosition(completePositions[0], -leftSpeed, leftSpeed);
+			rightMotors.setPosition(completePositions[1], -rightSpeed, rightSpeed);
 
 		}
 
@@ -232,25 +216,16 @@ public class AutoDrive {
 
 		double leftWheelPosition = leftMotors.getPosition();
 		double rightWheelPosition = rightMotors.getPosition();
-
-		System.out.println("left: " + leftWheelPosition);
-		System.out.println("right: " + rightWheelPosition);
-
-		System.out.println("left speed: " + leftMotors.getSpeed());
-		System.out.println("right speed: " + rightMotors.getSpeed());
-
+		
 		double leftError = Math.abs(completePositions[0] - leftWheelPosition);
 		double rightError = Math.abs(completePositions[1] - rightWheelPosition);
 
-		System.out.println("left error: " + leftError);
-		System.out.println("right error: " + rightError);
-
 		if(leftError <= acceptableError && rightError <= acceptableError) {
-			System.out.println("DONE COMMAND");
+
 			removeCommand(0);
 
 			if(queueIsEmpty()) {
-
+				
 				return;
 
 			}

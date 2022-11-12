@@ -8,7 +8,10 @@ public class Drive {
 	MotorGroup leftMotors;
 	MotorGroup rightMotors;
 
-	private final double deadBand = 0.07;
+	double lastThrottle = 0;
+	final double acceptableAccel = 0.025;
+
+	private final double deadBand = 0.1;
 
 	public Drive(MotorGroup leftMotors, MotorGroup rightMotors) {
 
@@ -17,6 +20,8 @@ public class Drive {
 
 		leftMotors.setSpeed(0);
 		rightMotors.setSpeed(0);
+
+		
 
 	}
 

@@ -5,16 +5,19 @@ import networking.*;
 public final class Constants {
 
 	// in inches
-	public static final double TARGET_HEIGHT = 91.25; //85 is a temporary value from joeseph's house, 92 is the one for actual competition //92;
+	public static final double TARGET_HEIGHT = 104;
 
 	// in inches
-	public static final double LIMELIGHT_HEIGHT = 41.125;
+	public static final double LIMELIGHT_HEIGHT = 32.25;
 
 	// in radians
-	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(19.1237670267);
+	public static final double LIMELIGHT_MOUNTING_ANGLE = Calc.degreesToRadians(28.2);
 
 	// distance from the edge of the bumber to the limelight's camera lens
-	public static final double LIMELIGHT_CAMERA_INSET = 8.625;
+	public static final double LIMELIGHT_CAMERA_INSET = -12;
+
+	// amount of mini neo rotations to one full turret rotation
+	public static final double FULL_TURRET_ROTATION = 70.0;
 
 	// the time, in seconds, of a single loop of the robot code
 	public static final double LOOP_TIME = 0.02;
@@ -26,17 +29,17 @@ public final class Constants {
 	public static final int FALCON_CLICKS = 2048;
 
 	// the diameter of the drive wheels
-	// this should be 6.25, but the wheels wear over time
-	public static final double DRIVE_WHEEL_DIAMETER = 6.25; //was 6.21875
+	// was 4.0??
+	public static final double DRIVE_WHEEL_DIAMETER = 3;
 
 	// the circumfrence of the drive wheels
 	public static final double DRIVE_WHEEL_CIRCUMFRENCE = Math.PI * DRIVE_WHEEL_DIAMETER;
 
 	// gear ratio of drive gearboxes
-	public static final double DRIVE_GEAR_RATIO = 1.0 / 4.4;
+	public static final double DRIVE_GEAR_RATIO = 1 / 5.9091;
 
 	// this distance between the centers of the wheels on opposite sides of the robot, in inches
-	public static final double ROBOT_WHEEL_SPACING = 23.9375;
+	public static final double ROBOT_WHEEL_SPACING = 18.4611;
 
 	// the circumfrence of the circle formed by rotating the robot a full rotation in place
 	public static final double ROBOT_WHEEL_CIRCLE_CIRCUMFRENCE = Math.PI * ROBOT_WHEEL_SPACING;

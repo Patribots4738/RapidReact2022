@@ -1,6 +1,6 @@
 package wrappers;
 
-import com.analog.adis16470.frc.*;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
 public class IMU {
 
@@ -24,7 +24,7 @@ public class IMU {
     public IMU() {
 
         imu = new ADIS16470_IMU();
-
+        this.reset();
     }
 
     /**
@@ -36,7 +36,7 @@ public class IMU {
      */
     public double getXAcceleration() {
 
-        return imu.getAccelInstantX();
+        return imu.getAccelX();
 
     }
 
@@ -49,7 +49,7 @@ public class IMU {
      */
     public double getYAcceleration() {
 
-        return imu.getAccelInstantY();
+        return imu.getAccelY();
 
     }
 
@@ -62,7 +62,7 @@ public class IMU {
      */
     public double getZAcceleration() {
 
-        return imu.getAccelInstantZ();
+        return imu.getAccelZ();
 
     }
 
@@ -140,31 +140,15 @@ public class IMU {
        return imu.getAngle();
     }
 
-    /**
-     * @return acceleration of rotation on X axis in degrees/sec
-     */
-    public double getXRotationalAcceleration() {
+    public void reset() {
 
-        return imu.getGyroInstantX();
+        imu.reset();
 
     }
 
-    /**
-     * @return acceleration of rotation on Y axis in degrees/sec
-     */
-    public double getYRotationalAcceleration() {
+    public void calibrate(){
 
-        return imu.getGyroInstantY();
+        imu.calibrate();
 
     }
-
-    /**
-     * @return acceleration of rotation on Z axis in degrees/sec
-     */
-    public double getZRotationalAcceleration() {
-
-        return imu.getGyroInstantZ();
-
-    }
-
 }

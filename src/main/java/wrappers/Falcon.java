@@ -5,6 +5,7 @@ import utils.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Falcon implements PIDMotor {
@@ -21,7 +22,8 @@ public class Falcon implements PIDMotor {
 
 		lastSpeed = 0.0;
 
-		//this is a black box, dont touch, get Zach (unless I'm gone, then google, I'm sorry for the horrors that await you)
+		// This is a black box, dont touch, get Zach (unless I'm gone, then google, 
+		// I'm sorry for the horrors that await you) -- Zachery Royal
 		motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		motor.configAllowableClosedloopError(0, 0, 20);
 		motor.config_kF(0, 0, 20);
@@ -122,7 +124,9 @@ public class Falcon implements PIDMotor {
 	}
 
 	/**
-	 * run at end of (insert_name_here)Periodic loop in the mode you are using in robot.java (auto, teleop, disabled (wtf are you doing), or test)
+	 * run at end of (insert_name_here)
+	 * Periodic loop in the mode you are using in robot.java 
+	 * (auto, teleop, disabled (wtf are you doing), or test)
 	 */
 	public void setLastSpeed() {
 
@@ -164,6 +168,23 @@ public class Falcon implements PIDMotor {
 
 		return motor.getStatorCurrent();
 
+
+	}
+
+	/**
+	 * @param isBrake if true, it sets it to break mode, if false, to coast mode
+	 */
+	public void setBrakeMode(boolean isBrake) {
+
+		if (isBrake) {
+
+			motor.setNeutralMode(NeutralMode.Brake);
+
+		} else {
+
+			motor.setNeutralMode(NeutralMode.Coast);
+
+		}
 
 	}
 

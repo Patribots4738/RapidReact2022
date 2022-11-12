@@ -54,4 +54,10 @@ public class Logger {
 
 	}
 
+	public double getIndex(int index) {
+
+		return values[index];
+
+	}
+
 }

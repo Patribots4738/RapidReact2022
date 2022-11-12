@@ -138,7 +138,9 @@ public class Talon implements PIDMotor{
 	}
 
 	/**
-	 * run at end of (insert_name_here)Periodic loop in the mode you are using in robot.java (auto, teleop, disabled (wtf are you doing), or test)
+	 * run at end of (insert_name_here)
+	 * Periodic loop in the mode you are using in robot.java
+	 * (auto, teleop, disabled (wtf are you doing), or test)
 	 */
 	public void setLastSpeed() {
 
@@ -161,6 +163,13 @@ public class Talon implements PIDMotor{
 	public void resetEncoder() {
 
 		motor.setSelectedSensorPosition(0);
+
+	}
+
+	// NOT CODED YET
+	public void setBrakeMode(boolean isBrake) {
+
+		System.out.println("setBrakeMode(boolean isBrake) in Talon.java CURRENT NOT CODED");
 
 	}
 

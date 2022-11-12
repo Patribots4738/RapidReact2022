@@ -3,9 +3,9 @@ package utils;
 public class PIDLoop {
 
 	/*
-	README!
-	P must be greater than or equal to 0
-	FF must be greather than or equal to 1
+		README!
+		P must be greater than or equal to 0
+		FF must be greather than or equal to 1
 	*/
 
 	// these are the constants for the PID controller
@@ -14,10 +14,10 @@ public class PIDLoop {
 	private double D;
 
 	/* 
-	this is the feedForward constant, its used to account
-	for stuff like weight or any kind of constant resistence
-	it's effectively a speedMultiplier
-	to find it, divide your desired command by what the thing acheives with no PID control
+		this is the feedForward constant, its used to account
+		for stuff like weight or any kind of constant resistence
+		it's effectively a speedMultiplier
+		to find it, divide your desired command by what the thing acheives with no PID control
 	*/
 	private double FF;
 
@@ -30,8 +30,8 @@ public class PIDLoop {
 	private double error;
 
 	/*
-	this keeps a log of the previous errors back for a period of time,
-	it's used for finding the integral and devivative
+		this keeps a log of the previous errors back for a period of time,
+		it's used for finding the integral and devivative
 	*/
 	private double[] errorLog;
 	private int dLog;

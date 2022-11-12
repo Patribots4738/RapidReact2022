@@ -63,11 +63,7 @@ public class Limelight {
 
 	public boolean targetFound() {
 
-		// whether the limelight has any valid targets
-		int found = Integer.valueOf((String)limelightTable.get("tv"));
-
-		// returns if the value is true or false
-		return (found == 1) ? true : false;
+		return (this.getTargetAreaPercent() > 0.01) ? true : false;
 
 	}
 
@@ -122,7 +118,6 @@ public class Limelight {
 						   Calc.degreesToRadians(getVerticalAngle()))) - Constants.LIMELIGHT_CAMERA_INSET;
 
 		distanceAvg.addValue(distance);
-
 		return distanceAvg.getAverage();
 
 	}

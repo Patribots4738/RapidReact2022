@@ -3,17 +3,18 @@ package wrappers;
 import interfaces.*;
 import utils.*;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+
+import edu.wpi.first.wpilibj.CAN;
 
 public class SparkMax implements PIDMotor {
 
 	CANSparkMax motor;
-	CANEncoder encoder;
-	CANPIDController pidController;
+	RelativeEncoder encoder;
+	SparkMaxPIDController pidController;
 
 	PIDLoop PIDLoop;
 
@@ -25,8 +26,8 @@ public class SparkMax implements PIDMotor {
 	public SparkMax(int canID, boolean isNeo550) {
 
 		motor = new CANSparkMax(canID, CANSparkMaxLowLevel.MotorType.kBrushless);
-		encoder = new CANEncoder(motor);
-		pidController = new CANPIDController(motor);
+		encoder = motor.getEncoder();
+		pidController = motor.getPIDController();
 
 		this.isNeo550 = isNeo550;
 
@@ -95,7 +96,7 @@ public class SparkMax implements PIDMotor {
 
 	public void setPercent(double percent) {
 
-		pidController.setReference(percent, ControlType.kDutyCycle);
+		pidController.setReference(percent, CANSparkMax.ControlType.kDutyCycle);
 
 	}
 
@@ -133,7 +134,9 @@ public class SparkMax implements PIDMotor {
 	}
 
 	/**
-	 * run at end of (insert_name_here)Periodic loop in the mode you are using in robot.java (auto, teleop, disabled (wtf are you doing), or test)
+	 * run at end of (insert_name_here)
+	 * Periodic loop in the mode you are using in robot.java 
+	 * (auto, teleop, disabled (wtf are you doing), or test)
 	 */
 	public void setLastSpeed() {
 
@@ -144,8 +147,7 @@ public class SparkMax implements PIDMotor {
 	public void setPosition(double rotations, double minSpeed, double maxSpeed) {
 
 		pidController.setOutputRange(minSpeed, maxSpeed);
-
-		pidController.setReference(rotations, ControlType.kPosition);
+		pidController.setReference(rotations, CANSparkMax.ControlType.kPosition);
 
 	}
 
@@ -175,10 +177,23 @@ public class SparkMax implements PIDMotor {
 
 	}
 
+	// NOT CODED YET
+	public void setBrakeMode(boolean isBrake) {
+
+		System.out.println("setBrakeMode(boolean isBrake) in SparkMax.java CURRENT NOT CODED");
+
+	}
+
 	// NOT FUNCTIONAL
 	public double getAmperage() {
 
 		return 0.0;
+
+	}
+
+	public CANSparkMax getCanSparkMax() {
+
+		return motor;
 
 	}
 
