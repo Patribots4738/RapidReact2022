@@ -22,4 +22,18 @@ public class MotorGroup implements Motor {
 
 	}
 
+	/**
+	 * @param isBrake if true, it sets it to break mode, if false, to coast mode
+	 */
+	public void setBrakeMode(boolean isBrake) {
+
+		for (Motor motor : motors) {
+
+			motor.setBrakeMode(isBrake);
+
+		}
+	
+	}
+
+
 }

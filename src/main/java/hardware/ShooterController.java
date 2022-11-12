@@ -229,11 +229,14 @@ public class ShooterController {
 				}
 				case 2: // hangerTarmac
 				{
-					turret.setPosition(0.1, -(0.2575));//0.2639
+					// Second parameter in setPosition is manually calculated
+					// as (degree you want to go to)/360; ex: (92.7/360) = 0.2639
 					
-					// due to the below comment, hanger tarmac will attempt to only move 43in
+					//turret.setPosition(0.1, -(0.2575));//0.2639 --> 95deg
+
+					turret.setPosition(0.1, -(0.2639));//0.2778 --> 100deg
+
 					shooter.setShooterSpeeds(12.5 * 12); // 13.12; 12.25 sorta worked ?
-					//shooter.setShooterSpeeds(10.33 * 12);
 					
 					break;
 				}

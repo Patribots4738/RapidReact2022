@@ -152,6 +152,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 
+		rightMotors.setBrakeMode(true);
+		leftMotors.setBrakeMode(true);
+
 		firstTime = true;
 
 		leftMotors.setPID(0.05, 0, 5);
@@ -442,11 +445,13 @@ public class Robot extends TimedRobot {
 		
 	}
 	
-	// NO TOUCH
-	// IF ANYTHING IS IN EITHER OF THESE LINES, 
-	// THE ROBOT WILL NOT WORK IN COMP
+	// NO TOUCH :)
 	@Override 
-	public void disabledInit() {}
+	public void disabledInit() 
+	{
+		rightMotors.setBrakeMode(false);
+		leftMotors.setBrakeMode(false);
+	}
 
 	// VERY EXTRA NO TOUCH
 	@Override
@@ -458,6 +463,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+
+		rightMotors.setBrakeMode(true);
+		leftMotors.setBrakeMode(true);
 
 		turret.setZero(0.0);
 		turret.setIsGoingRight(true);
@@ -560,18 +568,6 @@ public class Robot extends TimedRobot {
 			intake.setIntakeSpeed(-0.3);
 
 		}*/
-
-		// zero the turret when left joystick button is pressed 
-		// NOT TESTED AS OF 11/4/2022 11:30am
-		if (operator.getButton(XboxController.Buttons.LJ)) {
-
-			turret.setPosition(0.2, 0.0);
-
-		} else if (!operator.getButton(XboxController.Buttons.A)) {
-
-			turret.setPosition(0.0, turret.getPosition());
-
-		}
 	
 		if (operator.getButton(XboxController.Buttons.A)) {
 
@@ -622,7 +618,17 @@ public class Robot extends TimedRobot {
 
 		} else {
 
-			shooterController.stopAim();
+			// zero the turret when left joystick button is pressed 
+			// NOT TESTED AS OF 11/4/2022 11:30am
+			if (operator.getButton(XboxController.Buttons.LJ)) {
+
+				turret.setPosition(0.5, 0.0);
+
+			} else {
+
+				shooterController.stopAim();
+
+			}	
 
 		}
 
@@ -674,5 +680,5 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testPeriodic() {}
-
+ 
 }

@@ -20,4 +20,6 @@ public class Victor implements Motor {
 
 	}
 
+	public void setBrakeMode(boolean isBrake) {}
+
 }
