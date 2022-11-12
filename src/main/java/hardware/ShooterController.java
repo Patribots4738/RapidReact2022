@@ -232,8 +232,8 @@ public class ShooterController {
 					turret.setPosition(0.1, -(0.2575));//0.2639
 					
 					// due to the below comment, hanger tarmac will attempt to only move 43in
-					// shooter.setShooterSpeeds(12.5 * 12); // 13.12; 12.25 sorta worked ?
-					shooter.setShooterSpeeds(10.33 * 12);
+					shooter.setShooterSpeeds(12.5 * 12); // 13.12; 12.25 sorta worked ?
+					//shooter.setShooterSpeeds(10.33 * 12);
 					
 					break;
 				}
