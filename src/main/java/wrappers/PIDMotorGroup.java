@@ -195,16 +195,8 @@ public class PIDMotorGroup extends MotorGroup implements PIDMotor {
 
 		for (PIDMotor motor : pidMotors) {
 
-			if (isBrake) {
-
-				motor.setBrakeMode(true);
-	
-			} else {
-	
-				motor.setBrakeMode(false);
-	
-			}
-
+			motor.setBrakeMode(isBrake);
+			
 		}
 
 	}

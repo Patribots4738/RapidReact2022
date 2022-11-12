@@ -7,4 +7,10 @@ public interface Motor {
 	 */
 	public void setSpeed(double speed);
 
+	/**
+	 * Toggles the brake mode according to isBrake
+	 * @param isBrake is the if the brake should be true or false-- true = brake
+	 */
+    public void setBrakeMode(boolean isBrake);
+
 }

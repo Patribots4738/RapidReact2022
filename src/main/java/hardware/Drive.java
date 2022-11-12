@@ -184,4 +184,10 @@ public class Drive {
 
 	}
 
+	public void setBrakeMode(boolean isBrake)
+	{
+		leftMotors.setBrakeMode(isBrake);
+		rightMotors.setBrakeMode(isBrake);
+	}
+
 }

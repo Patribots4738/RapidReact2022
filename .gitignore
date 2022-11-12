@@ -1,5 +1,7 @@
 ### This will contain duplicates. Better be safe than sorry, I suppose. ###
 
+build/jni/release/wpimath.pdb
+
 ### frc gitignore template found at https://github.com/iliterobotics/FRC-Robot-2019/blob/master/.gitignore:
 
 # WPILib
@@ -80,14 +82,14 @@ junit/
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
+.idea/*.iml
+.idea/modules
+*.iml
+*.ipr
 
 # CMake
 cmake-build-*/
@@ -370,6 +372,5 @@ gradle-app.setting
 .settings/
 bin/
 imgui.ini
-
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
